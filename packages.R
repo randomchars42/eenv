@@ -4,7 +4,8 @@ packages_base <- c(
   "tidyverse",
   "cowplot", # combine ggplots into panels
   "knitr", # fancy tables and output specific for word / html / pdf
-  "kableExtra" # even fancier tables
+  "kableExtra", # even fancier tables
+  "devtools" # to install biosets
 )
 
 if (exists("packages")) {
@@ -12,7 +13,6 @@ if (exists("packages")) {
 } else {
   packages <- packages
 }
-
 
 package_load <- function(package) {
   # find.package returns a string of length 0 if the package is not installed
@@ -33,5 +33,13 @@ package_load <- function(package) {
 }
 
 packages_loaded <- sapply(packages, package_load)
+
+if (length(find.package(package = "biosets", quiet = TRUE)) == 0) {
+  message(paste0("Install missing package: ", package))
+  devtools::install_github("randomchars42/bioset")
+  #install.packages("../bioset_0.1.0.9000.tar.gz", repos=NULL) 
+}
+
+package_load("bioset")
 
 rm(packages, package_load, packages_loaded, packages_base)
