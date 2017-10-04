@@ -1,12 +1,16 @@
-cal_names <- c("CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9", "CAL10")
-cal_values <- c(4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125)
+calibrator_names <- c("CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9", "CAL10")
+calibrator_values <- c(4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125)
 
 sets_read <- function(
   plates,
-  cal_names = cal_names,
-  cal_values = cal_values,
+  cal_names = calibrator_names,
+  cal_values = calibrator_values,
   additional_vars = c("name"),
-  sep = ","
+  sep = ",",
+  path = "",
+  model_func = fit_lnln,
+  plot_func = plot_lnln,
+  interpolate_func = interpolate_lnln
 ) {
   results <- list()
   
@@ -14,12 +18,12 @@ sets_read <- function(
     data_plate <-
       set_read(
         file_name = "plate_#NUM#.csv",
-        path = "",
+        path = path,
         num = i,
         sep = sep,
         cols = 0,
         rows = 0,
-        additional_vars = properties,
+        additional_vars = c("name", "properties"),
         additional_sep = "_"
       ) %>%
       set_calc_concentrations(
@@ -40,6 +44,11 @@ sets_read <- function(
     } else {
       data <- rbind(data, data_plate)
     }
+    
+    results[[i]] <- list(
+      model = model_func(data$real, data$value),
+      plot = plot_func(data$real, data$value)
+    )
   }
   
   data_samples <- data %>%
@@ -52,7 +61,7 @@ sets_read <- function(
       raw_cv = value_cv,
       SelenBP1 = conc_mean,
       SelenBP1_sd = conc_sd,
-      SelenBP1_cv = conv_cv
+      SelenBP1_cv = conc_cv
     ) %>%
     select(
       -set,
@@ -70,7 +79,7 @@ sets_read <- function(
       -conc_cv) %>%
     distinct(sample_id, .keep_all = TRUE)
   
-  write_csv(data = data_samples, path = "data_samples.csv")
+  write_csv(data_samples, path = paste0(path, "data_samples.csv"))
   
   data_all <- data %>%
     mutate(
@@ -83,7 +92,7 @@ sets_read <- function(
       SelenBP1 = conc,
       SelenBP1 = conc_mean,
       SelenBP1_sd = conc_sd,
-      SelenBP1_cv = conv_cv
+      SelenBP1_cv = conc_cv
     ) %>%
     select(
       -set,
@@ -98,10 +107,10 @@ sets_read <- function(
       -conc_sd,
       -conc_cv)
   
-  write_csv(data = data_all, path = "data_all.csv")
+  write_csv(data_all, path = paste0(path, "data_all.csv"))
   
-  results["samples"] <- data_samples
-  results["all"] <- data_all
+  results["samples"] <- list(data_samples)
+  results["all"] <- list(data_all)
   
   return(results)
 }
