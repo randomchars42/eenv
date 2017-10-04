@@ -10,6 +10,7 @@ if (open_files) {
   file.edit("./vars.R")
   file.edit("./themes.R")
   file.edit("./functions.R")
+  file.edit("./biosets.R")
 }
 
 rm(open_files)
