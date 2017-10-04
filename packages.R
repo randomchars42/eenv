@@ -11,7 +11,7 @@ packages_base <- c(
 if (exists("packages")) {
   packages <- c(packages_base, packages)
 } else {
-  packages <- packages
+  packages <- packages_base
 }
 
 package_load <- function(package) {
@@ -35,7 +35,7 @@ package_load <- function(package) {
 packages_loaded <- sapply(packages, package_load)
 
 if (length(find.package(package = "biosets", quiet = TRUE)) == 0) {
-  message(paste0("Install missing package: ", package))
+  message(paste0("Install missing package: bioset"))
   devtools::install_github("randomchars42/bioset")
   #install.packages("../bioset_0.1.0.9000.tar.gz", repos=NULL) 
 }
