@@ -239,6 +239,25 @@ format_p <- function(
   return(x)
 }
 
+package_load <- function(package) {
+  # find.package returns a string of length 0 if the package is not installed
+  if (length(find.package(package = package, quiet = TRUE)) == 0) {
+    message(paste0("Install missing package: ", package))
+    install.packages(pkgs = c(package))
+  }
+  
+  if (! require(
+    package = package,
+    quietly = TRUE,
+    warn.conflicts = TRUE,
+    character.only = TRUE)) {
+    stop(paste0("Could not load package: ", package))
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
+
 test_format_functions <- function() {
   test <- c(1.3, 0.05, 0.051, 0.058, 0.00002, 0.0589, 0.0583)
   format_number(test, type = "p", decimals = 2, signif_digits = 2, signif_bottom = 0.0001, force_perc_decimals = FALSE)
