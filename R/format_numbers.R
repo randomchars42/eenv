@@ -86,6 +86,7 @@ format_perc <- function(
   }
 
   x <- sapply(x, function(x) paste0(x, ' %'), USE.NAMES = TRUE)
+  names(x) <- NULL
   return(x)
 }
 
