@@ -9,3 +9,5 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+A package to set load packages, functions and variables I frequently use.
+

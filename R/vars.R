@@ -1,66 +1,121 @@
-# file.edit("../../Laboratory Notebooks/Laboratory Notebook 1/Resources/setup.R")
-# file.edit("../../Laboratory Notebooks/Laboratory Notebook 1/Resources/Toolkit.R")
-# file.edit("../../Laboratory Notebooks/Laboratory Notebook 1/Resources/SelenBP1Toolkit.R")
+#'
+#' The default confidence level used in functions of this package.
+#'
+#' @export
+#'
+global_confidence_level <- 0.95
 
-if (!exists("global_confidence_level")) {
-  global_confidence_level <- 0.95
-}
+#'
+#' The default alpha used in functions of this package.
+#'
+#' @export
+#'
+global_alpha <- 1 - global_confidence_level
 
-if (!exists("global_alpha")) {
-  global_alpha <- 1 - global_confidence_level
-}
+#'
+#' The number of non-zero digits to display for p-values.
+#'
+#' @export
+#' @family variables and functions for displaying numbers
+#'
+global_signif_digits <- 2
 
-if (!exists("global_signif_digits")) {
-  global_signif_digits <- 2
-}
+#'
+#' The number below which "< NUMBER" is displayed for p-values.
+#'
+#' @export
+#' @family variables and functions for displaying numbers
+#'
+global_signif_bottom <- 0.0001
 
-if (!exists("global_signif_bottom")) {
-  global_signif_bottom <- 0.0001
-}
+#'
+#' The number of digits to round to (not for p-values).
+#'
+#' @export
+#' @family variables and functions for displaying numbers
+#'
+global_decimals <- 1
 
-if (!exists("global_decimals")) {
-  global_decimals <- 1
-}
+#'
+#' Default settings for [save_plots()].
+#'
+#' @description
+#' List:
+#'  * dpi -> The resolution to use in DPI (dots per inch).
+#'  * format -> Formats to save plots in (plots can be saved in more than format
+#'              simultaneously).
+#'  * units -> Units for plot-size.
+#'  * width -> Different steps of widht the plot may have.
+#'  * height -> Height of one single plot.
+#'  * columns_max -> When plotting multiple plots onto one grid, the number of
+#'                   columns to use
+#'  * axes -> Which axes to align (see [cowplot::plot_grid()]]).
+#'  * align -> Which directions to use for alignment.
+#'
+#' @export
+#' @seealso [cowplot::plot_grid()]
+#' @family variables and functions for plotting
+#'
+global_plot_dim <- list(
+  "dpi" = 1200,
+  "format" = c("pdf", "svg"),
+  "units" = "in",
+  "width" = c(3.25, 6.8),
+  "height" = 3.25,
+  "columns_max" = 2,
+  "axes" = "rtbl",
+  "align" = "hv")
 
-if (!exists("global_plot_dim")) {
-  global_plot_dim <- list(
-    "dpi" = 1200,
-    "format" = c("pdf", "svg"),
-    "units" = "in",
-    "width" = c(3.25, 6.8),
-    "height" = 3.25,
-    "columns_max" = 2,
-    "axis" = "rtbl",
-    "align" = "hv")
-}
+#'
+#' Default background colour.
+#'
+#' @export
+#' @family theme-related functions and objects (white)
+#' @family variables and functions for plotting
+#'
+colour_bg <- "#FFFFFF"
 
+#'
+#' Default colour for dots / axes / text ... (dark grey).
+#'
+#' @export
+#' @family theme-related functions and objects
+#' @family variables and functions for plotting
+#'
+colour_base <- "#333333"
 
-if (!exists("colour_bg")) {
-  colour_bg <- "#FFFFFF"
-}
+#'
+#' The colour to use if more than 1 colours are needed (brighter grey).
+#'
+#' @export
+#' @family theme-related functions and objects
+#' @family variables and functions for plotting
+#'
+colour_secondary <- "#666666"
 
-if (!exists("colour_base")) {
-  colour_base <- "#333333"
-}
+#'
+#' The colour to use if more than 2 colours are needed (even brighter grey).
+#'
+#' @export
+#' @family theme-related functions and objects
+#' @family variables and functions for plotting
+#'
+colour_tert <- "#999999"
 
-if (!exists("colour_secondary")) {
-  colour_secondary <- "#666666"
-}
-
-if (!exists("colour_tert")) {
-  colour_tert <- "#999999"
-  
-}
-
-if (!exists("colour_palette")) {
-  colour_palette <- c(
-    colour_base,
-    colour_secondary,
-    "#999999",
-    "#CCCCCC",
-    "#4D4D4D",
-    "#808080",
-    "#B3B3B3")
-}
+#'
+#' A colour palette with 7 colours (black and white).
+#'
+#' @export
+#' @family theme-related functions and objects
+#' @family variables and functions for plotting
+#'
+colour_palette <- c(
+  colour_base,
+  colour_secondary,
+  colour_tert,
+  "#CCCCCC",
+  "#4D4D4D",
+  "#808080",
+  "#B3B3B3")
 
 options(scipen = 18, digits = 2)
