@@ -3,7 +3,7 @@
 eenv
 ====
 
-A package to set load packages, functions and variables I frequently use.
+A package to load packages, functions and variables I frequently use.
 
 Installation
 ------------
