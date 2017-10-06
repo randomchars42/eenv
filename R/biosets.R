@@ -49,6 +49,9 @@ sets_read <- function(
         rows = 0,
         additional_vars = additional_vars,
         additional_sep = "_"
+      ) %>%
+      mutate(
+        exclude = FALSE
       )
 
     exclude <- exclude_cals[[paste0("plate", i)]]
@@ -57,7 +60,9 @@ sets_read <- function(
       data_plate <- data_plate %>%
         dplyr::mutate(
           sample_id =
-            ifelse(sample_id %in% exclude, paste0("x", sample_id), sample_id)
+            ifelse(sample_id %in% exclude, paste0("x", sample_id), sample_id),
+          exclude =
+            ifelse(sample_id %in% exclude, TRUE, FALSE)
         )
     }
 
@@ -90,16 +95,16 @@ sets_read <- function(
   }
 
   data_samples <- data %>%
-    dplyr::filter(is.na(real)) %>%
+    dplyr::filter(is.na(real), exclude == FALSE) %>%
     dplyr::mutate(
       plate = set,
       n = value_n,
       raw = value_mean,
       raw_sd = value_sd,
       raw_cv = value_cv,
-      SelenBP1 = conc_mean,
-      SelenBP1_sd = conc_sd,
-      SelenBP1_cv = conc_cv
+      concentration = conc_mean,
+      concentration_sd = conc_sd,
+      concentration_cv = conc_cv
     ) %>%
     dplyr::select(
       -set,
@@ -114,7 +119,8 @@ sets_read <- function(
       -conc_n,
       -conc_mean,
       -conc_sd,
-      -conc_cv) %>%
+      -conc_cv,
+      -exclude) %>%
     dplyr::distinct(sample_id, .keep_all = TRUE)
 
   readr::write_csv(data_samples, path = file.path(path, "data_samples.csv"))
@@ -127,9 +133,9 @@ sets_read <- function(
       raw_mean = value_mean,
       raw_sd = value_sd,
       raw_cv = value_cv,
-      SelenBP1 = conc_mean,
-      SelenBP1_sd = conc_sd,
-      SelenBP1_cv = conc_cv
+      concentration = conc_mean,
+      concentration_sd = conc_sd,
+      concentration_cv = conc_cv
     ) %>%
     dplyr::select(
       -set,
@@ -142,7 +148,8 @@ sets_read <- function(
       -conc_n,
       -conc_mean,
       -conc_sd,
-      -conc_cv)
+      -conc_cv,
+      -exclude)
 
   readr::write_csv(data_all, path = file.path(path, "data_all.csv"))
 
