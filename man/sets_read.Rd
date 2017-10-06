@@ -26,18 +26,18 @@ samples (must be in the same order).}
 additional columns.}
 
 \item{sep}{Separator used in the csv-file, either "," or ";" (see
-\code{\link[utils]{read.csv}})}
+\code{\link[utils:read.csv]{utils::read.csv()}})}
 
-\item{path}{The path to the file (no trailing "/" or "\/"!).}
+\item{path}{The path to the file (no trailing "/" or "\"!).}
 
 \item{model_func}{A function generating a model to fit the calibrators,
-e.g. \code{\link{fit_linear}}, \code{\link{fit_lnln}}}
+e.g. \code{\link[=fit_linear]{fit_linear()}}, \code{\link[=fit_lnln]{fit_lnln()}}.}
 
 \item{plot_func}{Function used to display the fitted line.}
 
 \item{interpolate_func}{A function used to interpolate the concentrations of
 the other samples, based on the model, e.g.
-\code{\link{interpolate_linear}}, \code{\link{interpolate_lnln}}}
+\code{\link[=interpolate_linear]{interpolate_linear()}}, \code{\link[=interpolate_lnln]{interpolate_lnln()}}.}
 }
 \value{
 A list of params.

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Eike C. Kühn" />
 
-<meta name="date" content="2017-10-06" />
+<meta name="date" content="2017-10-07" />
 
 <title>Introduction</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction</h1>
 <h4 class="author"><em>Eike C. Kühn</em></h4>
-<h4 class="date"><em>2017-10-06</em></h4>
+<h4 class="date"><em>2017-10-07</em></h4>
 
 
 
@@ -80,6 +80,1602 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>You can install <code>eenv</code> from github with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;devtools&quot;)</span>
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;randomchars42/eenv&quot;</span>)</code></pre></div>
+</div>
+<div id="data-import" class="section level2">
+<h2>Data import</h2>
+<div id="preparing-your-raw-data" class="section level3">
+<h3>Preparing your raw data</h3>
+<p>Suppose you have an <code>ods</code> / <code>xls(x)</code> file with raw values obtained from a measurement like this:</p>
+<pre><code>#&gt; Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+#&gt; Parsed with column specification:
+#&gt; cols(
+#&gt;   X1 = col_integer(),
+#&gt;   X2 = col_integer(),
+#&gt;   X3 = col_integer(),
+#&gt;   X4 = col_integer(),
+#&gt;   X5 = col_integer(),
+#&gt;   X6 = col_integer()
+#&gt; )
+#&gt; Warning: Setting row names on a tibble is deprecated.</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="right">34997</td>
+<td align="right">38550</td>
+<td align="right">638</td>
+<td align="right">599</td>
+<td align="right">736</td>
+<td align="right">805</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="right">16341</td>
+<td align="right">15879</td>
+<td align="right">648</td>
+<td align="right">667</td>
+<td align="right">1335</td>
+<td align="right">1345</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="right">7204</td>
+<td align="right">6340</td>
+<td align="right">667</td>
+<td align="right">775</td>
+<td align="right">1276</td>
+<td align="right">1325</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="right">3023</td>
+<td align="right">2630</td>
+<td align="right">491</td>
+<td align="right">510</td>
+<td align="right">726</td>
+<td align="right">775</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="right">579</td>
+<td align="right">520</td>
+<td align="right">618</td>
+<td align="right">628</td>
+<td align="right">1188</td>
+<td align="right">1060</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="right">501</td>
+<td align="right">422</td>
+<td align="right">589</td>
+<td align="right">608</td>
+<td align="right">520</td>
+<td align="right">569</td>
+</tr>
+</tbody>
+</table>
+<p>Save them as <code>plate_1.csv</code>- thats like an <code>ods</code> / <code>xls(x)</code> file but its basically a text file with the values separated by commas (or semicolons for languages that use “,” to separate decimals).</p>
+<p>In the current versions of LibreOffice / OpenOffice / Microsoft office theres an option “Save as” &gt; “csv”.</p>
+</div>
+<div id="adding-names" class="section level3">
+<h3>Adding names</h3>
+<p>Before feeding your samples into your measuring device you most likely drafted some sort of plan which position corresponds to which sample (didn’t you?). It may have looked like this:</p>
+<pre><code>#&gt; Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+#&gt; Parsed with column specification:
+#&gt; cols(
+#&gt;   X1 = col_character(),
+#&gt;   X2 = col_character(),
+#&gt;   X3 = col_character(),
+#&gt;   X4 = col_character(),
+#&gt;   X5 = col_character(),
+#&gt;   X6 = col_character()
+#&gt; )
+#&gt; Warning: Setting row names on a tibble is deprecated.</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">A</td>
+<td align="left">A</td>
+<td align="left">H</td>
+<td align="left">H</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">B</td>
+<td align="left">B</td>
+<td align="left">I</td>
+<td align="left">I</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">C</td>
+<td align="left">C</td>
+<td align="left">J</td>
+<td align="left">J</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">D</td>
+<td align="left">D</td>
+<td align="left">K</td>
+<td align="left">K</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">E</td>
+<td align="left">E</td>
+<td align="left">L</td>
+<td align="left">L</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">F</td>
+<td align="left">F</td>
+<td align="left">M</td>
+<td align="left">M</td>
+</tr>
+</tbody>
+</table>
+<p>So you had some calibrators (CAL1 - CAL4) and samples A, B, C, D, E, F, H, I, J, K, L, M each in duplicates.</p>
+<p>To easily set the names for your samples just copy the names into your new <code>plate_1.csv</code>:</p>
+<pre><code>#&gt; Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+#&gt; Parsed with column specification:
+#&gt; cols(
+#&gt;   X1 = col_character(),
+#&gt;   X2 = col_character(),
+#&gt;   X3 = col_character(),
+#&gt;   X4 = col_character(),
+#&gt;   X5 = col_character(),
+#&gt;   X6 = col_character()
+#&gt; )
+#&gt; Warning: Setting row names on a tibble is deprecated.</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="left">34997</td>
+<td align="left">38550</td>
+<td align="left">638</td>
+<td align="left">599</td>
+<td align="left">736</td>
+<td align="left">805</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="left">16341</td>
+<td align="left">15879</td>
+<td align="left">648</td>
+<td align="left">667</td>
+<td align="left">1335</td>
+<td align="left">1345</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="left">7204</td>
+<td align="left">6340</td>
+<td align="left">667</td>
+<td align="left">775</td>
+<td align="left">1276</td>
+<td align="left">1325</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="left">3023</td>
+<td align="left">2630</td>
+<td align="left">491</td>
+<td align="left">510</td>
+<td align="left">726</td>
+<td align="left">775</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="left">579</td>
+<td align="left">520</td>
+<td align="left">618</td>
+<td align="left">628</td>
+<td align="left">1188</td>
+<td align="left">1060</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="left">501</td>
+<td align="left">422</td>
+<td align="left">589</td>
+<td align="left">608</td>
+<td align="left">520</td>
+<td align="left">569</td>
+</tr>
+<tr class="odd">
+<td>G</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">A</td>
+<td align="left">A</td>
+<td align="left">H</td>
+<td align="left">H</td>
+</tr>
+<tr class="even">
+<td>H</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">B</td>
+<td align="left">B</td>
+<td align="left">I</td>
+<td align="left">I</td>
+</tr>
+<tr class="odd">
+<td>I</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">C</td>
+<td align="left">C</td>
+<td align="left">J</td>
+<td align="left">J</td>
+</tr>
+<tr class="even">
+<td>J</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">D</td>
+<td align="left">D</td>
+<td align="left">K</td>
+<td align="left">K</td>
+</tr>
+<tr class="odd">
+<td>K</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">E</td>
+<td align="left">E</td>
+<td align="left">L</td>
+<td align="left">L</td>
+</tr>
+<tr class="even">
+<td>L</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">F</td>
+<td align="left">F</td>
+<td align="left">M</td>
+<td align="left">M</td>
+</tr>
+</tbody>
+</table>
+<p>Tell <code>sets_read()</code> your data contains the names and which column should hold those names by setting <code>additional_vars = c(&quot;name&quot;)</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+<span class="kw">sets_read</span>(
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>)
+)</code></pre></div>
+<p>It does not matter which name you select for the column. Pick anything that adequately describes the data in the column.</p>
+</div>
+<div id="adding-more-information" class="section level3">
+<h3>Adding more information</h3>
+<p>Suppose samples A, B, C, D, E, F were taken at day 1 and H, I, J, K, L, M were taken from the same rats / individuals / patients on day 2.</p>
+<p>It would be more elegant to encode that into the data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-
+<span class="st">  </span>readr::<span class="kw">read_csv2</span>(
+    <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;plate_1.csv&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;eenv&quot;</span>),
+    <span class="dt">col_names =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt; Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.</span>
+<span class="co">#&gt; Parsed with column specification:</span>
+<span class="co">#&gt; cols(</span>
+<span class="co">#&gt;   X1 = col_character(),</span>
+<span class="co">#&gt;   X2 = col_character(),</span>
+<span class="co">#&gt;   X3 = col_character(),</span>
+<span class="co">#&gt;   X4 = col_character(),</span>
+<span class="co">#&gt;   X5 = col_character(),</span>
+<span class="co">#&gt;   X6 = col_character()</span>
+<span class="co">#&gt; )</span>
+<span class="kw">rownames</span>(data) &lt;-<span class="st"> </span>LETTERS[<span class="dv">1</span>:<span class="dv">12</span>]
+<span class="co">#&gt; Warning: Setting row names on a tibble is deprecated.</span>
+
+knitr::<span class="kw">kable</span>(
+  data,
+  <span class="dt">row.names =</span> <span class="ot">TRUE</span>,
+  <span class="dt">col.names =</span> <span class="kw">as.character</span>(<span class="dv">1</span>:<span class="dv">6</span>))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="left">34997</td>
+<td align="left">38550</td>
+<td align="left">638</td>
+<td align="left">599</td>
+<td align="left">736</td>
+<td align="left">805</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="left">16341</td>
+<td align="left">15879</td>
+<td align="left">648</td>
+<td align="left">667</td>
+<td align="left">1335</td>
+<td align="left">1345</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="left">7204</td>
+<td align="left">6340</td>
+<td align="left">667</td>
+<td align="left">775</td>
+<td align="left">1276</td>
+<td align="left">1325</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="left">3023</td>
+<td align="left">2630</td>
+<td align="left">491</td>
+<td align="left">510</td>
+<td align="left">726</td>
+<td align="left">775</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="left">579</td>
+<td align="left">520</td>
+<td align="left">618</td>
+<td align="left">628</td>
+<td align="left">1188</td>
+<td align="left">1060</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="left">501</td>
+<td align="left">422</td>
+<td align="left">589</td>
+<td align="left">608</td>
+<td align="left">520</td>
+<td align="left">569</td>
+</tr>
+<tr class="odd">
+<td>G</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">A_1</td>
+<td align="left">A_1</td>
+<td align="left">A_2</td>
+<td align="left">A_2</td>
+</tr>
+<tr class="even">
+<td>H</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">B_1</td>
+<td align="left">B_1</td>
+<td align="left">B_2</td>
+<td align="left">B_2</td>
+</tr>
+<tr class="odd">
+<td>I</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">C_1</td>
+<td align="left">C_1</td>
+<td align="left">C_2</td>
+<td align="left">C_2</td>
+</tr>
+<tr class="even">
+<td>J</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">D_1</td>
+<td align="left">D_1</td>
+<td align="left">D_2</td>
+<td align="left">D_2</td>
+</tr>
+<tr class="odd">
+<td>K</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">E_1</td>
+<td align="left">E_1</td>
+<td align="left">E_2</td>
+<td align="left">E_2</td>
+</tr>
+<tr class="even">
+<td>L</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">F_1</td>
+<td align="left">F_1</td>
+<td align="left">F_2</td>
+<td align="left">F_2</td>
+</tr>
+</tbody>
+</table>
+<p>So now the name and the day are in the same field, separated by <code>&quot;_&quot;</code>. (So make sure the original names do not contain <code>&quot;_&quot;</code> or there will be trouble.. ;) )</p>
+<p>Tell <code>sets_read()</code> your data contains the names and day by setting <code>additional_vars = c(&quot;name&quot;, &quot;day&quot;)</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+<span class="kw">sets_read</span>(
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>)
+)</code></pre></div>
+</div>
+<div id="calculating-concentrations" class="section level3">
+<h3>Calculating concentrations</h3>
+<p>So, your measuring device only gave you raw values (extinction rates / relative light units / …), but you know the concentrations of <code>CAL1</code>, <code>CAL2</code>, <code>CAL3</code> and <code>CAL4</code>. To get the concentrations for the rest of the samples you need to tell <code>sets_read()</code> which samples are your calibrators and what their actual concentration is.</p>
+<p>You do this via <code>cal_names</code> and <code>cal_values</code>. Both expect a <code>vector</code> (that’s a series of text strings / numbers / values…). You can create a vector using <code>c()</code>. Just put whatever you like in its arguments:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+like &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sunny day&quot;</span>, <span class="st">&quot;cake&quot;</span>, <span class="st">&quot;coffee&quot;</span>, <span class="st">&quot;more coffee&quot;</span>, <span class="st">&quot;chocolate&quot;</span>, <span class="st">&quot;pizza&quot;</span>)
+like
+<span class="co">#&gt; [1] &quot;sunny day&quot;   &quot;cake&quot;        &quot;coffee&quot;      &quot;more coffee&quot; &quot;chocolate&quot;  </span>
+<span class="co">#&gt; [6] &quot;pizza&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+fibonacci &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">13</span>)
+fibonacci
+<span class="co">#&gt; [1]  1  1  2  3  5  8 13</span></code></pre></div>
+<p>You already created your first vector when you said: <code>additional_vars = c(&quot;name&quot;, &quot;day&quot;)</code> ;) .</p>
+<p>So, now create some vectors for your calibrators:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+calibrator_names =<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+  <span class="st">&quot;CAL10&quot;</span>
+)
+
+calibrator_values =<span class="st"> </span><span class="kw">c</span>(
+  <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+)</code></pre></div>
+<p>Tell <code>sets_read()</code> about it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+
+calibrator_names =<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+  <span class="st">&quot;CAL10&quot;</span>
+)
+
+calibrator_values =<span class="st"> </span><span class="kw">c</span>(
+  <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+)
+
+<span class="kw">sets_read</span>(
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> calibrator_names,
+  <span class="dt">cal_values =</span> calibrator_values
+)</code></pre></div>
+<p>The same, but a bit shorter:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+<span class="kw">sets_read</span>(
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  )
+)</code></pre></div>
+</div>
+<div id="getting-the-data-into-the-programme" class="section level3">
+<h3>Getting the data into the programme</h3>
+<p><code>sets_read()</code> automagically reads <code>plate_1.csv</code> in your current directory. If you have data from more than one plate use <code>plates = 2</code> to read <code>plate1.csv</code> AND <code>plate2.csv</code>. You can read as much plates as you like, as long as their numbers are in a sequence and no numbers are missing.</p>
+<p>For now, tell <code>sets_read()</code> to read only your first plate:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+<span class="kw">sets_read</span>(
+  <span class="dt">plates =</span> <span class="dv">1</span>,
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  )
+)</code></pre></div>
+<p>You dont have any data yet but want to play a bit?</p>
+<p>This saves the example data into <code>plate_1.csv</code> (but first it checks if there already is a file with that name, else it would overwrite it):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+<span class="co"># (don't worry if it looks weird ;) )</span>
+if (!<span class="st"> </span><span class="kw">file.exists</span>(<span class="st">&quot;plate_1.csv&quot;</span>)) {
+  <span class="kw">write_delim</span>(
+    <span class="dt">x =</span> <span class="kw">read_csv</span>(
+      <span class="dt">file =</span> <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;values_names_properties.csv&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;eenv&quot;</span>),
+      <span class="dt">col_names =</span> <span class="ot">FALSE</span>),
+    <span class="dt">path =</span> <span class="st">&quot;plate_1.csv&quot;</span>,
+    <span class="dt">delim =</span> <span class="st">&quot;;&quot;</span>,
+    <span class="dt">col_names =</span> <span class="ot">FALSE</span>
+  )
+}i</code></pre></div>
+<p>One thing to note for <code>.csv</code>-files: some languages use “.” to separate decimals, in those languages <code>.csv</code> usually uses “,” to separate values. Some European languages use “,” for decimals, in these languages “;” is used for separation of values. You need to tell <code>sets_read()</code> how you would like to have it with <code>sep = &quot;,&quot;</code> or <code>sep = &quot;;&quot;</code>, respectively:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do not run this code yet</span>
+<span class="kw">sets_read</span>(
+  <span class="dt">plates =</span> <span class="dv">1</span>,
+  <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>,
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  )
+)</code></pre></div>
+</div>
+<div id="working-with-the-results" class="section level3">
+<h3>Working with the results</h3>
+<p><code>sets_read()</code> does a lot and wants to tell you about it:</p>
+<ul>
+<li>reads the data, sorts it, calculates concentrations, calculates how good your duplicates were, …</li>
+<li>creates a data table (called <code>&quot;tibble&quot;</code> or <code>&quot;tbl&quot;</code> for short) with all the values it calculated</li>
+<li>creates a tibble with only one entry per duplicate (with the mean of the duplicate) which is what you will most likely use</li>
+<li>creates a graphic to show you how good your calibrators matched the function used to calculate the concentrations</li>
+</ul>
+<p>To tell you aout everything it returns a <code>list</code>. <code>list</code>s are like <code>vector</code>s but you can store a lot of different things in them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">favourite_food =</span> <span class="st">&quot;pizza&quot;</span>, <span class="dt">age =</span> <span class="dv">20</span>, <span class="dt">a_vector =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))
+my_list
+<span class="co">#&gt; $a</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $favourite_food</span>
+<span class="co">#&gt; [1] &quot;pizza&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $age</span>
+<span class="co">#&gt; [1] 20</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $a_vector</span>
+<span class="co">#&gt; [1] 1 2 3</span></code></pre></div>
+<p>You can access each part of the list in a lot of different ways:</p>
+<p>Using “$”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_list$age
+<span class="co">#&gt; [1] 20</span></code></pre></div>
+<p>Using the position:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_list[[<span class="dv">3</span>]]
+<span class="co">#&gt; [1] 20</span></code></pre></div>
+<p>Something totally different:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_list[[<span class="st">&quot;a_vector&quot;</span>]]
+<span class="co">#&gt; [1] 1 2 3</span></code></pre></div>
+<p>This works for setting values as well:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_list$age &lt;-<span class="st"> </span><span class="dv">30</span>
+my_list$age
+<span class="co">#&gt; [1] 30</span></code></pre></div>
+<p>Now its time to run <code>sets_read()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># now you may run it :)</span>
+result_list &lt;-<span class="st"> </span><span class="kw">sets_read</span>(
+  <span class="dt">plates =</span> <span class="dv">1</span>,
+  <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>,
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  )
+)</code></pre></div>
+<p>The resulting list is now stored in <code>result_list</code>. In addition, <code>sets_read()</code> created two files in your current directory: <code>data_all.csv</code> and <code>data_samples.csv</code> with all the data ;) .</p>
+<p><code>sets_read()</code>’s list holds the following items:</p>
+<ul>
+<li><code>$all</code>: here you will find all the data , including calibrators, duplicates, … (saved in <code>data_all.csv</code>)</li>
+<li><code>$samples</code>: only samples here - no calibrators, no duplicates -&gt; most often you will work with this data (saved in <code>data_samples.csv</code>)</li>
+<li><code>$plate1</code>: another list ;)</li>
+<li><p><code>$plot</code>: a plot showing you the linear function used to calculate the concentrations for this plate.</p>
+The points are the calibrators. They should more or less lie close to the line.</li>
+<li><code>$model</code>: the model - you won’t need this too often ;)</li>
+<li><p>(<code>$plate2</code>): the same information for every plate you have</p></li>
+</ul>
+<p>Take a look:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_list$all</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">position</th>
+<th align="left">sample_id</th>
+<th align="left">name</th>
+<th align="left">day</th>
+<th align="right">real</th>
+<th align="right">recovery</th>
+<th align="right">plate</th>
+<th align="right">n</th>
+<th align="right">raw</th>
+<th align="right">raw_mean</th>
+<th align="right">raw_sd</th>
+<th align="right">raw_cv</th>
+<th align="right">concentration</th>
+<th align="right">concentration_sd</th>
+<th align="right">concentration_cv</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A1</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">NA</td>
+<td align="right">2000</td>
+<td align="right">1.29</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">34997</td>
+<td align="right">36774</td>
+<td align="right">2512.3</td>
+<td align="right">0.07</td>
+<td align="right">2721</td>
+<td align="right">204.08</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="even">
+<td align="left">B1</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">NA</td>
+<td align="right">1000</td>
+<td align="right">1.12</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">16341</td>
+<td align="right">16110</td>
+<td align="right">326.7</td>
+<td align="right">0.02</td>
+<td align="right">1099</td>
+<td align="right">24.48</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">C1</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">NA</td>
+<td align="right">500</td>
+<td align="right">0.91</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">7204</td>
+<td align="right">6772</td>
+<td align="right">610.9</td>
+<td align="right">0.09</td>
+<td align="right">425</td>
+<td align="right">42.04</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="even">
+<td align="left">D1</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">NA</td>
+<td align="right">250</td>
+<td align="right">0.70</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">3023</td>
+<td align="right">2826</td>
+<td align="right">277.9</td>
+<td align="right">0.10</td>
+<td align="right">163</td>
+<td align="right">17.55</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="odd">
+<td align="left">E1</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">NA</td>
+<td align="right">31</td>
+<td align="right">0.91</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">579</td>
+<td align="right">550</td>
+<td align="right">41.7</td>
+<td align="right">0.08</td>
+<td align="right">27</td>
+<td align="right">2.24</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="even">
+<td align="left">F1</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">NA</td>
+<td align="right">16</td>
+<td align="right">1.56</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">501</td>
+<td align="right">462</td>
+<td align="right">55.9</td>
+<td align="right">0.12</td>
+<td align="right">22</td>
+<td align="right">2.95</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="odd">
+<td align="left">A2</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">NA</td>
+<td align="right">2000</td>
+<td align="right">1.43</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">38550</td>
+<td align="right">36774</td>
+<td align="right">2512.3</td>
+<td align="right">0.07</td>
+<td align="right">2721</td>
+<td align="right">204.08</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="even">
+<td align="left">B2</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">NA</td>
+<td align="right">1000</td>
+<td align="right">1.08</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">15879</td>
+<td align="right">16110</td>
+<td align="right">326.7</td>
+<td align="right">0.02</td>
+<td align="right">1099</td>
+<td align="right">24.48</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">C2</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">NA</td>
+<td align="right">500</td>
+<td align="right">0.79</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">6340</td>
+<td align="right">6772</td>
+<td align="right">610.9</td>
+<td align="right">0.09</td>
+<td align="right">425</td>
+<td align="right">42.04</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="even">
+<td align="left">D2</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">NA</td>
+<td align="right">250</td>
+<td align="right">0.60</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">2630</td>
+<td align="right">2826</td>
+<td align="right">277.9</td>
+<td align="right">0.10</td>
+<td align="right">163</td>
+<td align="right">17.55</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="odd">
+<td align="left">E2</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">NA</td>
+<td align="right">31</td>
+<td align="right">0.81</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">520</td>
+<td align="right">550</td>
+<td align="right">41.7</td>
+<td align="right">0.08</td>
+<td align="right">27</td>
+<td align="right">2.24</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="even">
+<td align="left">F2</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">NA</td>
+<td align="right">16</td>
+<td align="right">1.29</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">422</td>
+<td align="right">462</td>
+<td align="right">55.9</td>
+<td align="right">0.12</td>
+<td align="right">22</td>
+<td align="right">2.95</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="odd">
+<td align="left">A3</td>
+<td align="left">A_1</td>
+<td align="left">A</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">638</td>
+<td align="right">618</td>
+<td align="right">27.6</td>
+<td align="right">0.04</td>
+<td align="right">31</td>
+<td align="right">1.50</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="left">B3</td>
+<td align="left">B_1</td>
+<td align="left">B</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">648</td>
+<td align="right">658</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">33</td>
+<td align="right">0.74</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">C3</td>
+<td align="left">C_1</td>
+<td align="left">C</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">667</td>
+<td align="right">721</td>
+<td align="right">76.4</td>
+<td align="right">0.11</td>
+<td align="right">36</td>
+<td align="right">4.22</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td align="left">D3</td>
+<td align="left">D_1</td>
+<td align="left">D</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">491</td>
+<td align="right">500</td>
+<td align="right">13.4</td>
+<td align="right">0.03</td>
+<td align="right">24</td>
+<td align="right">0.72</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="left">E3</td>
+<td align="left">E_1</td>
+<td align="left">E</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">618</td>
+<td align="right">623</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">31</td>
+<td align="right">0.39</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td align="left">F3</td>
+<td align="left">F_1</td>
+<td align="left">F</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">589</td>
+<td align="right">598</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">30</td>
+<td align="right">0.73</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">A4</td>
+<td align="left">A_1</td>
+<td align="left">A</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">599</td>
+<td align="right">618</td>
+<td align="right">27.6</td>
+<td align="right">0.04</td>
+<td align="right">31</td>
+<td align="right">1.50</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="left">B4</td>
+<td align="left">B_1</td>
+<td align="left">B</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">667</td>
+<td align="right">658</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">33</td>
+<td align="right">0.74</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">C4</td>
+<td align="left">C_1</td>
+<td align="left">C</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">775</td>
+<td align="right">721</td>
+<td align="right">76.4</td>
+<td align="right">0.11</td>
+<td align="right">36</td>
+<td align="right">4.22</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td align="left">D4</td>
+<td align="left">D_1</td>
+<td align="left">D</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">510</td>
+<td align="right">500</td>
+<td align="right">13.4</td>
+<td align="right">0.03</td>
+<td align="right">24</td>
+<td align="right">0.72</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="left">E4</td>
+<td align="left">E_1</td>
+<td align="left">E</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">628</td>
+<td align="right">623</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">31</td>
+<td align="right">0.39</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td align="left">F4</td>
+<td align="left">F_1</td>
+<td align="left">F</td>
+<td align="left">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">608</td>
+<td align="right">598</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">30</td>
+<td align="right">0.73</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">A5</td>
+<td align="left">A_2</td>
+<td align="left">A</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">736</td>
+<td align="right">770</td>
+<td align="right">48.8</td>
+<td align="right">0.06</td>
+<td align="right">39</td>
+<td align="right">2.71</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="even">
+<td align="left">B5</td>
+<td align="left">B_2</td>
+<td align="left">B</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1335</td>
+<td align="right">1340</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">72</td>
+<td align="right">0.42</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">C5</td>
+<td align="left">C_2</td>
+<td align="left">C</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1276</td>
+<td align="right">1300</td>
+<td align="right">34.6</td>
+<td align="right">0.03</td>
+<td align="right">69</td>
+<td align="right">2.03</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">D5</td>
+<td align="left">D_2</td>
+<td align="left">D</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">726</td>
+<td align="right">750</td>
+<td align="right">34.6</td>
+<td align="right">0.05</td>
+<td align="right">38</td>
+<td align="right">1.92</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">E5</td>
+<td align="left">E_2</td>
+<td align="left">E</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1188</td>
+<td align="right">1124</td>
+<td align="right">90.5</td>
+<td align="right">0.08</td>
+<td align="right">59</td>
+<td align="right">5.22</td>
+<td align="right">0.09</td>
+</tr>
+<tr class="even">
+<td align="left">F5</td>
+<td align="left">F_2</td>
+<td align="left">F</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">520</td>
+<td align="right">544</td>
+<td align="right">34.6</td>
+<td align="right">0.06</td>
+<td align="right">27</td>
+<td align="right">1.86</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="odd">
+<td align="left">A6</td>
+<td align="left">A_2</td>
+<td align="left">A</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">805</td>
+<td align="right">770</td>
+<td align="right">48.8</td>
+<td align="right">0.06</td>
+<td align="right">39</td>
+<td align="right">2.71</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="even">
+<td align="left">B6</td>
+<td align="left">B_2</td>
+<td align="left">B</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1345</td>
+<td align="right">1340</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">72</td>
+<td align="right">0.42</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">C6</td>
+<td align="left">C_2</td>
+<td align="left">C</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1325</td>
+<td align="right">1300</td>
+<td align="right">34.6</td>
+<td align="right">0.03</td>
+<td align="right">69</td>
+<td align="right">2.03</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">D6</td>
+<td align="left">D_2</td>
+<td align="left">D</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">775</td>
+<td align="right">750</td>
+<td align="right">34.6</td>
+<td align="right">0.05</td>
+<td align="right">38</td>
+<td align="right">1.92</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">E6</td>
+<td align="left">E_2</td>
+<td align="left">E</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1060</td>
+<td align="right">1124</td>
+<td align="right">90.5</td>
+<td align="right">0.08</td>
+<td align="right">59</td>
+<td align="right">5.22</td>
+<td align="right">0.09</td>
+</tr>
+<tr class="even">
+<td align="left">F6</td>
+<td align="left">F_2</td>
+<td align="left">F</td>
+<td align="left">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">569</td>
+<td align="right">544</td>
+<td align="right">34.6</td>
+<td align="right">0.06</td>
+<td align="right">27</td>
+<td align="right">1.86</td>
+<td align="right">0.07</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_list$samples</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">position</th>
+<th align="left">sample_id</th>
+<th align="left">name</th>
+<th align="left">day</th>
+<th align="right">plate</th>
+<th align="right">n</th>
+<th align="right">raw</th>
+<th align="right">raw_sd</th>
+<th align="right">raw_cv</th>
+<th align="right">concentration</th>
+<th align="right">concentration_sd</th>
+<th align="right">concentration_cv</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A3</td>
+<td align="left">A_1</td>
+<td align="left">A</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">618</td>
+<td align="right">27.6</td>
+<td align="right">0.04</td>
+<td align="right">31</td>
+<td align="right">1.50</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="left">B3</td>
+<td align="left">B_1</td>
+<td align="left">B</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">658</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">33</td>
+<td align="right">0.74</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">C3</td>
+<td align="left">C_1</td>
+<td align="left">C</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">721</td>
+<td align="right">76.4</td>
+<td align="right">0.11</td>
+<td align="right">36</td>
+<td align="right">4.22</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td align="left">D3</td>
+<td align="left">D_1</td>
+<td align="left">D</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">500</td>
+<td align="right">13.4</td>
+<td align="right">0.03</td>
+<td align="right">24</td>
+<td align="right">0.72</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="left">E3</td>
+<td align="left">E_1</td>
+<td align="left">E</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">623</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">31</td>
+<td align="right">0.39</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td align="left">F3</td>
+<td align="left">F_1</td>
+<td align="left">F</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">598</td>
+<td align="right">13.4</td>
+<td align="right">0.02</td>
+<td align="right">30</td>
+<td align="right">0.73</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">A5</td>
+<td align="left">A_2</td>
+<td align="left">A</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">770</td>
+<td align="right">48.8</td>
+<td align="right">0.06</td>
+<td align="right">39</td>
+<td align="right">2.71</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="even">
+<td align="left">B5</td>
+<td align="left">B_2</td>
+<td align="left">B</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1340</td>
+<td align="right">7.1</td>
+<td align="right">0.01</td>
+<td align="right">72</td>
+<td align="right">0.42</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">C5</td>
+<td align="left">C_2</td>
+<td align="left">C</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1300</td>
+<td align="right">34.6</td>
+<td align="right">0.03</td>
+<td align="right">69</td>
+<td align="right">2.03</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">D5</td>
+<td align="left">D_2</td>
+<td align="left">D</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">750</td>
+<td align="right">34.6</td>
+<td align="right">0.05</td>
+<td align="right">38</td>
+<td align="right">1.92</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">E5</td>
+<td align="left">E_2</td>
+<td align="left">E</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1124</td>
+<td align="right">90.5</td>
+<td align="right">0.08</td>
+<td align="right">59</td>
+<td align="right">5.22</td>
+<td align="right">0.09</td>
+</tr>
+<tr class="even">
+<td align="left">F5</td>
+<td align="left">F_2</td>
+<td align="left">F</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">544</td>
+<td align="right">34.6</td>
+<td align="right">0.06</td>
+<td align="right">27</td>
+<td align="right">1.86</td>
+<td align="right">0.07</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_list$plate1$plot
+<span class="co">#&gt; Warning: Removed 24 rows containing non-finite values (stat_smooth).</span>
+<span class="co">#&gt; Warning: Removed 24 rows containing missing values (geom_point).</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="if-the-calibrators-arent-so-good" class="section level3">
+<h3>If the calibrators aren’t so good…</h3>
+<p>The lowest calibrator (“CAL9”) does not seem to fit to well. So perhaps you get a better result when removing it? (But then you should not look at values below “CAL8”!). You can do that by setting <code>exclude_cals =  list(plate1 = c(&quot;CAL9&quot;))</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># now you may run it :)</span>
+result_list &lt;-<span class="st"> </span><span class="kw">sets_read</span>(
+  <span class="dt">plates =</span> <span class="dv">1</span>,
+  <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>,
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  ),
+  <span class="dt">exclude_cals =</span>  <span class="kw">list</span>(<span class="dt">plate1 =</span> <span class="kw">c</span>(<span class="st">&quot;CAL9&quot;</span>))
+)</code></pre></div>
+<p>Take a lok at the fit of the line:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+result_list$plate1$plot
+<span class="co">#&gt; Warning: Removed 24 rows containing non-finite values (stat_smooth).</span>
+<span class="co">#&gt; Warning: Removed 24 rows containing missing values (geom_point).</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Better! But be careful when interpreting values below “CAL8” (the lowest use calibrator now).</p>
+</div>
+</div>
+<div id="where-to-go-to-from-here" class="section level2">
+<h2>Where to go to from here</h2>
+<p>First of all, to save a couple of keystrokes and make remembering easier:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_data &lt;-<span class="st"> </span>result_list$samples</code></pre></div>
+<p>You could take a look which duplicates have a high (&gt; 20 %) coefficient of variation:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_data %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(concentration_cv &gt;<span class="st"> </span><span class="fl">0.20</span>)
+<span class="co">#&gt; # A tibble: 0 x 12</span>
+<span class="co">#&gt; # ... with 12 variables: position &lt;chr&gt;, sample_id &lt;chr&gt;, name &lt;chr&gt;,</span>
+<span class="co">#&gt; #   day &lt;chr&gt;, plate &lt;int&gt;, n &lt;int&gt;, raw &lt;dbl&gt;, raw_sd &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   raw_cv &lt;dbl&gt;, concentration &lt;dbl&gt;, concentration_sd &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   concentration_cv &lt;dbl&gt;</span></code></pre></div>
+<p>Luckily, there are no samples. Note that the result was not stored.</p>
+<p>If there were you could exclude them like:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_data &lt;-<span class="st"> </span>my_data %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(concentration_cv &lt;<span class="st"> </span><span class="fl">0.20</span>)
+my_data
+<span class="co">#&gt; # A tibble: 12 x 12</span>
+<span class="co">#&gt;    position sample_id  name   day plate     n   raw raw_sd raw_cv</span>
+<span class="co">#&gt;       &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt;  1       A3       A_1     A     1     1     2   618   27.6 0.0446</span>
+<span class="co">#&gt;  2       B3       B_1     B     1     1     2   658   13.4 0.0204</span>
+<span class="co">#&gt;  3       C3       C_1     C     1     1     2   721   76.4 0.1059</span>
+<span class="co">#&gt;  4       D3       D_1     D     1     1     2   500   13.4 0.0268</span>
+<span class="co">#&gt;  5       E3       E_1     E     1     1     2   623    7.1 0.0114</span>
+<span class="co">#&gt;  6       F3       F_1     F     1     1     2   598   13.4 0.0224</span>
+<span class="co">#&gt;  7       A5       A_2     A     2     1     2   770   48.8 0.0633</span>
+<span class="co">#&gt;  8       B5       B_2     B     2     1     2  1340    7.1 0.0053</span>
+<span class="co">#&gt;  9       C5       C_2     C     2     1     2  1300   34.6 0.0266</span>
+<span class="co">#&gt; 10       D5       D_2     D     2     1     2   750   34.6 0.0462</span>
+<span class="co">#&gt; 11       E5       E_2     E     2     1     2  1124   90.5 0.0805</span>
+<span class="co">#&gt; 12       F5       F_2     F     2     1     2   544   34.6 0.0636</span>
+<span class="co">#&gt; # ... with 3 more variables: concentration &lt;dbl&gt;, concentration_sd &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   concentration_cv &lt;dbl&gt;</span></code></pre></div>
+<p>This time the result was stored. Be careful when overwriting data. You can always go back and run <code>sets_read()</code> again :).</p>
+<p>Now, given the concentration of your calibrators was in “ng / ml” but your editor wants you to use SI units you could convert the concentrations like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+my_data &lt;-<span class="st"> </span>my_data %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(
+    <span class="dt">concentration =</span> <span class="kw">convert_conc</span>(<span class="dt">x =</span> concentration, <span class="dt">from =</span> <span class="st">&quot;ng / ml&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;pmol / l&quot;</span>, <span class="dt">molar_mass =</span> <span class="dv">52391</span>)
+  )</code></pre></div>
+<p>Or you could create a plot like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> my_data, <span class="kw">aes</span>(<span class="dt">x =</span> name, <span class="dt">y =</span> concentration, <span class="dt">colour =</span> name)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~day) +
+<span class="st">  </span>global_theme</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Or a boxplot:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> my_data, <span class="kw">aes</span>(<span class="dt">x =</span> day, <span class="dt">y =</span> concentration, <span class="dt">colour =</span> name, <span class="dt">group =</span> day)) +
+<span class="st">  </span><span class="kw">geom_boxplot</span>() +
+<span class="st">  </span><span class="kw">geom_point</span>() +
+<span class="st">  </span>global_theme</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="where-to-get-help" class="section level2">
+<h2>Where to get help</h2>
+<p><strong>The INTERNET</strong> ;)</p>
+<p>To learn more about working with data:</p>
+<ul>
+<li><strong><code>dplyr</code></strong>, good documentation with many examples : <a href="http://dplyr.tidyverse.org/" class="uri">http://dplyr.tidyverse.org/</a></li>
+<li><strong>R for Data Science</strong>, by the author of <code>dplyr</code> and <code>ggplot</code>: <a href="http://r4ds.had.co.nz/" class="uri">http://r4ds.had.co.nz/</a></li>
+<li><strong>good packages</strong>: <a href="http://tidyverse.org/" class="uri">http://tidyverse.org/</a></li>
+</ul>
+<p>To learn more about presenting data in plots:</p>
+<ul>
+<li><strong>Visualising data</strong>: <a href="http://r4ds.had.co.nz/data-visualisation.html" class="uri">http://r4ds.had.co.nz/data-visualisation.html</a></li>
+<li><strong>Communicating results with plots</strong>: <a href="http://r4ds.had.co.nz/graphics-for-communication.html" class="uri">http://r4ds.had.co.nz/graphics-for-communication.html</a></li>
+<li><strong>good examples</strong>: <a href="http://www.cookbook-r.com/Graphs/" class="uri">http://www.cookbook-r.com/Graphs/</a></li>
+</ul>
+</div>
+<div id="rarely-needed" class="section level2">
+<h2>Rarely needed</h2>
+<div id="calibrators-do-not-need-to-be-ln-ln-transformed" class="section level3">
+<h3>Calibrators do not need to be ln-ln transformed</h3>
+<p>Your calibrators are linear? You can use: <code>model_func = fit_linear</code> and <code>interpolate_func = interpolate_linear</code>. Basicallly, you can use any function as <code>model_function</code> that returns a model which is understood by your <code>interpolate_func</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it but the result wont be as good</span>
+result_list &lt;-<span class="st"> </span><span class="kw">sets_read</span>(
+  <span class="dt">plates =</span> <span class="dv">1</span>,
+  <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>,
+  <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;day&quot;</span>),
+  <span class="dt">cal_names =</span> <span class="kw">c</span>(
+    <span class="st">&quot;CAL1&quot;</span>, <span class="st">&quot;CAL2&quot;</span>, <span class="st">&quot;CAL3&quot;</span>, <span class="st">&quot;CAL4&quot;</span>, <span class="st">&quot;CAL5&quot;</span>, <span class="st">&quot;CAL6&quot;</span>, <span class="st">&quot;CAL7&quot;</span>, <span class="st">&quot;CAL8&quot;</span>, <span class="st">&quot;CAL9&quot;</span>,
+    <span class="st">&quot;CAL10&quot;</span>
+  ),
+  <span class="dt">cal_values =</span> <span class="kw">c</span>(
+    <span class="dv">4000</span>, <span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">250</span>, <span class="dv">125</span>, <span class="fl">62.5</span>, <span class="fl">31.25</span>, <span class="fl">15.625</span>, <span class="fl">7.8125</span>
+  ),
+  <span class="dt">exclude_cals =</span>  <span class="kw">list</span>(<span class="dt">plate1 =</span> <span class="kw">c</span>(<span class="st">&quot;CAL9&quot;</span>)),
+  <span class="dt">model_func =</span> fit_linear,
+  <span class="dt">interpolate_func =</span> interpolate_linear
+)
+
+result_list$plate1$plot</code></pre></div>
+</div>
+<div id="data-sets-are-stored-somewhere-else" class="section level3">
+<h3>Data sets are stored somewhere else</h3>
+<p>Your files are stored somewhere else? Just set <code>path = path/to/your/files</code> as a parameter for <code>sets_read()</code>.</p>
+</div>
 </div>
 
 
