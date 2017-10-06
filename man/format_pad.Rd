@@ -7,6 +7,8 @@
 format_pad(x, width, side = "left", character = " ")
 }
 \arguments{
+\item{x}{The string to pad.}
+
 \item{width}{How long should the string be?}
 
 \item{side}{To which side should the padding be added ("left" / "right")?}

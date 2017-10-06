@@ -20,11 +20,11 @@ save_plots(plots, name, dimensions = global_plot_dim,
 \item{width}{The width (see \link{global_plot_dim}) to use,
 \code{NULL} means auto.}
 
+\item{height}{The height as multiple of \code{dimensions$height}
+(see \link{global_plot_dim}) to use, \code{NULL} means auto.}
+
 \item{columns}{The number of columns to use, \code{NULL} means auto. Begins a
 new row of plots if the number of plots exceeds \code{dimensions$columns_max}.}
-
-\item{width}{The height as multiple of \code{dimensions$height}
-(see \link{global_plot_dim}) to use, \code{NULL} means auto.}
 }
 \value{
 The final plot.

@@ -6,8 +6,8 @@
 \usage{
 sets_read(plates, cal_names, cal_values, exclude_cals = c(),
   additional_vars = c("name"), sep = ",", path = ".",
-  model_func = fit_lnln, plot_func = plot_lnln,
-  interpolate_func = interpolate_lnln)
+  model_func = bioset::fit_lnln, plot_func = bioset::plot_lnln,
+  interpolate_func = bioset::interpolate_lnln)
 }
 \arguments{
 \item{plates}{The number of plates (e.g. 3 attempts to read "plate_1.csv",
@@ -32,6 +32,8 @@ additional columns.}
 
 \item{model_func}{A function generating a model to fit the calibrators,
 e.g. \code{\link{fit_linear}}, \code{\link{fit_lnln}}}
+
+\item{plot_func}{Function used to display the fitted line.}
 
 \item{interpolate_func}{A function used to interpolate the concentrations of
 the other samples, based on the model, e.g.
