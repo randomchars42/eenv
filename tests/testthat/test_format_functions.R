@@ -1,0 +1,15 @@
+library(eenv)
+context("Test format functions")
+
+test_that("numbers are formatted correctly", {
+  expect_equal(format_number(0.01, type = "p"), "0.010")
+  expect_equal(format_number(0.000001, type = "p"), "< 0.0001")
+  expect_equal(format_number(0.00016, type = "p"), "0.00016")
+  expect_equal(format_number(0.00016, type = "int"), "0")
+  expect_equal(format_number(4.3, type = "int"), "4")
+  expect_equal(format_number(4.3, type = "int"), "4")
+  expect_equal(format_number(4.3, type = "float"), "4.3")
+  expect_equal(format_number(4.36, type = "float"), "4.4")
+  expect_equal(format_number(0.31234, type = "perc"), "31 %")
+  expect_equal(format_number(0.31234, type = "perc", force_perc_decimals = TRUE), "31.2 %")
+})
