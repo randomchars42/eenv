@@ -8,10 +8,22 @@ knitr::opts_chunk$set(
 #  # install.packages("devtools")
 #  devtools::install_github("randomchars42/eenv")
 
-## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  library("eenv")
+## ---- echo=TRUE, message=FALSE, warning=FALSE----------------------------
+library("eenv")
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
+data <-
+  readr::read_csv2(
+    system.file("extdata", "values.csv", package = "eenv"),
+    col_names = FALSE)
+rownames(data) <- LETTERS[1:6]
+
+knitr::kable(
+  data,
+  row.names = TRUE,
+  col.names = as.character(1:6))
+
+## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
 data <-
   readr::read_csv2(
     system.file("extdata", "names.csv", package = "eenv"),
@@ -23,7 +35,7 @@ knitr::kable(
   row.names = TRUE,
   col.names = as.character(1:6))
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
 data <-
   readr::read_csv2(
     system.file("extdata", "values_names.csv", package = "eenv"),
@@ -41,7 +53,7 @@ knitr::kable(
 #    additional_vars = c("name")
 #  )
 
-## ------------------------------------------------------------------------
+## ---- echo = FALSE, message=FALSE, warning=FALSE-------------------------
 data <-
   readr::read_csv2(
     system.file("extdata", "plate_1.csv", package = "eenv"),
@@ -260,6 +272,10 @@ result_list$plate1$plot
 ## ------------------------------------------------------------------------
 # try it
 my_data <- result_list$samples
+
+## ------------------------------------------------------------------------
+library("tidyverse")
+library("bioset")
 
 ## ------------------------------------------------------------------------
 # try it

@@ -90,101 +90,152 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;randomch
 <div id="preparing-your-raw-data" class="section level3">
 <h3>Preparing your raw data</h3>
 <p>Suppose you have an <code>ods</code> / <code>xls(x)</code> file with raw values obtained from a measurement like this:</p>
-<p>```{r, echo = FALSE}f data &lt;- readr::read_csv2( system.file(“extdata”, “values.csv”, package = “eenv”), col_names = FALSE) rownames(data) &lt;- LETTERS[1:6]</p>
-<p>knitr::kable( data, row.names = TRUE, col.names = as.character(1:6))</p>
-<pre><code>
-Save them as `plate_1.csv`- thats like an `ods` / `xls(x)` file but its basically a text file with the values separated by commas (or semicolons for languages that use &quot;,&quot; to separate decimals).
-
-In the current versions of LibreOffice / OpenOffice / Microsoft office theres an option &quot;Save as&quot; &gt; &quot;csv&quot;.
-
-### Adding names
-
-Before feeding your samples into your measuring device you most likely drafted some sort of plan which position corresponds to which sample (didn't you?). It may have looked like this:
-
-</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="right">34997</td>
+<td align="right">38550</td>
+<td align="right">638</td>
+<td align="right">599</td>
+<td align="right">736</td>
+<td align="right">805</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="right">16341</td>
+<td align="right">15879</td>
+<td align="right">648</td>
+<td align="right">667</td>
+<td align="right">1335</td>
+<td align="right">1345</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="right">7204</td>
+<td align="right">6340</td>
+<td align="right">667</td>
+<td align="right">775</td>
+<td align="right">1276</td>
+<td align="right">1325</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="right">3023</td>
+<td align="right">2630</td>
+<td align="right">491</td>
+<td align="right">510</td>
+<td align="right">726</td>
+<td align="right">775</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="right">579</td>
+<td align="right">520</td>
+<td align="right">618</td>
+<td align="right">628</td>
+<td align="right">1188</td>
+<td align="right">1060</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="right">501</td>
+<td align="right">422</td>
+<td align="right">589</td>
+<td align="right">608</td>
+<td align="right">520</td>
+<td align="right">569</td>
+</tr>
+</tbody>
+</table>
+<p>Save them as <code>plate_1.csv</code>- thats like an <code>ods</code> / <code>xls(x)</code> file but its basically a text file with the values separated by commas (or semicolons for languages that use “,” to separate decimals).</p>
+<p>In the current versions of LibreOffice / OpenOffice / Microsoft office theres an option “Save as” &gt; “csv”.</p>
 </div>
-</div>
-<div id="using-as-decimal-and-.-as-grouping-mark.-use-read_delim-for-more-control." class="section level1">
-<h1>&gt; Using ‘,’ as decimal and ‘.’ as grouping mark. Use read_delim() for more control.</h1>
-</div>
-<div id="parsed-with-column-specification" class="section level1">
-<h1>&gt; Parsed with column specification:</h1>
-</div>
-<div id="cols" class="section level1">
-<h1>&gt; cols(</h1>
-</div>
-<div id="x1-col_character" class="section level1">
-<h1>&gt; X1 = col_character(),</h1>
-</div>
-<div id="x2-col_character" class="section level1">
-<h1>&gt; X2 = col_character(),</h1>
-</div>
-<div id="x3-col_character" class="section level1">
-<h1>&gt; X3 = col_character(),</h1>
-</div>
-<div id="x4-col_character" class="section level1">
-<h1>&gt; X4 = col_character(),</h1>
-</div>
-<div id="x5-col_character" class="section level1">
-<h1>&gt; X5 = col_character(),</h1>
-</div>
-<div id="x6-col_character" class="section level1">
-<h1>&gt; X6 = col_character()</h1>
-</div>
-<div id="section" class="section level1">
-<h1>&gt; )</h1>
-</div>
-<div id="warning-setting-row-names-on-a-tibble-is-deprecated." class="section level1">
-<h1>&gt; Warning: Setting row names on a tibble is deprecated.</h1>
-<pre><code>
-     1      2      3    4    5    6  
----  -----  -----  ---  ---  ---  ---
-A    CAL2   CAL2   A    A    H    H  
-B    CAL3   CAL3   B    B    I    I  
-C    CAL4   CAL4   C    C    J    J  
-D    CAL5   CAL5   D    D    K    K  
-E    CAL8   CAL8   E    E    L    L  
-F    CAL9   CAL9   F    F    M    M  
-
-So you had some calibrators (CAL1 - CAL4) and samples A, B, C, D, E, F, H, I, J, K, L, M each in duplicates.
-
-To easily set the names for your samples just copy the names into your new `plate_1.csv`:
-
-</code></pre>
-</div>
-<div id="using-as-decimal-and-.-as-grouping-mark.-use-read_delim-for-more-control.-1" class="section level1">
-<h1>&gt; Using ‘,’ as decimal and ‘.’ as grouping mark. Use read_delim() for more control.</h1>
-</div>
-<div id="parsed-with-column-specification-1" class="section level1">
-<h1>&gt; Parsed with column specification:</h1>
-</div>
-<div id="cols-1" class="section level1">
-<h1>&gt; cols(</h1>
-</div>
-<div id="x1-col_character-1" class="section level1">
-<h1>&gt; X1 = col_character(),</h1>
-</div>
-<div id="x2-col_character-1" class="section level1">
-<h1>&gt; X2 = col_character(),</h1>
-</div>
-<div id="x3-col_character-1" class="section level1">
-<h1>&gt; X3 = col_character(),</h1>
-</div>
-<div id="x4-col_character-1" class="section level1">
-<h1>&gt; X4 = col_character(),</h1>
-</div>
-<div id="x5-col_character-1" class="section level1">
-<h1>&gt; X5 = col_character(),</h1>
-</div>
-<div id="x6-col_character-1" class="section level1">
-<h1>&gt; X6 = col_character()</h1>
-</div>
-<div id="section-1" class="section level1">
-<h1>&gt; )</h1>
-</div>
-<div id="warning-setting-row-names-on-a-tibble-is-deprecated.-1" class="section level1">
-<h1>&gt; Warning: Setting row names on a tibble is deprecated.</h1>
-<p>```</p>
+<div id="adding-names" class="section level3">
+<h3>Adding names</h3>
+<p>Before feeding your samples into your measuring device you most likely drafted some sort of plan which position corresponds to which sample (didn’t you?). It may have looked like this:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td align="left">CAL2</td>
+<td align="left">CAL2</td>
+<td align="left">A</td>
+<td align="left">A</td>
+<td align="left">H</td>
+<td align="left">H</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td align="left">CAL3</td>
+<td align="left">CAL3</td>
+<td align="left">B</td>
+<td align="left">B</td>
+<td align="left">I</td>
+<td align="left">I</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td align="left">CAL4</td>
+<td align="left">CAL4</td>
+<td align="left">C</td>
+<td align="left">C</td>
+<td align="left">J</td>
+<td align="left">J</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td align="left">CAL5</td>
+<td align="left">CAL5</td>
+<td align="left">D</td>
+<td align="left">D</td>
+<td align="left">K</td>
+<td align="left">K</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td align="left">CAL8</td>
+<td align="left">CAL8</td>
+<td align="left">E</td>
+<td align="left">E</td>
+<td align="left">L</td>
+<td align="left">L</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td align="left">CAL9</td>
+<td align="left">CAL9</td>
+<td align="left">F</td>
+<td align="left">F</td>
+<td align="left">M</td>
+<td align="left">M</td>
+</tr>
+</tbody>
+</table>
+<p>So you had some calibrators (CAL1 - CAL4) and samples A, B, C, D, E, F, H, I, J, K, L, M each in duplicates.</p>
+<p>To easily set the names for your samples just copy the names into your new <code>plate_1.csv</code>:</p>
 <table>
 <thead>
 <tr class="header">
@@ -314,31 +365,11 @@ To easily set the names for your samples just copy the names into your new `plat
   <span class="dt">additional_vars =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>)
 )</code></pre></div>
 <p>It does not matter which name you select for the column. Pick anything that adequately describes the data in the column.</p>
+</div>
 <div id="adding-more-information" class="section level3">
 <h3>Adding more information</h3>
 <p>Suppose samples A, B, C, D, E, F were taken at day 1 and H, I, J, K, L, M were taken from the same rats / individuals / patients on day 2.</p>
 <p>It would be more elegant to encode that into the data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-
-<span class="st">  </span>readr::<span class="kw">read_csv2</span>(
-    <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;plate_1.csv&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;eenv&quot;</span>),
-    <span class="dt">col_names =</span> <span class="ot">FALSE</span>)
-<span class="co">#&gt; Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.</span>
-<span class="co">#&gt; Parsed with column specification:</span>
-<span class="co">#&gt; cols(</span>
-<span class="co">#&gt;   X1 = col_character(),</span>
-<span class="co">#&gt;   X2 = col_character(),</span>
-<span class="co">#&gt;   X3 = col_character(),</span>
-<span class="co">#&gt;   X4 = col_character(),</span>
-<span class="co">#&gt;   X5 = col_character(),</span>
-<span class="co">#&gt;   X6 = col_character()</span>
-<span class="co">#&gt; )</span>
-<span class="kw">rownames</span>(data) &lt;-<span class="st"> </span>LETTERS[<span class="dv">1</span>:<span class="dv">12</span>]
-<span class="co">#&gt; Warning: Setting row names on a tibble is deprecated.</span>
-
-knitr::<span class="kw">kable</span>(
-  data,
-  <span class="dt">row.names =</span> <span class="ot">TRUE</span>,
-  <span class="dt">col.names =</span> <span class="kw">as.character</span>(<span class="dv">1</span>:<span class="dv">6</span>))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1491,11 +1522,15 @@ result_list$plate1$plot
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>Better! But be careful when interpreting values below “CAL8” (the lowest use calibrator now).</p>
 </div>
+</div>
 <div id="where-to-go-to-from-here" class="section level2">
 <h2>Where to go to from here</h2>
 <p>First of all, to save a couple of keystrokes and make remembering easier:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
 my_data &lt;-<span class="st"> </span>result_list$samples</code></pre></div>
+<p>Then we need some tools:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;tidyverse&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;bioset&quot;</span>)</code></pre></div>
 <p>You could take a look which duplicates have a high (&gt; 20 %) coefficient of variation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># try it</span>
 my_data %&gt;%
@@ -1593,7 +1628,6 @@ result_list$plate1$plot</code></pre></div>
 <div id="data-sets-are-stored-somewhere-else" class="section level3">
 <h3>Data sets are stored somewhere else</h3>
 <p>Your files are stored somewhere else? Just set <code>path = path/to/your/files</code> as a parameter for <code>sets_read()</code>.</p>
-</div>
 </div>
 </div>
 
