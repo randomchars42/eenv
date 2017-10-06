@@ -8,17 +8,8 @@ knitr::opts_chunk$set(
 #  # install.packages("devtools")
 #  devtools::install_github("randomchars42/eenv")
 
-## ---- echo = FALSE-------------------------------------------------------
-data <-
-  readr::read_csv2(
-    system.file("extdata", "values.csv", package = "eenv"),
-    col_names = FALSE)
-rownames(data) <- LETTERS[1:6]
-
-knitr::kable(
-  data,
-  row.names = TRUE,
-  col.names = as.character(1:6))
+## ---- echo = TRUE, eval = FALSE------------------------------------------
+#  library("eenv")
 
 ## ---- echo = FALSE-------------------------------------------------------
 data <-
@@ -201,7 +192,7 @@ my_list$age
 #  )
 
 ## ---- echo = FALSE-------------------------------------------------------
-result_list <- sets_read(
+result_list <- eenv::sets_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -247,7 +238,7 @@ result_list$plate1$plot
 #  )
 
 ## ---- echo = FALSE-------------------------------------------------------
-result_list <- sets_read(
+result_list <- eenv::sets_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),

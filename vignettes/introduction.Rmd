@@ -29,7 +29,7 @@ devtools::install_github("randomchars42/eenv")
 
 ## Loading
 
-```{r, echo = TRUE, eval = FALSE}
+```{r, echo = TRUE}
 library("eenv")
 ```
 
@@ -323,7 +323,7 @@ result_list <- sets_read(
 ```
 
 ```{r, echo = FALSE}
-result_list <- sets_read(
+result_list <- eenv::sets_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -396,7 +396,7 @@ result_list <- sets_read(
 ```
 
 ```{r, echo = FALSE}
-result_list <- sets_read(
+result_list <- eenv::sets_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -428,6 +428,12 @@ First of all, to save a couple of keystrokes and make remembering easier:
 ```{r}
 # try it
 my_data <- result_list$samples
+```
+
+Then we need some tools:
+```{r}
+library("tidyverse")
+library("bioset")
 ```
 
 You could take a look which duplicates have a high (> 20 %) coefficient of variation:

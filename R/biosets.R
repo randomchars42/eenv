@@ -50,7 +50,7 @@ sets_read <- function(
         additional_vars = additional_vars,
         additional_sep = "_"
       ) %>%
-      mutate(
+      dplyr::mutate(
         exclude = FALSE
       )
 
