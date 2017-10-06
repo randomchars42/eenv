@@ -1,9 +1,9 @@
 #'
-#' Update \pkg{bioset} and \pkg{eenv} from github.
+#' Update `bioset` and `eenv` from github.
 #'
 #' @export
 #'
-update_packages <- function() {
+update_homegrown_packages <- function() {
   if (package_available(package = "devtools")) {
     devtools::install_github("randomchars42/bioset")
     devtools::install_github("randomchars42/eenv")
@@ -23,8 +23,8 @@ update_packages <- function() {
 package_load <- function(package) {
   # find.package returns a string of length 0 if the package is not installed
   if (package_available(package)) {
-    throw_message("Install missing package: ", package)
-    install.packages(pkgs = c(package))
+    message(paste0("Install missing package: ", package))
+    utils::install.packages(pkgs = c(package))
   }
 
   if (! require(

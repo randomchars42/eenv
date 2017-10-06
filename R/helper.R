@@ -21,18 +21,6 @@ args_to_text <- function(...) {
   return(paste0(parts, collapse = ''))
 }
 
-throw_error <- function(...) {
-  stop(args_to_text(...))
-}
-
-throw_warning <- function(...) {
-  warning(args_to_text(...))
-}
-
-throw_message <- function(...) {
-  message(args_to_text(...))
-}
-
 release_questions <- function() {
   c(
     "devtools::revdep_check()?",

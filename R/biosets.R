@@ -15,6 +15,7 @@
 #'   "plate_2.csv", "plate_3.csv")
 #' @param exclude_cals A list of calibrators to exclude, e.g.:
 #'   `list(plate1 = c("CAL1"))`.
+#' @param plot_func Function used to display the fitted line.
 #' @inheritParams bioset::set_read
 #' @inheritParams bioset::set_calc_concentrations
 #' @inheritParams bioset::set_calc_variability
@@ -28,16 +29,18 @@ sets_read <- function(
   additional_vars = c("name"),
   sep = ",",
   path = ".",
-  model_func = fit_lnln,
-  plot_func = plot_lnln,
-  interpolate_func = interpolate_lnln
+  model_func = bioset::fit_lnln,
+  plot_func = bioset::plot_lnln,
+  interpolate_func = bioset::interpolate_lnln
 ) {
+  `%>%` <- magrittr::`%>%`
+
   results <- list()
 
   for (i in 1 : plates) {
 
     data_plate <-
-      set_read(
+      bioset::set_read(
         file_name = "plate_#NUM#.csv",
         path = path,
         num = i,
@@ -52,14 +55,16 @@ sets_read <- function(
 
     if (!is.null(exclude)) {
       data_plate <- data_plate %>%
-        mutate(
+        dplyr::mutate(
           sample_id =
             ifelse(sample_id %in% exclude, paste0("x", sample_id), sample_id)
         )
     }
 
+    real <- NULL
+
     data_plate <- data_plate %>%
-      set_calc_concentrations(
+      bioset::set_calc_concentrations(
         cal_names = cal_names,
         cal_values = cal_values,
         col_names = sample_id,
@@ -67,10 +72,10 @@ sets_read <- function(
         col_target = conc,
         col_real = real,
         col_recov = recovery,
-        model_func = fit_lnln,
-        interpolate_func = interpolate_lnln
+        model_func = model_func,
+        interpolate_func = interpolate_func
       ) %>%
-      set_calc_variability(sample_id, value, conc)
+      bioset::set_calc_variability(sample_id, value, conc)
 
     if (i == 1) {
       data <- data_plate
@@ -85,8 +90,8 @@ sets_read <- function(
   }
 
   data_samples <- data %>%
-    filter(is.na(real)) %>%
-    mutate(
+    dplyr::filter(is.na(real)) %>%
+    dplyr::mutate(
       plate = set,
       n = value_n,
       raw = value_mean,
@@ -96,7 +101,7 @@ sets_read <- function(
       SelenBP1_sd = conc_sd,
       SelenBP1_cv = conc_cv
     ) %>%
-    select(
+    dplyr::select(
       -set,
       -real,
       -value,
@@ -110,12 +115,12 @@ sets_read <- function(
       -conc_mean,
       -conc_sd,
       -conc_cv) %>%
-    distinct(sample_id, .keep_all = TRUE)
+    dplyr::distinct(sample_id, .keep_all = TRUE)
 
-  write_csv(data_samples, path = file.path(path, "data_samples.csv"))
+  readr::write_csv(data_samples, path = file.path(path, "data_samples.csv"))
 
   data_all <- data %>%
-    mutate(
+    dplyr::mutate(
       plate = set,
       n = value_n,
       raw = value,
@@ -126,7 +131,7 @@ sets_read <- function(
       SelenBP1_sd = conc_sd,
       SelenBP1_cv = conc_cv
     ) %>%
-    select(
+    dplyr::select(
       -set,
       -value,
       -conc,
@@ -139,10 +144,25 @@ sets_read <- function(
       -conc_sd,
       -conc_cv)
 
-  write_csv(data_all, path = file.path(path, "data_all.csv"))
+  readr::write_csv(data_all, path = file.path(path, "data_all.csv"))
 
   results["samples"] <- list(data_samples)
   results["all"] <- list(data_all)
 
   return(results)
 }
+
+# declare to make R CMD check happy ;)
+conc <- NULL
+conc_cv <- NULL
+conc_mean <- NULL
+conc_n <- NULL
+conc_sd <- NULL
+recovery <- NULL
+sample_id <- NULL
+set <- NULL
+value <- NULL
+value_cv <- NULL
+value_mean <- NULL
+value_n <- NULL
+value_sd <- NULL

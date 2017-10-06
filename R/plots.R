@@ -9,7 +9,7 @@
 #' @param theme The theme to use (for letters, etc.)
 #' @param width The width (see [global_plot_dim]) to use,
 #'   `NULL` means auto.
-#' @param width The height as multiple of `dimensions$height`
+#' @param height The height as multiple of `dimensions$height`
 #'   (see [global_plot_dim]) to use, `NULL` means auto.
 #' @param columns The number of columns to use, `NULL` means auto. Begins a
 #'   new row of plots if the number of plots exceeds `dimensions$columns_max`.
@@ -24,7 +24,7 @@ save_plots <- function(
   height = NULL,
   columns = NULL) {
 
-  if (is.ggplot(plots)) {
+  if (ggplot2::is.ggplot(plots)) {
     # single plot
 
     plot <- plots
@@ -57,7 +57,7 @@ save_plots <- function(
       height <- ceiling(length(plots) / dimensions$columns_max)
     }
 
-    plot <- plot_grid(
+    plot <- cowplot::plot_grid(
       plotlist = plots,
       align = dimensions$align,
       axis = dimensions$axes,
@@ -74,7 +74,7 @@ save_plots <- function(
   sapply(
     dimensions$format,
     function(format, dimensions, plot, width, height) {
-      ggsave(
+      cowplot::ggsave(
         filename = paste0(name, '.', format),
         device = format,
         plot = plot,

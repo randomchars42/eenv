@@ -200,6 +200,7 @@ format_p <- function(
 #'
 #' @export
 #' @family variables and functions for displaying numbers
+#' @param x The string to pad.
 #' @param width How long should the string be?
 #' @param side To which side should the padding be added ("left" / "right")?
 #' @param character Which character to use.
