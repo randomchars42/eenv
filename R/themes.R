@@ -99,11 +99,17 @@ create_theme <- function(
 
   lapply(
     geoms,
-    function(name, args) {
-      ggplot2::update_geom_defaults(
-        eval(parse(text=paste0("ggplot2::", name))), args)
-    },
-    list(fill = base_colour_fg, colour = base_colour_fg)
+    function(name) {
+      if (name %in% c("GeomBoxplot", "GeomRect", "GeomPolygon")) {
+        ggplot2::update_geom_defaults(
+          eval(parse(text=paste0("ggplot2::", name))),
+          list(fill = base_colour_bg, colour = base_colour_fg))
+      } else {
+        ggplot2::update_geom_defaults(
+          eval(parse(text=paste0("ggplot2::", name))),
+          list(fill = base_colour_fg, colour = base_colour_fg))
+      }
+    }
   )
 
   return(theme)

@@ -7,6 +7,9 @@ core_packages <- c("tidyverse", "gmodels", "cowplot", "knitr", "rmarkdown", "bio
   }
   sapply(core_packages, library, character.only = TRUE, warn.conflicts = FALSE)
 
+  # re-create theme to updaet ggplot2-defaults
+  create_theme()
+
   return(invisible())
 }
 
