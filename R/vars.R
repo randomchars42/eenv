@@ -117,5 +117,3 @@ colour_palette <- c(
   "#4D4D4D",
   "#808080",
   "#B3B3B3")
-
-options(scipen = 18, digits = 2)
