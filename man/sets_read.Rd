@@ -4,14 +4,14 @@
 \alias{sets_read}
 \title{Read sets (plates) and calculate concentrations and variability.}
 \usage{
-sets_read(plates, cal_names, cal_values, exclude_cals = c(),
-  additional_vars = c("name"), sep = ",", path = ".",
+sets_read(plates, cal_names, cal_values, exclude_cals = list(),
+  additional_vars = c("name"), additional_sep = "_", sep = ",",
+  path = ".", file_name = "plate_#NUM#.csv",
   model_func = bioset::fit_lnln, plot_func = bioset::plot_lnln,
-  interpolate_func = bioset::interpolate_lnln)
+  interpolate_func = bioset::interpolate_lnln, write_data = TRUE)
 }
 \arguments{
-\item{plates}{The number of plates (e.g. 3 attempts to read "plate_1.csv",
-"plate_2.csv", "plate_3.csv")}
+\item{plates}{The number of plates (e.g. \code{3`` attempts to read}plate_1.csv\code{,}plate_2.csv\code{,}plate_3.csv\code{), see}file_name`.}
 
 \item{cal_names}{A vector of strings containing the names of the samples used
 as calibrators,}
@@ -25,10 +25,21 @@ samples (must be in the same order).}
 \item{additional_vars}{Vector of strings containing the names for the
 additional columns.}
 
+\item{additional_sep}{String / RegExp that separates additional vars, e.g.:
+\code{"ID_blue_cold"} with \code{additional_sep = "_"} will be separated
+into three columns containg \code{"ID"}, \code{"blue"} and \code{"cold"}.
+If the separated data would exceed the columns in \code{additional_vars}
+the last column will contain a string with separator (e.g.: \code{"blue_cold"}).
+If data is missing `NA`` is inserted.}
+
 \item{sep}{Separator used in the csv-file, either "," or ";" (see
 \code{\link[utils:read.csv]{utils::read.csv()}})}
 
 \item{path}{The path to the file (no trailing "/" or "\"!).}
+
+\item{file_name}{Naming scheme for the files. The default is
+\code{plate_#NUM#.csv}, where \code{#NUM#} gets replaced by the number of the plates,
+see \code{plates}. The filename must contain \code{#NUM#}.}
 
 \item{model_func}{A function generating a model to fit the calibrators,
 e.g. \code{\link[=fit_linear]{fit_linear()}}, \code{\link[=fit_lnln]{fit_lnln()}}.}
@@ -38,6 +49,9 @@ e.g. \code{\link[=fit_linear]{fit_linear()}}, \code{\link[=fit_lnln]{fit_lnln()}
 \item{interpolate_func}{A function used to interpolate the concentrations of
 the other samples, based on the model, e.g.
 \code{\link[=interpolate_linear]{interpolate_linear()}}, \code{\link[=interpolate_lnln]{interpolate_lnln()}}.}
+
+\item{write_data}{Write the  calculated data into \code{data_all.csv} and
+\code{data_samples.csv}?}
 }
 \value{
 A list of params.

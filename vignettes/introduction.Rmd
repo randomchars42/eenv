@@ -376,7 +376,9 @@ result_list$plate1$plot
 
 ### If the calibrators aren't so good...
 
-The lowest calibrator ("CAL9") does not seem to fit to well. So perhaps you get a better result when removing it? (But then you should not look at values below "CAL8"!). You can do that by setting `exclude_cals =  list(plate1 = c("CAL9"))`:
+The lowest calibrator ("CAL9") does not seem to fit to well. So perhaps you get a better result when removing it? You can do that by setting `exclude_cals =  list(plate1 = c("CAL9"))`.
+
+(But obviously, you won't be able to interpret values below "CAL8", other than that they are "below CAL8"!).
 
 ```{r, eval = FALSE}
 # now you may run it :)
@@ -412,7 +414,7 @@ result_list <- eenv::sets_read(
 )
 ```
 
-Take a lok at the fit of the line:
+Take a look at the fit of the line:
 
 ```{r}
 # try it
