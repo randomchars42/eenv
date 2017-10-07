@@ -337,10 +337,10 @@ The resulting list is now stored in `result_list`. In addition, `sets_read()` cr
 -   `$all`: here you will find all the data , including calibrators, duplicates, ... (saved in `data_all.csv`)
 -   `$samples`: only samples here - no calibrators, no duplicates -&gt; most often you will work with this data (saved in `data_samples.csv`)
 -   `$plate1`: another list ;)
--   `$plot`: a plot showing you the linear function used to calculate the concentrations for this plate.
+    -   `$plot`: a plot showing you the linear function used to calculate the concentrations for this plate.
 
     The points are the calibrators. They should more or less lie close to the line.
--   `$model`: the model - you won't need this too often ;)
+    -   `$model`: the model - you won't need this too often ;)
 -   (`$plate2`): the same information for every plate you have
 
 Take a look:
