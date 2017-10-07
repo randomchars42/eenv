@@ -88,6 +88,13 @@ To easily set the names for your samples just copy the names into your new `plat
 
 Tell `sets_read()` your data contains the names and which column should hold those names by setting `additional_vars = c("name")`.
 
+``` r
+# do not run this code yet
+sets_read(
+  additional_vars = c("name")
+)
+```
+
 It does not matter which name you select for the column. Pick anything that adequately describes the data in the column.
 
 ### Adding more information
@@ -115,24 +122,86 @@ So now the name and the day are in the same field, separated by `"_"`. (So make 
 
 Tell `sets_read()` your data contains the names and day by setting `additional_vars = c("name", "day")`:
 
+``` r
+# do not run this code yet
+sets_read(
+  additional_vars = c("name", "day")
+)
+```
+
 ### Calculating concentrations
 
 So, your measuring device only gave you raw values (extinction rates / relative light units / ...), but you know the concentrations of `CAL1`, `CAL2`, `CAL3` and `CAL4`. To get the concentrations for the rest of the samples you need to tell `sets_read()` which samples are your calibrators and what their actual concentration is.
 
 You do this via `cal_names` and `cal_values`. Both expect a `vector` (that's a series of text strings / numbers / values...). You can create a vector using `c()`. Just put whatever you like in its arguments:
 
-    #> [1] "sunny day"   "cake"        "coffee"      "more coffee" "chocolate"  
-    #> [6] "pizza"
+``` r
+# try it
+like <- c("sunny day", "cake", "coffee", "more coffee", "chocolate", "pizza")
+like
+#> [1] "sunny day"   "cake"        "coffee"      "more coffee" "chocolate"  
+#> [6] "pizza"
+```
 
-    #> [1]  1  1  2  3  5  8 13
+``` r
+# try it
+fibonacci <- c(1, 1, 2, 3, 5, 8, 13)
+fibonacci
+#> [1]  1  1  2  3  5  8 13
+```
 
 You already created your first vector when you said: `additional_vars = c("name", "day")` ;) .
 
 So, now create some vectors for your calibrators:
 
+``` r
+# try it
+calibrator_names = c(
+  "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+  "CAL10"
+)
+
+calibrator_values = c(
+  4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+)
+```
+
 Tell `sets_read()` about it:
 
+``` r
+# do not run this code yet
+
+calibrator_names = c(
+  "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+  "CAL10"
+)
+
+calibrator_values = c(
+  4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+)
+
+sets_read(
+  additional_vars = c("name", "day"),
+  cal_names = calibrator_names,
+  cal_values = calibrator_values
+)
+```
+
 The same, but a bit shorter:
+
+``` r
+# do not run this code yet
+sets_read(
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  )
+)
+```
 
 ### Getting the data into the programme
 
@@ -140,11 +209,57 @@ The same, but a bit shorter:
 
 For now, tell `sets_read()` to read only your first plate:
 
+``` r
+# do not run this code yet
+sets_read(
+  plates = 1,
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  )
+)
+```
+
 You dont have any data yet but want to play a bit?
 
 This saves the example data into `plate_1.csv` (but first it checks if there already is a file with that name, else it would overwrite it):
 
+``` r
+# try it
+# (don't worry if it looks weird ;) )
+if (! file.exists("plate_1.csv")) {
+  write_delim(
+    x = read_csv(
+      file = system.file("extdata", "values_names_properties.csv", package = "eenv"),
+      col_names = FALSE),
+    path = "plate_1.csv",
+    delim = ";",
+    col_names = FALSE
+  )
+}i
+```
+
 One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `sets_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
+
+``` r
+# do not run this code yet
+sets_read(
+  plates = 1,
+  sep = ";",
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  )
+)
+```
 
 ### Working with the results
 
@@ -157,37 +272,75 @@ One thing to note for `.csv`-files: some languages use "." to separate decimals,
 
 To tell you aout everything it returns a `list`. `list`s are like `vector`s but you can store a lot of different things in them:
 
-    #> $a
-    #> [1] 1
-    #> 
-    #> $favourite_food
-    #> [1] "pizza"
-    #> 
-    #> $age
-    #> [1] 20
-    #> 
-    #> $a_vector
-    #> [1] 1 2 3
+``` r
+# try it
+my_list <- list(a = 1, favourite_food = "pizza", age = 20, a_vector = c(1, 2, 3))
+my_list
+#> $a
+#> [1] 1
+#> 
+#> $favourite_food
+#> [1] "pizza"
+#> 
+#> $age
+#> [1] 20
+#> 
+#> $a_vector
+#> [1] 1 2 3
+```
 
 You can access each part of the list in a lot of different ways:
 
 Using "$":
 
-    #> [1] 20
+``` r
+# try it
+my_list$age
+#> [1] 20
+```
 
 Using the position:
 
-    #> [1] 20
+``` r
+# try it
+my_list[[3]]
+#> [1] 20
+```
 
 Something totally different:
 
-    #> [1] 1 2 3
+``` r
+# try it
+my_list[["a_vector"]]
+#> [1] 1 2 3
+```
 
 This works for setting values as well:
 
-    #> [1] 30
+``` r
+# try it
+my_list$age <- 30
+my_list$age
+#> [1] 30
+```
 
 Now its time to run `sets_read()`:
+
+``` r
+# now you may run it :)
+result_list <- sets_read(
+  plates = 1,
+  sep = ";",
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  )
+)
+```
 
 The resulting list is now stored in `result_list`. In addition, `sets_read()` created two files in your current directory: `data_all.csv` and `data_samples.csv` with all the data ;) .
 
@@ -203,6 +356,10 @@ The resulting list is now stored in `result_list`. In addition, `sets_read()` cr
 -   (`$plate2`): the same information for every plate you have
 
 Take a look:
+
+``` r
+result_list$all
+```
 
 | position | sample\_id | name | day |      real|   recovery|  plate|    n|    raw|  raw\_mean|      raw\_sd|    raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
 |:---------|:-----------|:-----|:----|---------:|----------:|------:|----:|------:|----------:|------------:|----------:|--------------:|------------------:|------------------:|
@@ -243,6 +400,10 @@ Take a look:
 | E6       | E\_2       | E    | 2   |        NA|         NA|      1|    2|   1060|     1124.0|    90.509668|  0.0805246|       59.08606|          5.2231229|          0.0883986|
 | F6       | F\_2       | F    | 2   |        NA|         NA|      1|    2|    569|      544.5|    34.648232|  0.0636331|       26.65828|          1.8623798|          0.0698612|
 
+``` r
+result_list$samples
+```
+
 | position | sample\_id | name | day |  plate|    n|     raw|    raw\_sd|    raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
 |:---------|:-----------|:-----|:----|------:|----:|-------:|----------:|----------:|--------------:|------------------:|------------------:|
 | A3       | A\_1       | A    | 1   |      1|    2|   618.5|  27.577164|  0.0445872|       30.66020|          1.5009575|          0.0489546|
@@ -258,8 +419,11 @@ Take a look:
 | E5       | E\_2       | E    | 2   |      1|    2|  1124.0|  90.509668|  0.0805246|       59.08606|          5.2231229|          0.0883986|
 | F5       | F\_2       | F    | 2   |      1|    2|   544.5|  34.648232|  0.0636331|       26.65828|          1.8623798|          0.0698612|
 
-    #> Warning: Removed 24 rows containing non-finite values (stat_smooth).
-    #> Warning: Removed 24 rows containing missing values (geom_point).
+``` r
+result_list$plate1$plot
+#> Warning: Removed 24 rows containing non-finite values (stat_smooth).
+#> Warning: Removed 24 rows containing missing values (geom_point).
+```
 
 ![](README-unnamed-chunk-30-1.png)
 
@@ -269,10 +433,31 @@ The lowest calibrator ("CAL9") does not seem to fit to well. So perhaps you get 
 
 (But obviously, you won't be able to interpret values below "CAL8", other than that they are "below CAL8"!).
 
-Take a lok at the fit of the line:
+``` r
+# now you may run it :)
+result_list <- sets_read(
+  plates = 1,
+  sep = ";",
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  ),
+  exclude_cals =  list(plate1 = c("CAL9"))
+)
+```
 
-    #> Warning: Removed 26 rows containing non-finite values (stat_smooth).
-    #> Warning: Removed 26 rows containing missing values (geom_point).
+Take a look at the fit of the line:
+
+``` r
+# try it
+result_list$plate1$plot
+#> Warning: Removed 26 rows containing non-finite values (stat_smooth).
+#> Warning: Removed 26 rows containing missing values (geom_point).
+```
 
 ![](README-unnamed-chunk-33-1.png)
 
@@ -283,48 +468,93 @@ Where to go to from here
 
 First of all, to save a couple of keystrokes and make remembering easier:
 
+``` r
+# try it
+my_data <- result_list$samples
+```
+
 Then we need some tools:
+
+``` r
+library("tidyverse")
+library("bioset")
+```
 
 You could take a look which duplicates have a high (&gt; 20 %) coefficient of variation:
 
-    #> # A tibble: 0 x 12
-    #> # ... with 12 variables: position <chr>, sample_id <chr>, name <chr>,
-    #> #   day <chr>, plate <int>, n <int>, raw <dbl>, raw_sd <dbl>,
-    #> #   raw_cv <dbl>, concentration <dbl>, concentration_sd <dbl>,
-    #> #   concentration_cv <dbl>
+``` r
+# try it
+my_data %>%
+  filter(concentration_cv > 0.20)
+#> # A tibble: 0 x 12
+#> # ... with 12 variables: position <chr>, sample_id <chr>, name <chr>,
+#> #   day <chr>, plate <int>, n <int>, raw <dbl>, raw_sd <dbl>,
+#> #   raw_cv <dbl>, concentration <dbl>, concentration_sd <dbl>,
+#> #   concentration_cv <dbl>
+```
 
 Luckily, there are no samples. Note that the result was not stored.
 
 If there were you could exclude them like:
 
-    #> # A tibble: 13 x 12
-    #>    position sample_id  name   day plate     n    raw    raw_sd      raw_cv
-    #>       <chr>     <chr> <chr> <chr> <int> <int>  <dbl>     <dbl>       <dbl>
-    #>  1       F1     xCAL9  CAL9  <NA>     1     2  461.5 55.861436 0.121043198
-    #>  2       A3       A_1     A     1     1     2  618.5 27.577164 0.044587170
-    #>  3       B3       B_1     B     1     1     2  657.5 13.435029 0.020433504
-    #>  4       C3       C_1     C     1     1     2  721.0 76.367532 0.105918908
-    #>  5       D3       D_1     D     1     1     2  500.5 13.435029 0.026843214
-    #>  6       E3       E_1     E     1     1     2  623.0  7.071068 0.011350029
-    #>  7       F3       F_1     F     1     1     2  598.5 13.435029 0.022447834
-    #>  8       A5       A_2     A     2     1     2  770.5 48.790368 0.063322995
-    #>  9       B5       B_2     B     2     1     2 1340.0  7.071068 0.005276916
-    #> 10       C5       C_2     C     2     1     2 1300.5 34.648232 0.026642239
-    #> 11       D5       D_2     D     2     1     2  750.5 34.648232 0.046166865
-    #> 12       E5       E_2     E     2     1     2 1124.0 90.509668 0.080524616
-    #> 13       F5       F_2     F     2     1     2  544.5 34.648232 0.063633117
-    #> # ... with 3 more variables: concentration <dbl>, concentration_sd <dbl>,
-    #> #   concentration_cv <dbl>
+``` r
+# try it
+my_data <- my_data %>%
+  filter(concentration_cv < 0.20)
+my_data
+#> # A tibble: 13 x 12
+#>    position sample_id  name   day plate     n    raw    raw_sd      raw_cv
+#>       <chr>     <chr> <chr> <chr> <int> <int>  <dbl>     <dbl>       <dbl>
+#>  1       F1     xCAL9  CAL9  <NA>     1     2  461.5 55.861436 0.121043198
+#>  2       A3       A_1     A     1     1     2  618.5 27.577164 0.044587170
+#>  3       B3       B_1     B     1     1     2  657.5 13.435029 0.020433504
+#>  4       C3       C_1     C     1     1     2  721.0 76.367532 0.105918908
+#>  5       D3       D_1     D     1     1     2  500.5 13.435029 0.026843214
+#>  6       E3       E_1     E     1     1     2  623.0  7.071068 0.011350029
+#>  7       F3       F_1     F     1     1     2  598.5 13.435029 0.022447834
+#>  8       A5       A_2     A     2     1     2  770.5 48.790368 0.063322995
+#>  9       B5       B_2     B     2     1     2 1340.0  7.071068 0.005276916
+#> 10       C5       C_2     C     2     1     2 1300.5 34.648232 0.026642239
+#> 11       D5       D_2     D     2     1     2  750.5 34.648232 0.046166865
+#> 12       E5       E_2     E     2     1     2 1124.0 90.509668 0.080524616
+#> 13       F5       F_2     F     2     1     2  544.5 34.648232 0.063633117
+#> # ... with 3 more variables: concentration <dbl>, concentration_sd <dbl>,
+#> #   concentration_cv <dbl>
+```
 
 This time the result was stored. Be careful when overwriting data. You can always go back and run `sets_read()` again :).
 
 Now, given the concentration of your calibrators was in "ng / ml" but your editor wants you to use SI units you could convert the concentrations like this:
 
+``` r
+# try it
+my_data <- my_data %>%
+  mutate(
+    concentration = convert_conc(x = concentration, from = "ng / ml", to = "pmol / l", molar_mass = 52391)
+  )
+```
+
 Or you could create a plot like this:
+
+``` r
+# try it
+ggplot(data = my_data, aes(x = name, y = concentration, colour = name)) +
+  geom_point() +
+  facet_wrap(~day) +
+  global_theme
+```
 
 ![](README-unnamed-chunk-39-1.png)
 
 Or a boxplot:
+
+``` r
+# try it
+ggplot(data = my_data, aes(x = day, y = concentration, colour = name, group = day)) +
+  geom_boxplot() +
+  geom_point() +
+  global_theme
+```
 
 ![](README-unnamed-chunk-40-1.png)
 
@@ -351,6 +581,27 @@ Rarely needed
 ### Calibrators do not need to be ln-ln transformed
 
 Your calibrators are linear? You can use: `model_func = fit_linear` and `interpolate_func = interpolate_linear`. Basicallly, you can use any function as `model_function` that returns a model which is understood by your `interpolate_func`.
+
+``` r
+# try it but the result wont be as good
+result_list <- sets_read(
+  plates = 1,
+  sep = ";",
+  additional_vars = c("name", "day"),
+  cal_names = c(
+    "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
+    "CAL10"
+  ),
+  cal_values = c(
+    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
+  ),
+  exclude_cals =  list(plate1 = c("CAL9")),
+  model_func = fit_linear,
+  interpolate_func = interpolate_linear
+)
+
+result_list$plate1$plot
+```
 
 ### Data sets are stored somewhere else
 

@@ -94,10 +94,10 @@ sets_read <- function(
     if (!is.null(exclude_on_plate)) {
       data_plate <- data_plate %>%
         dplyr::mutate(
-          sample_id = ifelse(
-            sample_id %in% exclude_on_plate, paste0("x", sample_id), sample_id),
           exclude = ifelse(
-            sample_id %in% exclude_on_plate, TRUE, FALSE)
+            sample_id %in% exclude_on_plate, TRUE, FALSE),
+          sample_id = ifelse(
+            sample_id %in% exclude_on_plate, paste0("x", sample_id), sample_id)
         )
     }
 
@@ -207,6 +207,7 @@ conc_sd <- NULL
 recovery <- NULL
 sample_id <- NULL
 set <- NULL
+exclude <- NULL
 value <- NULL
 value_cv <- NULL
 value_mean <- NULL
