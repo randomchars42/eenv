@@ -282,18 +282,35 @@ library("bioset")
 my_data %>%
   filter(concentration_cv > 0.20)
 
-## ------------------------------------------------------------------------
+## ---- eval = FALSE-------------------------------------------------------
+#  # try it
+#  my_data <- my_data %>%
+#    filter(concentration_cv < 0.20)
+#  my_data
+
+## ---- echo = FALSE-------------------------------------------------------
 # try it
 my_data <- my_data %>%
   filter(concentration_cv < 0.20)
-my_data
 
-## ------------------------------------------------------------------------
+knitr::kable(my_data)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  # try it
+#  my_data <- my_data %>%
+#    mutate(
+#      concentration = convert_conc(x = concentration, from = "ng / ml", to = "nmol / l", molar_mass = 52391)
+#    )
+#  my_data
+
+## ---- echo = FALSE-------------------------------------------------------
 # try it
 my_data <- my_data %>%
   mutate(
-    concentration = convert_conc(x = concentration, from = "ng / ml", to = "pmol / l", molar_mass = 52391)
+    concentration = convert_conc(x = concentration, from = "ng / ml", to = "nmol / l", molar_mass = 52391)
   )
+
+knitr::kable(my_data)
 
 ## ------------------------------------------------------------------------
 # try it

@@ -450,23 +450,42 @@ Luckily, there are no samples. Note that the result was not stored.
 
 If there were you could exclude them like:
 
-```{r}
+```{r, eval = FALSE}
 # try it
 my_data <- my_data %>%
   filter(concentration_cv < 0.20)
 my_data
 ```
 
+```{r, echo = FALSE}
+# try it
+my_data <- my_data %>%
+  filter(concentration_cv < 0.20)
+
+knitr::kable(my_data)
+```
+
 This time the result was stored. Be careful when overwriting data. You can always go back and run `sets_read()` again :).
 
 Now, given the concentration of your calibrators was in "ng / ml" but your editor wants you to use SI units you could convert the concentrations like this:
 
-```{r}
+```{r, eval = FALSE}
 # try it
 my_data <- my_data %>%
   mutate(
-    concentration = convert_conc(x = concentration, from = "ng / ml", to = "pmol / l", molar_mass = 52391)
+    concentration = convert_conc(x = concentration, from = "ng / ml", to = "nmol / l", molar_mass = 52391)
   )
+my_data
+```
+
+```{r, echo = FALSE}
+# try it
+my_data <- my_data %>%
+  mutate(
+    concentration = convert_conc(x = concentration, from = "ng / ml", to = "nmol / l", molar_mass = 52391)
+  )
+
+knitr::kable(my_data)
 ```
 
 Or you could create a plot like this:

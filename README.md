@@ -1,17 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-    ## Loading tidyverse: ggplot2
-    ## Loading tidyverse: tibble
-    ## Loading tidyverse: tidyr
-    ## Loading tidyverse: readr
-    ## Loading tidyverse: purrr
-    ## Loading tidyverse: dplyr
-
-    ## Conflicts with tidy packages ----------------------------------------------
-
-    ## filter(): dplyr, stats
-    ## lag():    dplyr, stats
-
 eenv
 ====
 
@@ -502,24 +490,22 @@ If there were you could exclude them like:
 my_data <- my_data %>%
   filter(concentration_cv < 0.20)
 my_data
-#> # A tibble: 12 x 12
-#>    position sample_id  name   day plate     n    raw    raw_sd      raw_cv
-#>       <chr>     <chr> <chr> <chr> <int> <int>  <dbl>     <dbl>       <dbl>
-#>  1       A3       A_1     A     1     1     2  618.5 27.577164 0.044587170
-#>  2       B3       B_1     B     1     1     2  657.5 13.435029 0.020433504
-#>  3       C3       C_1     C     1     1     2  721.0 76.367532 0.105918908
-#>  4       D3       D_1     D     1     1     2  500.5 13.435029 0.026843214
-#>  5       E3       E_1     E     1     1     2  623.0  7.071068 0.011350029
-#>  6       F3       F_1     F     1     1     2  598.5 13.435029 0.022447834
-#>  7       A5       A_2     A     2     1     2  770.5 48.790368 0.063322995
-#>  8       B5       B_2     B     2     1     2 1340.0  7.071068 0.005276916
-#>  9       C5       C_2     C     2     1     2 1300.5 34.648232 0.026642239
-#> 10       D5       D_2     D     2     1     2  750.5 34.648232 0.046166865
-#> 11       E5       E_2     E     2     1     2 1124.0 90.509668 0.080524616
-#> 12       F5       F_2     F     2     1     2  544.5 34.648232 0.063633117
-#> # ... with 3 more variables: concentration <dbl>, concentration_sd <dbl>,
-#> #   concentration_cv <dbl>
 ```
+
+| position | sample\_id | name | day |  plate|    n|     raw|    raw\_sd|    raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
+|:---------|:-----------|:-----|:----|------:|----:|-------:|----------:|----------:|--------------:|------------------:|------------------:|
+| A3       | A\_1       | A    | 1   |      1|    2|   618.5|  27.577164|  0.0445872|       41.80706|          1.8454799|          0.0441428|
+| B3       | B\_1       | B    | 1   |      1|    2|   657.5|  13.435029|  0.0204335|       44.41631|          0.8985306|          0.0202297|
+| C3       | C\_1       | C    | 1   |      1|    2|   721.0|  76.367532|  0.1059189|       48.65989|          5.1027895|          0.1048665|
+| D3       | D\_1       | D    | 1   |      1|    2|   500.5|  13.435029|  0.0268432|       33.90254|          0.9009791|          0.0265756|
+| E3       | E\_1       | E    | 1   |      1|    2|   623.0|   7.071068|  0.0113500|       42.10838|          0.4731650|          0.0112368|
+| F3       | F\_1       | F    | 1   |      1|    2|   598.5|  13.435029|  0.0224478|       40.46858|          0.8993736|          0.0222240|
+| A5       | A\_2       | A    | 2   |      1|    2|   770.5|  48.790368|  0.0633230|       51.96711|          3.2579376|          0.0626923|
+| B5       | B\_2       | B    | 2   |      1|    2|  1340.0|   7.071068|  0.0052769|       89.88105|          0.4695646|          0.0052243|
+| C5       | C\_2       | C    | 2   |      1|    2|  1300.5|  34.648232|  0.0266422|       87.25746|          2.3015545|          0.0263766|
+| D5       | D\_2       | D    | 2   |      1|    2|   750.5|  34.648232|  0.0461669|       50.63171|          2.3142111|          0.0457068|
+| E5       | E\_2       | E    | 2   |      1|    2|  1124.0|  90.509668|  0.0805246|       75.52384|          6.0210051|          0.0797232|
+| F5       | F\_2       | F    | 2   |      1|    2|   544.5|  34.648232|  0.0636331|       36.85170|          2.3216325|          0.0629993|
 
 This time the result was stored. Be careful when overwriting data. You can always go back and run `sets_read()` again :).
 
@@ -529,9 +515,25 @@ Now, given the concentration of your calibrators was in "ng / ml" but your edito
 # try it
 my_data <- my_data %>%
   mutate(
-    concentration = convert_conc(x = concentration, from = "ng / ml", to = "pmol / l", molar_mass = 52391)
+    concentration = convert_conc(x = concentration, from = "ng / ml", to = "nmol / l", molar_mass = 52391)
   )
+my_data
 ```
+
+| position | sample\_id | name | day |  plate|    n|     raw|    raw\_sd|    raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
+|:---------|:-----------|:-----|:----|------:|----:|-------:|----------:|----------:|--------------:|------------------:|------------------:|
+| A3       | A\_1       | A    | 1   |      1|    2|   618.5|  27.577164|  0.0445872|      0.7979817|          1.8454799|          0.0441428|
+| B3       | B\_1       | B    | 1   |      1|    2|   657.5|  13.435029|  0.0204335|      0.8477851|          0.8985306|          0.0202297|
+| C3       | C\_1       | C    | 1   |      1|    2|   721.0|  76.367532|  0.1059189|      0.9287833|          5.1027895|          0.1048665|
+| D3       | D\_1       | D    | 1   |      1|    2|   500.5|  13.435029|  0.0268432|      0.6471062|          0.9009791|          0.0265756|
+| E3       | E\_1       | E    | 1   |      1|    2|   623.0|   7.071068|  0.0113500|      0.8037331|          0.4731650|          0.0112368|
+| F3       | F\_1       | F    | 1   |      1|    2|   598.5|  13.435029|  0.0224478|      0.7724339|          0.8993736|          0.0222240|
+| A5       | A\_2       | A    | 2   |      1|    2|   770.5|  48.790368|  0.0633230|      0.9919092|          3.2579376|          0.0626923|
+| B5       | B\_2       | B    | 2   |      1|    2|  1340.0|   7.071068|  0.0052769|      1.7155819|          0.4695646|          0.0052243|
+| C5       | C\_2       | C    | 2   |      1|    2|  1300.5|  34.648232|  0.0266422|      1.6655047|          2.3015545|          0.0263766|
+| D5       | D\_2       | D    | 2   |      1|    2|   750.5|  34.648232|  0.0461669|      0.9664200|          2.3142111|          0.0457068|
+| E5       | E\_2       | E    | 2   |      1|    2|  1124.0|  90.509668|  0.0805246|      1.4415423|          6.0210051|          0.0797232|
+| F5       | F\_2       | F    | 2   |      1|    2|   544.5|  34.648232|  0.0636331|      0.7033975|          2.3216325|          0.0629993|
 
 Or you could create a plot like this:
 
@@ -543,7 +545,7 @@ ggplot(data = my_data, aes(x = name, y = concentration, colour = name)) +
   global_theme
 ```
 
-![](README-unnamed-chunk-39-1.png)
+![](README-unnamed-chunk-41-1.png)
 
 Or a boxplot:
 
@@ -555,7 +557,7 @@ ggplot(data = my_data, aes(x = day, y = concentration, colour = name, group = da
   global_theme
 ```
 
-![](README-unnamed-chunk-40-1.png)
+![](README-unnamed-chunk-42-1.png)
 
 Where to get help
 -----------------
