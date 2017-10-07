@@ -11,11 +11,16 @@
 #'    * model: model used to fit a line to the calibrators
 #'
 #' @export
-#' @param plates The number of plates (e.g. 3 attempts to read "plate_1.csv",
-#'   "plate_2.csv", "plate_3.csv")
+#' @param plates The number of plates (e.g. `3`` attempts to read `plate_1.csv`,
+#'   `plate_2.csv`, `plate_3.csv`), see `file_name`.
 #' @param exclude_cals A list of calibrators to exclude, e.g.:
 #'   `list(plate1 = c("CAL1"))`.
 #' @param plot_func Function used to display the fitted line.
+#' @param file_name Naming scheme for the files. The default is
+#'   `plate_#NUM#.csv`, where `#NUM#` gets replaced by the number of the plates,
+#'   see `plates`. The filename must contain `#NUM#`.
+#' @param write_data Write the  calculated data into `data_all.csv` and
+#'   `data_samples.csv`?
 #' @inheritParams bioset::set_read
 #' @inheritParams bioset::set_calc_concentrations
 #' @inheritParams bioset::set_calc_variability
@@ -25,44 +30,74 @@ sets_read <- function(
   plates,
   cal_names,
   cal_values,
-  exclude_cals = c(),
+  exclude_cals = list(),
   additional_vars = c("name"),
+  additional_sep = "_",
   sep = ",",
   path = ".",
+  file_name = "plate_#NUM#.csv",
   model_func = bioset::fit_lnln,
   plot_func = bioset::plot_lnln,
-  interpolate_func = bioset::interpolate_lnln
+  interpolate_func = bioset::interpolate_lnln,
+  write_data = TRUE
 ) {
   `%>%` <- magrittr::`%>%`
+
+  stopifnot(
+    is_number(plates),
+    is.vector(cal_names),
+    is.vector(cal_values),
+    length(cal_names) == length(cal_values),
+    is.list(exclude_cals),
+    is.vector(additional_vars),
+    is.character(additional_sep),
+    is.character(sep),
+    is.character(path),
+    is.character(file_name),
+    is.function(model_func),
+    is.function(plot_func),
+    is.function(interpolate_func)
+  )
 
   results <- list()
 
   for (i in 1 : plates) {
 
+    test_file_name <- gsub(pattern = "#NUM#", replacement = i, x = file_name)
+    test_file_name <- normalizePath(file.path(path, test_file_name))
+
+    if (!file.exists(test_file_name)) {
+      message(paste0(
+        "Cannot find file \"", test_file_name,
+        "\". Please check path (must not end with \"/\") ",
+        "and name_scheme (must contain \"#NUM#\")"))
+      next()
+    }
+
     data_plate <-
       bioset::set_read(
-        file_name = "plate_#NUM#.csv",
+        file_name = file_name,
         path = path,
         num = i,
         sep = sep,
         cols = 0,
         rows = 0,
         additional_vars = additional_vars,
-        additional_sep = "_"
+        additional_sep = additional_sep
       ) %>%
       dplyr::mutate(
         exclude = FALSE
       )
 
-    exclude <- exclude_cals[[paste0("plate", i)]]
+    exclude_on_plate <- exclude_cals[[paste0("plate", i)]]
 
-    if (!is.null(exclude)) {
+    if (!is.null(exclude_on_plate)) {
       data_plate <- data_plate %>%
         dplyr::mutate(
-          sample_id =
-            ifelse(sample_id %in% exclude, paste0("x", sample_id), sample_id),
-          exclude =
-            ifelse(sample_id %in% exclude, TRUE, FALSE)
+          sample_id = ifelse(
+            sample_id %in% exclude_on_plate, paste0("x", sample_id), sample_id),
+          exclude = ifelse(
+            sample_id %in% exclude_on_plate, TRUE, FALSE)
         )
     }
 
@@ -123,7 +158,9 @@ sets_read <- function(
       -exclude) %>%
     dplyr::distinct(sample_id, .keep_all = TRUE)
 
-  readr::write_csv(data_samples, path = file.path(path, "data_samples.csv"))
+  if (write_data) {
+    readr::write_csv(data_samples, path = file.path(path, "data_samples.csv"))
+  }
 
   data_all <- data %>%
     dplyr::mutate(
@@ -151,7 +188,9 @@ sets_read <- function(
       -conc_cv,
       -exclude)
 
-  readr::write_csv(data_all, path = file.path(path, "data_all.csv"))
+  if (write_data) {
+    readr::write_csv(data_samples, path = file.path(path, "data_all.csv"))
+  }
 
   results["samples"] <- list(data_samples)
   results["all"] <- list(data_all)
