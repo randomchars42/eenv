@@ -4,24 +4,23 @@
 \alias{save_plots}
 \title{Save one or more plots onto a panel.}
 \usage{
-save_plots(plots, name, dimensions = global_plot_dim,
-  theme = global_theme[[1]], width = NULL, height = NULL,
-  columns = NULL)
+save_plots(plots, name, dimensions = eenv_plot_dim, theme = eenv_theme[[1]],
+  width = NULL, height = NULL, columns = NULL)
 }
 \arguments{
 \item{plots}{Either single ggplot or list of plots.}
 
 \item{name}{The name of the plot.}
 
-\item{dimensions}{List of settings to use, see \link{global_plot_dim}.}
+\item{dimensions}{List of settings to use, see \link{eenv_plot_dim}.}
 
 \item{theme}{The theme to use (for letters, etc.)}
 
-\item{width}{The width (see \link{global_plot_dim}) to use,
+\item{width}{The width (see \link{eenv_plot_dim}) to use,
 \code{NULL} means auto.}
 
 \item{height}{The height as multiple of \code{dimensions$height}
-(see \link{global_plot_dim}) to use, \code{NULL} means auto.}
+(see \link{eenv_plot_dim}) to use, \code{NULL} means auto.}
 
 \item{columns}{The number of columns to use, \code{NULL} means auto. Begins a
 new row of plots if the number of plots exceeds \code{dimensions$columns_max}.}
@@ -36,5 +35,5 @@ Save one or more plots onto a panel.
 Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_bg}}, \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{colour_tert}}, \code{\link{global_plot_dim}}
+  \code{\link{colour_tert}}, \code{\link{eenv_plot_dim}}
 }

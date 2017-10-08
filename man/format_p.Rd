@@ -4,8 +4,8 @@
 \alias{format_p}
 \title{Format a p-value.}
 \usage{
-format_p(x, signif_digits = global_signif_digits,
-  signif_bottom = global_signif_bottom)
+format_p(x, signif_digits = eenv_signif_digits,
+  signif_bottom = eenv_signif_bottom)
 }
 \arguments{
 \item{x}{The number to format.}
@@ -22,10 +22,10 @@ A string.
 Format a p-value.
 }
 \seealso{
-Other variables and functions for displaying numbers: \code{\link{format_float}},
-  \code{\link{format_int}}, \code{\link{format_number}},
-  \code{\link{format_pad}}, \code{\link{format_perc}},
-  \code{\link{global_decimals}},
-  \code{\link{global_signif_bottom}},
-  \code{\link{global_signif_digits}}
+Other variables and functions for displaying numbers: \code{\link{eenv_decimals}},
+  \code{\link{eenv_signif_bottom}},
+  \code{\link{eenv_signif_digits}},
+  \code{\link{format_float}}, \code{\link{format_int}},
+  \code{\link{format_number}}, \code{\link{format_pad}},
+  \code{\link{format_perc}}
 }

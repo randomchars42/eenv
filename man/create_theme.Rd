@@ -31,5 +31,5 @@ Create a conservative theme for ggplot2.
 Other theme-related functions and objects: \code{\link{colour_base}},
   \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{colour_tert}}, \code{\link{global_theme}}
+  \code{\link{colour_tert}}, \code{\link{eenv_theme}}
 }

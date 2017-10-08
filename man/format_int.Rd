@@ -16,10 +16,10 @@ A string.
 Format an integer for displaying.
 }
 \seealso{
-Other variables and functions for displaying numbers: \code{\link{format_float}},
-  \code{\link{format_number}}, \code{\link{format_pad}},
-  \code{\link{format_perc}}, \code{\link{format_p}},
-  \code{\link{global_decimals}},
-  \code{\link{global_signif_bottom}},
-  \code{\link{global_signif_digits}}
+Other variables and functions for displaying numbers: \code{\link{eenv_decimals}},
+  \code{\link{eenv_signif_bottom}},
+  \code{\link{eenv_signif_digits}},
+  \code{\link{format_float}}, \code{\link{format_number}},
+  \code{\link{format_pad}}, \code{\link{format_perc}},
+  \code{\link{format_p}}
 }

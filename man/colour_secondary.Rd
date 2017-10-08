@@ -14,11 +14,11 @@ The colour to use if more than 1 colours are needed (brighter grey).
 \seealso{
 Other theme-related functions and objects: \code{\link{colour_base}},
   \code{\link{colour_palette}}, \code{\link{colour_tert}},
-  \code{\link{create_theme}}, \code{\link{global_theme}}
+  \code{\link{create_theme}}, \code{\link{eenv_theme}}
 
 Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_bg}}, \code{\link{colour_palette}},
-  \code{\link{colour_tert}}, \code{\link{global_plot_dim}},
+  \code{\link{colour_tert}}, \code{\link{eenv_plot_dim}},
   \code{\link{save_plots}}
 }
 \keyword{datasets}

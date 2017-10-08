@@ -3,6 +3,14 @@
 eenv
 ====
 
+Note
+----
+
+`eenv` is somewhat intrusive, it:
+
+-   sets options: `scipen = 18`, `digits = 2`
+-   sets your default ggplot2 theme
+
 A package to load packages, functions and variables I frequently use.
 
 Installation
@@ -74,11 +82,11 @@ To easily set the names for your samples just copy the names into your new `plat
 | K   | CAL8  | CAL8  | E   | E   | L    | L    |
 | L   | CAL9  | CAL9  | F   | F   | M    | M    |
 
-Tell `sets_read()` your data contains the names and which column should hold those names by setting `additional_vars = c("name")`.
+Tell `plates_read()` your data contains the names and which column should hold those names by setting `additional_vars = c("name")`.
 
 ``` r
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name")
 )
 ```
@@ -108,18 +116,18 @@ It would be more elegant to encode that into the data:
 
 So now the name and the day are in the same field, separated by `"_"`. (So make sure the original names do not contain `"_"` or there will be trouble.. ;) )
 
-Tell `sets_read()` your data contains the names and day by setting `additional_vars = c("name", "day")`:
+Tell `plates_read()` your data contains the names and day by setting `additional_vars = c("name", "day")`:
 
 ``` r
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name", "day")
 )
 ```
 
 ### Calculating concentrations
 
-So, your measuring device only gave you raw values (extinction rates / relative light units / ...), but you know the concentrations of `CAL1`, `CAL2`, `CAL3` and `CAL4`. To get the concentrations for the rest of the samples you need to tell `sets_read()` which samples are your calibrators and what their actual concentration is.
+So, your measuring device only gave you raw values (extinction rates / relative light units / ...), but you know the concentrations of `CAL1`, `CAL2`, `CAL3` and `CAL4`. To get the concentrations for the rest of the samples you need to tell `plates_read()` which samples are your calibrators and what their actual concentration is.
 
 You do this via `cal_names` and `cal_values`. Both expect a `vector` (that's a series of text strings / numbers / values...). You can create a vector using `c()`. Just put whatever you like in its arguments:
 
@@ -154,7 +162,7 @@ calibrator_values = c(
 )
 ```
 
-Tell `sets_read()` about it:
+Tell `plates_read()` about it:
 
 ``` r
 # do not run this code yet
@@ -168,7 +176,7 @@ calibrator_values = c(
   4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
 )
 
-sets_read(
+plates_read(
   additional_vars = c("name", "day"),
   cal_names = calibrator_names,
   cal_values = calibrator_values
@@ -179,7 +187,7 @@ The same, but a bit shorter:
 
 ``` r
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name", "day"),
   cal_names = c(
     "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
@@ -193,13 +201,13 @@ sets_read(
 
 ### Getting the data into the programme
 
-`sets_read()` automagically reads `plate_1.csv` in your current directory. If you have data from more than one plate use `plates = 2` to read `plate1.csv` AND `plate2.csv`. You can read as much plates as you like, as long as their numbers are in a sequence and no numbers are missing.
+`plates_read()` automagically reads `plate_1.csv` in your current directory. If you have data from more than one plate use `plates = 2` to read `plate1.csv` AND `plate2.csv`. You can read as much plates as you like, as long as their numbers are in a sequence and no numbers are missing.
 
-For now, tell `sets_read()` to read only your first plate:
+For now, tell `plates_read()` to read only your first plate:
 
 ``` r
 # do not run this code yet
-sets_read(
+plates_read(
   plates = 1,
   additional_vars = c("name", "day"),
   cal_names = c(
@@ -231,11 +239,11 @@ if (! file.exists("plate_1.csv")) {
 }i
 ```
 
-One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `sets_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
+One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `plates_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
 
 ``` r
 # do not run this code yet
-sets_read(
+plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -251,7 +259,7 @@ sets_read(
 
 ### Working with the results
 
-`sets_read()` does a lot and wants to tell you about it:
+`plates_read()` does a lot and wants to tell you about it:
 
 -   reads the data, sorts it, calculates concentrations, calculates how good your duplicates were, ...
 -   creates a data table (called `"tibble"` or `"tbl"` for short) with all the values it calculated
@@ -312,11 +320,11 @@ my_list$age
 #> [1] 30
 ```
 
-Now its time to run `sets_read()`:
+Now its time to run `plates_read()`:
 
 ``` r
 # now you may run it :)
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -330,9 +338,9 @@ result_list <- sets_read(
 )
 ```
 
-The resulting list is now stored in `result_list`. In addition, `sets_read()` created two files in your current directory: `data_all.csv` and `data_samples.csv` with all the data ;) .
+The resulting list is now stored in `result_list`. In addition, `plates_read()` created two files in your current directory: `data_all.csv` and `data_samples.csv` with all the data ;) .
 
-`sets_read()`'s list holds the following items:
+`plates_read()`'s list holds the following items:
 
 -   `$all`: here you will find all the data , including calibrators, duplicates, ... (saved in `data_all.csv`)
 -   `$samples`: only samples here - no calibrators, no duplicates -&gt; most often you will work with this data (saved in `data_samples.csv`)
@@ -349,44 +357,44 @@ Take a look:
 result_list$all
 ```
 
-| position | sample\_id | name | day |  real|  recovery|  plate|    n|    raw|  raw\_mean|  raw\_sd|  raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
-|:---------|:-----------|:-----|:----|-----:|---------:|------:|----:|------:|----------:|--------:|--------:|--------------:|------------------:|------------------:|
-| A1       | CAL2       | CAL2 | NA  |  2000|      1.29|      1|    2|  34997|      36774|   2512.3|     0.07|           2721|             204.08|               0.08|
-| B1       | CAL3       | CAL3 | NA  |  1000|      1.12|      1|    2|  16341|      16110|    326.7|     0.02|           1099|              24.48|               0.02|
-| C1       | CAL4       | CAL4 | NA  |   500|      0.91|      1|    2|   7204|       6772|    610.9|     0.09|            425|              42.04|               0.10|
-| D1       | CAL5       | CAL5 | NA  |   250|      0.70|      1|    2|   3023|       2826|    277.9|     0.10|            163|              17.55|               0.11|
-| E1       | CAL8       | CAL8 | NA  |    31|      0.91|      1|    2|    579|        550|     41.7|     0.08|             27|               2.24|               0.08|
-| F1       | CAL9       | CAL9 | NA  |    16|      1.56|      1|    2|    501|        462|     55.9|     0.12|             22|               2.95|               0.13|
-| A2       | CAL2       | CAL2 | NA  |  2000|      1.43|      1|    2|  38550|      36774|   2512.3|     0.07|           2721|             204.08|               0.08|
-| B2       | CAL3       | CAL3 | NA  |  1000|      1.08|      1|    2|  15879|      16110|    326.7|     0.02|           1099|              24.48|               0.02|
-| C2       | CAL4       | CAL4 | NA  |   500|      0.79|      1|    2|   6340|       6772|    610.9|     0.09|            425|              42.04|               0.10|
-| D2       | CAL5       | CAL5 | NA  |   250|      0.60|      1|    2|   2630|       2826|    277.9|     0.10|            163|              17.55|               0.11|
-| E2       | CAL8       | CAL8 | NA  |    31|      0.81|      1|    2|    520|        550|     41.7|     0.08|             27|               2.24|               0.08|
-| F2       | CAL9       | CAL9 | NA  |    16|      1.29|      1|    2|    422|        462|     55.9|     0.12|             22|               2.95|               0.13|
-| A3       | A\_1       | A    | 1   |    NA|        NA|      1|    2|    638|        618|     27.6|     0.04|             31|               1.50|               0.05|
-| B3       | B\_1       | B    | 1   |    NA|        NA|      1|    2|    648|        658|     13.4|     0.02|             33|               0.74|               0.02|
-| C3       | C\_1       | C    | 1   |    NA|        NA|      1|    2|    667|        721|     76.4|     0.11|             36|               4.22|               0.12|
-| D3       | D\_1       | D    | 1   |    NA|        NA|      1|    2|    491|        500|     13.4|     0.03|             24|               0.72|               0.03|
-| E3       | E\_1       | E    | 1   |    NA|        NA|      1|    2|    618|        623|      7.1|     0.01|             31|               0.39|               0.01|
-| F3       | F\_1       | F    | 1   |    NA|        NA|      1|    2|    589|        598|     13.4|     0.02|             30|               0.73|               0.02|
-| A4       | A\_1       | A    | 1   |    NA|        NA|      1|    2|    599|        618|     27.6|     0.04|             31|               1.50|               0.05|
-| B4       | B\_1       | B    | 1   |    NA|        NA|      1|    2|    667|        658|     13.4|     0.02|             33|               0.74|               0.02|
-| C4       | C\_1       | C    | 1   |    NA|        NA|      1|    2|    775|        721|     76.4|     0.11|             36|               4.22|               0.12|
-| D4       | D\_1       | D    | 1   |    NA|        NA|      1|    2|    510|        500|     13.4|     0.03|             24|               0.72|               0.03|
-| E4       | E\_1       | E    | 1   |    NA|        NA|      1|    2|    628|        623|      7.1|     0.01|             31|               0.39|               0.01|
-| F4       | F\_1       | F    | 1   |    NA|        NA|      1|    2|    608|        598|     13.4|     0.02|             30|               0.73|               0.02|
-| A5       | A\_2       | A    | 2   |    NA|        NA|      1|    2|    736|        770|     48.8|     0.06|             39|               2.71|               0.07|
-| B5       | B\_2       | B    | 2   |    NA|        NA|      1|    2|   1335|       1340|      7.1|     0.01|             72|               0.42|               0.01|
-| C5       | C\_2       | C    | 2   |    NA|        NA|      1|    2|   1276|       1300|     34.6|     0.03|             69|               2.03|               0.03|
-| D5       | D\_2       | D    | 2   |    NA|        NA|      1|    2|    726|        750|     34.6|     0.05|             38|               1.92|               0.05|
-| E5       | E\_2       | E    | 2   |    NA|        NA|      1|    2|   1188|       1124|     90.5|     0.08|             59|               5.22|               0.09|
-| F5       | F\_2       | F    | 2   |    NA|        NA|      1|    2|    520|        544|     34.6|     0.06|             27|               1.86|               0.07|
-| A6       | A\_2       | A    | 2   |    NA|        NA|      1|    2|    805|        770|     48.8|     0.06|             39|               2.71|               0.07|
-| B6       | B\_2       | B    | 2   |    NA|        NA|      1|    2|   1345|       1340|      7.1|     0.01|             72|               0.42|               0.01|
-| C6       | C\_2       | C    | 2   |    NA|        NA|      1|    2|   1325|       1300|     34.6|     0.03|             69|               2.03|               0.03|
-| D6       | D\_2       | D    | 2   |    NA|        NA|      1|    2|    775|        750|     34.6|     0.05|             38|               1.92|               0.05|
-| E6       | E\_2       | E    | 2   |    NA|        NA|      1|    2|   1060|       1124|     90.5|     0.08|             59|               5.22|               0.09|
-| F6       | F\_2       | F    | 2   |    NA|        NA|      1|    2|    569|        544|     34.6|     0.06|             27|               1.86|               0.07|
+|  set| position | sample\_id | name | day |  value|  real|  recovery|    n|    raw|  raw\_mean|  raw\_sd|  raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
+|----:|:---------|:-----------|:-----|:----|------:|-----:|---------:|----:|------:|----------:|--------:|--------:|--------------:|------------------:|------------------:|
+|    1| A1       | CAL2       | CAL2 | NA  |  34997|  2000|      1.29|    2|  34997|      36774|   2512.3|     0.07|           2721|             204.08|               0.08|
+|    1| B1       | CAL3       | CAL3 | NA  |  16341|  1000|      1.12|    2|  16341|      16110|    326.7|     0.02|           1099|              24.48|               0.02|
+|    1| C1       | CAL4       | CAL4 | NA  |   7204|   500|      0.91|    2|   7204|       6772|    610.9|     0.09|            425|              42.04|               0.10|
+|    1| D1       | CAL5       | CAL5 | NA  |   3023|   250|      0.70|    2|   3023|       2826|    277.9|     0.10|            163|              17.55|               0.11|
+|    1| E1       | CAL8       | CAL8 | NA  |    579|    31|      0.91|    2|    579|        550|     41.7|     0.08|             27|               2.24|               0.08|
+|    1| F1       | CAL9       | CAL9 | NA  |    501|    16|      1.56|    2|    501|        462|     55.9|     0.12|             22|               2.95|               0.13|
+|    1| A2       | CAL2       | CAL2 | NA  |  38550|  2000|      1.43|    2|  38550|      36774|   2512.3|     0.07|           2721|             204.08|               0.08|
+|    1| B2       | CAL3       | CAL3 | NA  |  15879|  1000|      1.08|    2|  15879|      16110|    326.7|     0.02|           1099|              24.48|               0.02|
+|    1| C2       | CAL4       | CAL4 | NA  |   6340|   500|      0.79|    2|   6340|       6772|    610.9|     0.09|            425|              42.04|               0.10|
+|    1| D2       | CAL5       | CAL5 | NA  |   2630|   250|      0.60|    2|   2630|       2826|    277.9|     0.10|            163|              17.55|               0.11|
+|    1| E2       | CAL8       | CAL8 | NA  |    520|    31|      0.81|    2|    520|        550|     41.7|     0.08|             27|               2.24|               0.08|
+|    1| F2       | CAL9       | CAL9 | NA  |    422|    16|      1.29|    2|    422|        462|     55.9|     0.12|             22|               2.95|               0.13|
+|    1| A3       | A\_1       | A    | 1   |    638|    NA|        NA|    2|    638|        618|     27.6|     0.04|             31|               1.50|               0.05|
+|    1| B3       | B\_1       | B    | 1   |    648|    NA|        NA|    2|    648|        658|     13.4|     0.02|             33|               0.74|               0.02|
+|    1| C3       | C\_1       | C    | 1   |    667|    NA|        NA|    2|    667|        721|     76.4|     0.11|             36|               4.22|               0.12|
+|    1| D3       | D\_1       | D    | 1   |    491|    NA|        NA|    2|    491|        500|     13.4|     0.03|             24|               0.72|               0.03|
+|    1| E3       | E\_1       | E    | 1   |    618|    NA|        NA|    2|    618|        623|      7.1|     0.01|             31|               0.39|               0.01|
+|    1| F3       | F\_1       | F    | 1   |    589|    NA|        NA|    2|    589|        598|     13.4|     0.02|             30|               0.73|               0.02|
+|    1| A4       | A\_1       | A    | 1   |    599|    NA|        NA|    2|    599|        618|     27.6|     0.04|             31|               1.50|               0.05|
+|    1| B4       | B\_1       | B    | 1   |    667|    NA|        NA|    2|    667|        658|     13.4|     0.02|             33|               0.74|               0.02|
+|    1| C4       | C\_1       | C    | 1   |    775|    NA|        NA|    2|    775|        721|     76.4|     0.11|             36|               4.22|               0.12|
+|    1| D4       | D\_1       | D    | 1   |    510|    NA|        NA|    2|    510|        500|     13.4|     0.03|             24|               0.72|               0.03|
+|    1| E4       | E\_1       | E    | 1   |    628|    NA|        NA|    2|    628|        623|      7.1|     0.01|             31|               0.39|               0.01|
+|    1| F4       | F\_1       | F    | 1   |    608|    NA|        NA|    2|    608|        598|     13.4|     0.02|             30|               0.73|               0.02|
+|    1| A5       | A\_2       | A    | 2   |    736|    NA|        NA|    2|    736|        770|     48.8|     0.06|             39|               2.71|               0.07|
+|    1| B5       | B\_2       | B    | 2   |   1335|    NA|        NA|    2|   1335|       1340|      7.1|     0.01|             72|               0.42|               0.01|
+|    1| C5       | C\_2       | C    | 2   |   1276|    NA|        NA|    2|   1276|       1300|     34.6|     0.03|             69|               2.03|               0.03|
+|    1| D5       | D\_2       | D    | 2   |    726|    NA|        NA|    2|    726|        750|     34.6|     0.05|             38|               1.92|               0.05|
+|    1| E5       | E\_2       | E    | 2   |   1188|    NA|        NA|    2|   1188|       1124|     90.5|     0.08|             59|               5.22|               0.09|
+|    1| F5       | F\_2       | F    | 2   |    520|    NA|        NA|    2|    520|        544|     34.6|     0.06|             27|               1.86|               0.07|
+|    1| A6       | A\_2       | A    | 2   |    805|    NA|        NA|    2|    805|        770|     48.8|     0.06|             39|               2.71|               0.07|
+|    1| B6       | B\_2       | B    | 2   |   1345|    NA|        NA|    2|   1345|       1340|      7.1|     0.01|             72|               0.42|               0.01|
+|    1| C6       | C\_2       | C    | 2   |   1325|    NA|        NA|    2|   1325|       1300|     34.6|     0.03|             69|               2.03|               0.03|
+|    1| D6       | D\_2       | D    | 2   |    775|    NA|        NA|    2|    775|        750|     34.6|     0.05|             38|               1.92|               0.05|
+|    1| E6       | E\_2       | E    | 2   |   1060|    NA|        NA|    2|   1060|       1124|     90.5|     0.08|             59|               5.22|               0.09|
+|    1| F6       | F\_2       | F    | 2   |    569|    NA|        NA|    2|    569|        544|     34.6|     0.06|             27|               1.86|               0.07|
 
 ``` r
 result_list$samples
@@ -423,7 +431,7 @@ The lowest calibrator ("CAL9") does not seem to fit to well. So perhaps you get 
 
 ``` r
 # now you may run it :)
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -443,8 +451,8 @@ Take a look at the fit of the line:
 ``` r
 # try it
 result_list$plate1$plot
-#> Warning: Removed 26 rows containing non-finite values (stat_smooth).
-#> Warning: Removed 26 rows containing missing values (geom_point).
+#> Warning: Removed 24 rows containing non-finite values (stat_smooth).
+#> Warning: Removed 24 rows containing missing values (geom_point).
 ```
 
 ![](README-unnamed-chunk-33-1.png)
@@ -494,20 +502,20 @@ my_data
 
 | position | sample\_id | name | day |  plate|    n|   raw|  raw\_sd|  raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
 |:---------|:-----------|:-----|:----|------:|----:|-----:|--------:|--------:|--------------:|------------------:|------------------:|
-| A3       | A\_1       | A    | 1   |      1|    2|   618|     27.6|     0.04|             42|               1.85|               0.04|
-| B3       | B\_1       | B    | 1   |      1|    2|   658|     13.4|     0.02|             44|               0.90|               0.02|
-| C3       | C\_1       | C    | 1   |      1|    2|   721|     76.4|     0.11|             49|               5.10|               0.10|
-| D3       | D\_1       | D    | 1   |      1|    2|   500|     13.4|     0.03|             34|               0.90|               0.03|
-| E3       | E\_1       | E    | 1   |      1|    2|   623|      7.1|     0.01|             42|               0.47|               0.01|
-| F3       | F\_1       | F    | 1   |      1|    2|   598|     13.4|     0.02|             40|               0.90|               0.02|
-| A5       | A\_2       | A    | 2   |      1|    2|   770|     48.8|     0.06|             52|               3.26|               0.06|
-| B5       | B\_2       | B    | 2   |      1|    2|  1340|      7.1|     0.01|             90|               0.47|               0.01|
-| C5       | C\_2       | C    | 2   |      1|    2|  1300|     34.6|     0.03|             87|               2.30|               0.03|
-| D5       | D\_2       | D    | 2   |      1|    2|   750|     34.6|     0.05|             51|               2.31|               0.05|
-| E5       | E\_2       | E    | 2   |      1|    2|  1124|     90.5|     0.08|             76|               6.02|               0.08|
-| F5       | F\_2       | F    | 2   |      1|    2|   544|     34.6|     0.06|             37|               2.32|               0.06|
+| A3       | A\_1       | A    | 1   |      1|    2|   618|     27.6|     0.04|             31|               1.50|               0.05|
+| B3       | B\_1       | B    | 1   |      1|    2|   658|     13.4|     0.02|             33|               0.74|               0.02|
+| C3       | C\_1       | C    | 1   |      1|    2|   721|     76.4|     0.11|             36|               4.22|               0.12|
+| D3       | D\_1       | D    | 1   |      1|    2|   500|     13.4|     0.03|             24|               0.72|               0.03|
+| E3       | E\_1       | E    | 1   |      1|    2|   623|      7.1|     0.01|             31|               0.39|               0.01|
+| F3       | F\_1       | F    | 1   |      1|    2|   598|     13.4|     0.02|             30|               0.73|               0.02|
+| A5       | A\_2       | A    | 2   |      1|    2|   770|     48.8|     0.06|             39|               2.71|               0.07|
+| B5       | B\_2       | B    | 2   |      1|    2|  1340|      7.1|     0.01|             72|               0.42|               0.01|
+| C5       | C\_2       | C    | 2   |      1|    2|  1300|     34.6|     0.03|             69|               2.03|               0.03|
+| D5       | D\_2       | D    | 2   |      1|    2|   750|     34.6|     0.05|             38|               1.92|               0.05|
+| E5       | E\_2       | E    | 2   |      1|    2|  1124|     90.5|     0.08|             59|               5.22|               0.09|
+| F5       | F\_2       | F    | 2   |      1|    2|   544|     34.6|     0.06|             27|               1.86|               0.07|
 
-This time the result was stored. Be careful when overwriting data. You can always go back and run `sets_read()` again :).
+This time the result was stored. Be careful when overwriting data. You can always go back and run `plates_read()` again :).
 
 Now, given the concentration of your calibrators was in "ng / ml" but your editor wants you to use SI units you could convert the concentrations like this:
 
@@ -522,18 +530,18 @@ my_data
 
 | position | sample\_id | name | day |  plate|    n|   raw|  raw\_sd|  raw\_cv|  concentration|  concentration\_sd|  concentration\_cv|
 |:---------|:-----------|:-----|:----|------:|----:|-----:|--------:|--------:|--------------:|------------------:|------------------:|
-| A3       | A\_1       | A    | 1   |      1|    2|   618|     27.6|     0.04|           0.80|               1.85|               0.04|
-| B3       | B\_1       | B    | 1   |      1|    2|   658|     13.4|     0.02|           0.85|               0.90|               0.02|
-| C3       | C\_1       | C    | 1   |      1|    2|   721|     76.4|     0.11|           0.93|               5.10|               0.10|
-| D3       | D\_1       | D    | 1   |      1|    2|   500|     13.4|     0.03|           0.65|               0.90|               0.03|
-| E3       | E\_1       | E    | 1   |      1|    2|   623|      7.1|     0.01|           0.80|               0.47|               0.01|
-| F3       | F\_1       | F    | 1   |      1|    2|   598|     13.4|     0.02|           0.77|               0.90|               0.02|
-| A5       | A\_2       | A    | 2   |      1|    2|   770|     48.8|     0.06|           0.99|               3.26|               0.06|
-| B5       | B\_2       | B    | 2   |      1|    2|  1340|      7.1|     0.01|           1.72|               0.47|               0.01|
-| C5       | C\_2       | C    | 2   |      1|    2|  1300|     34.6|     0.03|           1.67|               2.30|               0.03|
-| D5       | D\_2       | D    | 2   |      1|    2|   750|     34.6|     0.05|           0.97|               2.31|               0.05|
-| E5       | E\_2       | E    | 2   |      1|    2|  1124|     90.5|     0.08|           1.44|               6.02|               0.08|
-| F5       | F\_2       | F    | 2   |      1|    2|   544|     34.6|     0.06|           0.70|               2.32|               0.06|
+| A3       | A\_1       | A    | 1   |      1|    2|   618|     27.6|     0.04|           0.59|               1.50|               0.05|
+| B3       | B\_1       | B    | 1   |      1|    2|   658|     13.4|     0.02|           0.63|               0.74|               0.02|
+| C3       | C\_1       | C    | 1   |      1|    2|   721|     76.4|     0.11|           0.69|               4.22|               0.12|
+| D3       | D\_1       | D    | 1   |      1|    2|   500|     13.4|     0.03|           0.46|               0.72|               0.03|
+| E3       | E\_1       | E    | 1   |      1|    2|   623|      7.1|     0.01|           0.59|               0.39|               0.01|
+| F3       | F\_1       | F    | 1   |      1|    2|   598|     13.4|     0.02|           0.56|               0.73|               0.02|
+| A5       | A\_2       | A    | 2   |      1|    2|   770|     48.8|     0.06|           0.74|               2.71|               0.07|
+| B5       | B\_2       | B    | 2   |      1|    2|  1340|      7.1|     0.01|           1.37|               0.42|               0.01|
+| C5       | C\_2       | C    | 2   |      1|    2|  1300|     34.6|     0.03|           1.32|               2.03|               0.03|
+| D5       | D\_2       | D    | 2   |      1|    2|   750|     34.6|     0.05|           0.72|               1.92|               0.05|
+| E5       | E\_2       | E    | 2   |      1|    2|  1124|     90.5|     0.08|           1.13|               5.22|               0.09|
+| F5       | F\_2       | F    | 2   |      1|    2|   544|     34.6|     0.06|           0.51|               1.86|               0.07|
 
 Or you could create a plot like this:
 
@@ -546,9 +554,7 @@ ggplot(data = my_data, aes(x = name, y = concentration, colour = name)) +
   # plot each value as a point
   geom_point() +
   # draw a sub-plot (facet) for each day
-  facet_wrap(~day) +
-  # add a nice black and white theme
-  global_theme
+  facet_wrap(~day)
 ```
 
 ![](README-unnamed-chunk-41-1.png)
@@ -564,13 +570,15 @@ ggplot(data = my_data, aes(x = day, y = concentration)) +
   # draw boxplots
   geom_boxplot() +
   # draw each value as a point over the boxplot
-  geom_jitter(width = 0.2) +
-  # you could try
-  # geom_point() as well ;)
-  global_theme
+  geom_jitter(width = 0.2)
 ```
 
 ![](README-unnamed-chunk-42-1.png)
+
+``` r
+  # you could try
+  # geom_point() as well ;)
+```
 
 Where to get help
 -----------------
@@ -598,7 +606,7 @@ Your calibrators are linear? You can use: `model_func = fit_linear` and `interpo
 
 ``` r
 # try it but the result wont be as good
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -619,4 +627,4 @@ result_list$plate1$plot
 
 ### Data sets are stored somewhere else
 
-Your files are stored somewhere else? Just set `path = path/to/your/files` as a parameter for `sets_read()`.
+Your files are stored somewhere else? Just set `path = path/to/your/files` as a parameter for `plates_read()`.

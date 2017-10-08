@@ -14,5 +14,12 @@ knitr::opts_chunk$set(
 
 # eenv
 
+## Note
+
+`eenv` is somewhat intrusive, it:
+
+  * sets options: `scipen = 18`, `digits = 2`
+  * sets your default ggplot2 theme
+
 ```{r, child = "vignettes/introduction.Rmd"}
 ```

@@ -15,7 +15,7 @@ Default background colour.
 Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{colour_tert}}, \code{\link{global_plot_dim}},
+  \code{\link{colour_tert}}, \code{\link{eenv_plot_dim}},
   \code{\link{save_plots}}
 }
 \keyword{datasets}

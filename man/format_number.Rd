@@ -4,9 +4,9 @@
 \alias{format_number}
 \title{Format a number for displaying.}
 \usage{
-format_number(x, type = "float", decimals = global_decimals,
-  signif_digits = global_signif_digits,
-  signif_bottom = global_signif_bottom, force_perc_decimals = FALSE)
+format_number(x, type = "float", decimals = eenv_decimals,
+  signif_digits = eenv_signif_digits, signif_bottom = eenv_signif_bottom,
+  force_perc_decimals = FALSE)
 }
 \arguments{
 \item{x}{The number to format.}
@@ -27,14 +27,14 @@ percentages.}
 A string.
 }
 \description{
-This function respects \link{global_signif_digits}, \link{global_signif_bottom},
-\link{global_decimals} as default.
+This function respects \link{eenv_signif_digits}, \link{eenv_signif_bottom},
+\link{eenv_decimals} as default.
 }
 \seealso{
-Other variables and functions for displaying numbers: \code{\link{format_float}},
-  \code{\link{format_int}}, \code{\link{format_pad}},
-  \code{\link{format_perc}}, \code{\link{format_p}},
-  \code{\link{global_decimals}},
-  \code{\link{global_signif_bottom}},
-  \code{\link{global_signif_digits}}
+Other variables and functions for displaying numbers: \code{\link{eenv_decimals}},
+  \code{\link{eenv_signif_bottom}},
+  \code{\link{eenv_signif_digits}},
+  \code{\link{format_float}}, \code{\link{format_int}},
+  \code{\link{format_pad}}, \code{\link{format_perc}},
+  \code{\link{format_p}}
 }
