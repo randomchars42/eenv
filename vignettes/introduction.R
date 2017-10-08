@@ -325,9 +325,7 @@ ggplot(data = my_data, aes(x = name, y = concentration, colour = name)) +
   # plot each value as a point
   geom_point() +
   # draw a sub-plot (facet) for each day
-  facet_wrap(~day) +
-  # add a nice black and white theme
-  global_theme
+  facet_wrap(~day)
 
 ## ------------------------------------------------------------------------
 # try it
@@ -338,10 +336,9 @@ ggplot(data = my_data, aes(x = day, y = concentration)) +
   # draw boxplots
   geom_boxplot() +
   # draw each value as a point over the boxplot
-  geom_jitter(width = 0.2) +
+  geom_jitter(width = 0.2)
   # you could try
   # geom_point() as well ;)
-  global_theme
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # try it but the result wont be as good
