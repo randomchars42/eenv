@@ -8,7 +8,7 @@ core_packages <- c("tidyverse", "gmodels", "cowplot", "knitr", "rmarkdown", "bio
   sapply(core_packages, library, character.only = TRUE, warn.conflicts = FALSE)
 
   # re-create theme to update ggplot2-defaults
-  ggplot2::theme_set(create_theme())
+  ggplot2::theme_set(eenv::create_eenv_theme())
 
   options(scipen = 18, digits = 2)
 

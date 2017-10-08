@@ -12,7 +12,7 @@
 #' @param legend_pos Where to put the legend ("top", "right", "left", "bottom").
 #' @return The theme.
 #'
-create_theme <- function(
+create_eenv_theme <- function(
   base_size = 10,
   base_family = "Helvetica",
   base_colour_fg = colour_base,
@@ -149,7 +149,7 @@ create_theme <- function(
 #' @family theme-related functions and objects
 #'
 eenv_theme <- list(
-  create_theme(),
+  create_eenv_theme(),
   ggplot2::scale_colour_manual(values = colour_palette),
   ggplot2::scale_fill_manual(values = colour_palette)
 )

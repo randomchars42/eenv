@@ -14,8 +14,8 @@ Default colour for dots / axes / text ... (dark grey).
 \seealso{
 Other theme-related functions and objects: \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{colour_tert}}, \code{\link{create_theme}},
-  \code{\link{eenv_theme}}
+  \code{\link{colour_tert}},
+  \code{\link{create_eenv_theme}}, \code{\link{eenv_theme}}
 
 Other variables and functions for plotting: \code{\link{colour_bg}},
   \code{\link{colour_palette}},

@@ -15,6 +15,7 @@ A conservative theme with default colours in black and white.
 Other theme-related functions and objects: \code{\link{colour_base}},
   \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{colour_tert}}, \code{\link{create_theme}}
+  \code{\link{colour_tert}},
+  \code{\link{create_eenv_theme}}
 }
 \keyword{datasets}

@@ -15,7 +15,7 @@ The colour to use if more than 2 colours are needed (even brighter grey).
 Other theme-related functions and objects: \code{\link{colour_base}},
   \code{\link{colour_palette}},
   \code{\link{colour_secondary}},
-  \code{\link{create_theme}}, \code{\link{eenv_theme}}
+  \code{\link{create_eenv_theme}}, \code{\link{eenv_theme}}
 
 Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_bg}}, \code{\link{colour_palette}},
