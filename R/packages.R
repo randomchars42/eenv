@@ -5,8 +5,8 @@
 #'
 update_homegrown_packages <- function() {
   if (package_available(package = "devtools")) {
-    devtools::install_github("randomchars42/bioset")
-    devtools::install_github("randomchars42/eenv")
+    devtools::install_github("randomchars42/bioset", build_vignettes = TRUE)
+    devtools::install_github("randomchars42/eenv", build_vignettes = TRUE)
   }
 }
 
