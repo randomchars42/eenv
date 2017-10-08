@@ -2,8 +2,8 @@
 #' Format a number for displaying.
 #'
 #' @description
-#' This function respects [global_signif_digits], [global_signif_bottom],
-#' [global_decimals] as default.
+#' This function respects [eenv_signif_digits], [eenv_signif_bottom],
+#' [eenv_decimals] as default.
 #'
 #' @export
 #' @family variables and functions for displaying numbers
@@ -20,9 +20,9 @@
 format_number <- function(
   x,
   type = "float",
-  decimals = global_decimals,
-  signif_digits = global_signif_digits,
-  signif_bottom = global_signif_bottom,
+  decimals = eenv_decimals,
+  signif_digits = eenv_signif_digits,
+  signif_bottom = eenv_signif_bottom,
   force_perc_decimals = FALSE) {
 
   if (type == "int") {
@@ -74,7 +74,7 @@ format_int <- function(x) {
 #'
 format_perc <- function(
   x,
-  decimals = global_decimals,
+  decimals = eenv_decimals,
   force_perc_decimals = FALSE) {
 
   x <- x * 100
@@ -98,7 +98,7 @@ format_perc <- function(
 #' @inheritParams format_number
 #' @return A string.
 #'
-format_float <- function(x, decimals = global_decimals) {
+format_float <- function(x, decimals = eenv_decimals) {
   scipen <- getOption("scipen")
   options(scipen = 999)
   x <- as.character(round(x, decimals))
@@ -141,8 +141,8 @@ format_float <- function(x, decimals = global_decimals) {
 #'
 format_p <- function(
   x,
-  signif_digits = global_signif_digits,
-  signif_bottom = global_signif_bottom) {
+  signif_digits = eenv_signif_digits,
+  signif_bottom = eenv_signif_bottom) {
 
   scipen <- getOption("scipen")
   options(scipen = 999)

@@ -5,12 +5,12 @@
 #' @family variables and functions for plotting
 #' @param plots Either single ggplot or list of plots.
 #' @param name The name of the plot.
-#' @param dimensions List of settings to use, see [global_plot_dim].
+#' @param dimensions List of settings to use, see [eenv_plot_dim].
 #' @param theme The theme to use (for letters, etc.)
-#' @param width The width (see [global_plot_dim]) to use,
+#' @param width The width (see [eenv_plot_dim]) to use,
 #'   `NULL` means auto.
 #' @param height The height as multiple of `dimensions$height`
-#'   (see [global_plot_dim]) to use, `NULL` means auto.
+#'   (see [eenv_plot_dim]) to use, `NULL` means auto.
 #' @param columns The number of columns to use, `NULL` means auto. Begins a
 #'   new row of plots if the number of plots exceeds `dimensions$columns_max`.
 #' @return The final plot.
@@ -18,8 +18,8 @@
 save_plots <- function(
   plots,
   name,
-  dimensions = global_plot_dim,
-  theme = global_theme[[1]],
+  dimensions = eenv_plot_dim,
+  theme = eenv_theme[[1]],
   width = NULL,
   height = NULL,
   columns = NULL) {

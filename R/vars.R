@@ -3,14 +3,14 @@
 #'
 #' @export
 #'
-global_confidence_level <- 0.95
+eenv_confidence_level <- 0.95
 
 #'
 #' The default alpha used in functions of this package.
 #'
 #' @export
 #'
-global_alpha <- 1 - global_confidence_level
+eenv_alpha <- 1 - eenv_confidence_level
 
 #'
 #' The number of non-zero digits to display for p-values.
@@ -18,7 +18,7 @@ global_alpha <- 1 - global_confidence_level
 #' @export
 #' @family variables and functions for displaying numbers
 #'
-global_signif_digits <- 2
+eenv_signif_digits <- 2
 
 #'
 #' The number below which "< NUMBER" is displayed for p-values.
@@ -26,7 +26,7 @@ global_signif_digits <- 2
 #' @export
 #' @family variables and functions for displaying numbers
 #'
-global_signif_bottom <- 0.0001
+eenv_signif_bottom <- 0.0001
 
 #'
 #' The number of digits to round to (not for p-values).
@@ -34,7 +34,7 @@ global_signif_bottom <- 0.0001
 #' @export
 #' @family variables and functions for displaying numbers
 #'
-global_decimals <- 1
+eenv_decimals <- 1
 
 #'
 #' Default settings for [save_plots()].
@@ -56,7 +56,7 @@ global_decimals <- 1
 #' @seealso [cowplot::plot_grid()]
 #' @family variables and functions for plotting
 #'
-global_plot_dim <- list(
+eenv_plot_dim <- list(
   "dpi" = 1200,
   "format" = c("pdf", "svg"),
   "units" = "in",
