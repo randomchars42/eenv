@@ -7,10 +7,12 @@ test_that("biosets are read correctly", {
       "CAL10")
   calibrator_values <- exp(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
   sets <-
-    sets_read(
+    plates_read(
       plates = 2,
       cal_names = calibrator_names,
-      cal_values = calibrator_values)
+      cal_values = calibrator_values,
+      write_data = FALSE,
+      use_written_data = FALSE)
 
   expect_true(is.tibble(sets$all))
 })

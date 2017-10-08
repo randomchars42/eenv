@@ -49,7 +49,7 @@ knitr::kable(
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
-#  sets_read(
+#  plates_read(
 #    additional_vars = c("name")
 #  )
 
@@ -67,7 +67,7 @@ knitr::kable(
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
-#  sets_read(
+#  plates_read(
 #    additional_vars = c("name", "day")
 #  )
 
@@ -104,7 +104,7 @@ fibonacci
 #    4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
 #  )
 #  
-#  sets_read(
+#  plates_read(
 #    additional_vars = c("name", "day"),
 #    cal_names = calibrator_names,
 #    cal_values = calibrator_values
@@ -112,7 +112,7 @@ fibonacci
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
-#  sets_read(
+#  plates_read(
 #    additional_vars = c("name", "day"),
 #    cal_names = c(
 #      "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
@@ -125,7 +125,7 @@ fibonacci
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
-#  sets_read(
+#  plates_read(
 #    plates = 1,
 #    additional_vars = c("name", "day"),
 #    cal_names = c(
@@ -153,7 +153,7 @@ fibonacci
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
-#  sets_read(
+#  plates_read(
 #    plates = 1,
 #    sep = ";",
 #    additional_vars = c("name", "day"),
@@ -190,7 +190,7 @@ my_list$age
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # now you may run it :)
-#  result_list <- sets_read(
+#  result_list <- plates_read(
 #    plates = 1,
 #    sep = ";",
 #    additional_vars = c("name", "day"),
@@ -204,7 +204,7 @@ my_list$age
 #  )
 
 ## ---- echo = FALSE-------------------------------------------------------
-result_list <- eenv::sets_read(
+result_list <- eenv::plates_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -215,7 +215,9 @@ result_list <- eenv::sets_read(
   ),
   cal_values = c(
     4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
-  )
+  ),
+  write_data = FALSE,
+  use_written_data = FALSE
 )
 
 ## ---- eval = FALSE-------------------------------------------------------
@@ -235,7 +237,7 @@ result_list$plate1$plot
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # now you may run it :)
-#  result_list <- sets_read(
+#  result_list <- plates_read(
 #    plates = 1,
 #    sep = ";",
 #    additional_vars = c("name", "day"),
@@ -250,7 +252,7 @@ result_list$plate1$plot
 #  )
 
 ## ---- echo = FALSE-------------------------------------------------------
-result_list <- eenv::sets_read(
+result_list <- eenv::plates_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -262,7 +264,9 @@ result_list <- eenv::sets_read(
   cal_values = c(
     4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
   ),
-  exclude_cals =  list(plate1 = c("CAL9"))
+  exclude_cals =  list(plate1 = c("CAL9")),
+  write_data = FALSE,
+  use_written_data = FALSE
 )
 
 ## ------------------------------------------------------------------------
@@ -341,7 +345,7 @@ ggplot(data = my_data, aes(x = day, y = concentration)) +
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # try it but the result wont be as good
-#  result_list <- sets_read(
+#  result_list <- plates_read(
 #    plates = 1,
 #    sep = ";",
 #    additional_vars = c("name", "day"),

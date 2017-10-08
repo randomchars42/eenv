@@ -29,6 +29,7 @@ plates_read <- function(
   additional_vars = c("name"),
   additional_sep = "_",
   sep = ",",
+  dec = "AUTO",
   path = ".",
   file_name = "plate_#NUM#.csv",
   model_func = bioset::fit_lnln,
@@ -52,8 +53,8 @@ plates_read <- function(
     cal_names = cal_names,
     cal_values = cal_values,
     exclude_cals = exclude_cals_set,
-    additional_vars = c("name"),
-    additional_sep = "_",
+    additional_vars = additional_vars,
+    additional_sep = additional_sep,
     sep = sep,
     dec = dec,
     path = path,
@@ -67,12 +68,15 @@ plates_read <- function(
 
   for (i in 1 : plates) {
     if (! is.null(result_sets[[paste0("set", i)]])){
-      results[[paste0("plate", i)]] <- list(result_sets[[paste0("set", i)]])
+      results[[paste0("plate", i)]] <- list(
+        plot = result_sets[[paste0("set", i)]]$plot,
+        model = result_sets[[paste0("set", i)]]$model
+      )
     }
   }
 
-  results$all <- list(result_sets$all)
-  results$samples <- list(result_sets$samples)
+  results$all <- tibble::as.tibble(result_sets$all)
+  results$samples <- tibble::as.tibble(result_sets$samples)
 
   return(results)
 }

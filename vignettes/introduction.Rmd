@@ -90,11 +90,11 @@ knitr::kable(
   col.names = as.character(1:6))
 ```
 
-Tell `sets_read()` your data contains the names and which column should hold those names by setting `additional_vars = c("name")`.
+Tell `plates_read()` your data contains the names and which column should hold those names by setting `additional_vars = c("name")`.
 
 ```{r, eval = FALSE}
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name")
 )
 ```
@@ -122,18 +122,18 @@ knitr::kable(
 
 So now the name and the day are in the same field, separated by `"_"`. (So make sure the original names do not contain `"_"` or there will be trouble.. ;) )
 
-Tell `sets_read()` your data contains the names and day by setting `additional_vars = c("name", "day")`:
+Tell `plates_read()` your data contains the names and day by setting `additional_vars = c("name", "day")`:
 
 ```{r, eval = FALSE}
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name", "day")
 )
 ```
 
 ### Calculating concentrations
 
-So, your measuring device only gave you raw values (extinction rates / relative light units / ...), but you know the concentrations of `CAL1`, `CAL2`, `CAL3` and `CAL4`. To get the concentrations for the rest of the samples you need to tell `sets_read()` which samples are your calibrators and what their actual concentration is.
+So, your measuring device only gave you raw values (extinction rates / relative light units / ...), but you know the concentrations of `CAL1`, `CAL2`, `CAL3` and `CAL4`. To get the concentrations for the rest of the samples you need to tell `plates_read()` which samples are your calibrators and what their actual concentration is.
 
 You do this via `cal_names` and `cal_values`. Both expect a `vector` (that's a series of text strings / numbers / values...). You can create a vector using `c()`. Just put whatever you like in its arguments:
 
@@ -165,7 +165,7 @@ calibrator_values = c(
 )
 ```
 
-Tell `sets_read()` about it:
+Tell `plates_read()` about it:
 
 ```{r, eval = FALSE}
 # do not run this code yet
@@ -179,7 +179,7 @@ calibrator_values = c(
   4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
 )
 
-sets_read(
+plates_read(
   additional_vars = c("name", "day"),
   cal_names = calibrator_names,
   cal_values = calibrator_values
@@ -190,7 +190,7 @@ The same, but a bit shorter:
 
 ```{r, eval = FALSE}
 # do not run this code yet
-sets_read(
+plates_read(
   additional_vars = c("name", "day"),
   cal_names = c(
     "CAL1", "CAL2", "CAL3", "CAL4", "CAL5", "CAL6", "CAL7", "CAL8", "CAL9",
@@ -204,13 +204,13 @@ sets_read(
 
 ### Getting the data into the programme
 
-`sets_read()` automagically reads `plate_1.csv` in your current directory. If you have data from more than one plate use `plates = 2` to read `plate1.csv` AND `plate2.csv`. You can read as much plates as you like, as long as their numbers are in a sequence and no numbers are missing.
+`plates_read()` automagically reads `plate_1.csv` in your current directory. If you have data from more than one plate use `plates = 2` to read `plate1.csv` AND `plate2.csv`. You can read as much plates as you like, as long as their numbers are in a sequence and no numbers are missing.
 
-For now, tell `sets_read()` to read only your first plate:
+For now, tell `plates_read()` to read only your first plate:
 
 ```{r, eval = FALSE}
 # do not run this code yet
-sets_read(
+plates_read(
   plates = 1,
   additional_vars = c("name", "day"),
   cal_names = c(
@@ -242,11 +242,11 @@ if (! file.exists("plate_1.csv")) {
 }i
 ```
 
-One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `sets_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
+One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `plates_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
 
 ```{r, eval = FALSE}
 # do not run this code yet
-sets_read(
+plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -262,7 +262,7 @@ sets_read(
 
 ### Working with the results
 
-`sets_read()` does a lot and wants to tell you about it:
+`plates_read()` does a lot and wants to tell you about it:
 
 * reads the data, sorts it, calculates concentrations, calculates how good your duplicates were, ...
 * creates a data table (called `"tibble"` or `"tbl"` for short) with all the values it calculated
@@ -304,11 +304,11 @@ my_list$age <- 30
 my_list$age
 ```
 
-Now its time to run `sets_read()`:
+Now its time to run `plates_read()`:
 
 ```{r, eval = FALSE}
 # now you may run it :)
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -323,7 +323,7 @@ result_list <- sets_read(
 ```
 
 ```{r, echo = FALSE}
-result_list <- eenv::sets_read(
+result_list <- eenv::plates_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -334,14 +334,16 @@ result_list <- eenv::sets_read(
   ),
   cal_values = c(
     4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
-  )
+  ),
+  write_data = FALSE,
+  use_written_data = FALSE
 )
 ```
 
-The resulting list is now stored in `result_list`. In addition, `sets_read()` created two files in your current directory:
+The resulting list is now stored in `result_list`. In addition, `plates_read()` created two files in your current directory:
 `data_all.csv` and `data_samples.csv` with all the data ;) .
 
-`sets_read()`'s list holds the following items: 
+`plates_read()`'s list holds the following items: 
 
 * `$all`: here you will find all the data , including calibrators, duplicates, ... (saved in `data_all.csv`)
 * `$samples`: only samples here - no calibrators, no duplicates -> most often you will work with this data  (saved in `data_samples.csv`)
@@ -382,7 +384,7 @@ The lowest calibrator ("CAL9") does not seem to fit to well. So perhaps you get 
 
 ```{r, eval = FALSE}
 # now you may run it :)
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -398,7 +400,7 @@ result_list <- sets_read(
 ```
 
 ```{r, echo = FALSE}
-result_list <- eenv::sets_read(
+result_list <- eenv::plates_read(
   plates = 1,
   sep = ";",
   path = system.file("extdata", package = "eenv"),
@@ -410,7 +412,9 @@ result_list <- eenv::sets_read(
   cal_values = c(
     4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125
   ),
-  exclude_cals =  list(plate1 = c("CAL9"))
+  exclude_cals =  list(plate1 = c("CAL9")),
+  write_data = FALSE,
+  use_written_data = FALSE
 )
 ```
 
@@ -465,7 +469,7 @@ my_data <- my_data %>%
 knitr::kable(my_data)
 ```
 
-This time the result was stored. Be careful when overwriting data. You can always go back and run `sets_read()` again :).
+This time the result was stored. Be careful when overwriting data. You can always go back and run `plates_read()` again :).
 
 Now, given the concentration of your calibrators was in "ng / ml" but your editor wants you to use SI units you could convert the concentrations like this:
 
@@ -545,7 +549,7 @@ Your calibrators are linear? You can use: `model_func = fit_linear` and `interpo
 
 ```{r, eval = FALSE}
 # try it but the result wont be as good
-result_list <- sets_read(
+result_list <- plates_read(
   plates = 1,
   sep = ";",
   additional_vars = c("name", "day"),
@@ -566,4 +570,4 @@ result_list$plate1$plot
 
 ### Data sets are stored somewhere else
 
-Your files are stored somewhere else? Just set `path = path/to/your/files` as a parameter for `sets_read()`.
+Your files are stored somewhere else? Just set `path = path/to/your/files` as a parameter for `plates_read()`.
