@@ -15,18 +15,13 @@
 #'   `plate_2.csv`, `plate_3.csv`), see `file_name`.
 #' @param exclude_cals A list of calibrators to exclude, e.g.:
 #'   `list(plate1 = c("CAL1"))`.
-#' @param plot_func Function used to display the fitted line.
 #' @param file_name Naming scheme for the files. The default is
 #'   `plate_#NUM#.csv`, where `#NUM#` gets replaced by the number of the plates,
 #'   see `plates`. The filename must contain `#NUM#`.
-#' @param write_data Write the  calculated data into `data_all.csv` and
-#'   `data_samples.csv`?
-#' @inheritParams bioset::set_read
-#' @inheritParams bioset::set_calc_concentrations
-#' @inheritParams bioset::set_calc_variability
+#' @inheritParams bioset::sets_read
 #' @return A list of params.
 #'
-sets_read <- function(
+plates_read <- function(
   plates,
   cal_names,
   cal_values,
@@ -39,177 +34,61 @@ sets_read <- function(
   model_func = bioset::fit_lnln,
   plot_func = bioset::plot_lnln,
   interpolate_func = bioset::interpolate_lnln,
-  write_data = TRUE
+  write_data = TRUE,
+  use_written_data = TRUE
 ) {
-  `%>%` <- magrittr::`%>%`
-
-  stopifnot(
-    is_number(plates),
-    is.vector(cal_names),
-    is.vector(cal_values),
-    length(cal_names) == length(cal_values),
-    is.list(exclude_cals),
-    is.vector(additional_vars),
-    is.character(additional_sep),
-    is.character(sep),
-    is.character(path),
-    is.character(file_name),
-    is.function(model_func),
-    is.function(plot_func),
-    is.function(interpolate_func)
-  )
-
   results <- list()
+  exclude_cals_set <- list()
 
   for (i in 1 : plates) {
-
-    test_file_name <- gsub(pattern = "#NUM#", replacement = i, x = file_name)
-    test_file_name <- normalizePath(file.path(path, test_file_name))
-
-    if (!file.exists(test_file_name)) {
-      message(paste0(
-        "Cannot find file \"", test_file_name,
-        "\". Please check path (must not end with \"/\") ",
-        "and name_scheme (must contain \"#NUM#\")"))
-      next()
+    if (! is.null(exclude_cals[[paste0("plate", i)]])){
+      exclude_cals_set[[paste0("set", i)]] <-
+        list(exclude_cals_set[[paste0("plate", i)]])
     }
-
-    data_plate <-
-      bioset::set_read(
-        file_name = file_name,
-        path = path,
-        num = i,
-        sep = sep,
-        cols = 0,
-        rows = 0,
-        additional_vars = additional_vars,
-        additional_sep = additional_sep
-      ) %>%
-      dplyr::mutate(
-        exclude = FALSE
-      )
-
-    exclude_on_plate <- exclude_cals[[paste0("plate", i)]]
-
-    if (!is.null(exclude_on_plate)) {
-      data_plate <- data_plate %>%
-        dplyr::mutate(
-          exclude = ifelse(
-            sample_id %in% exclude_on_plate, TRUE, FALSE),
-          sample_id = ifelse(
-            sample_id %in% exclude_on_plate, paste0("x", sample_id), sample_id)
-        )
-    }
-
-    real <- NULL
-
-    data_plate <- data_plate %>%
-      bioset::set_calc_concentrations(
-        cal_names = cal_names,
-        cal_values = cal_values,
-        col_names = sample_id,
-        col_values = value,
-        col_target = conc,
-        col_real = real,
-        col_recov = recovery,
-        model_func = model_func,
-        interpolate_func = interpolate_func
-      ) %>%
-      bioset::set_calc_variability(sample_id, value, conc)
-
-    if (i == 1) {
-      data <- data_plate
-    } else {
-      data <- rbind(data, data_plate)
-    }
-
-    results[[paste0("plate", i)]] <- list(
-      model = model_func(data$real, data$value),
-      plot = plot_func(data$real, data$value)
-    )
   }
 
-  data_samples <- data %>%
-    dplyr::filter(is.na(real), exclude == FALSE) %>%
-    dplyr::mutate(
-      plate = set,
-      n = value_n,
-      raw = value_mean,
-      raw_sd = value_sd,
-      raw_cv = value_cv,
-      concentration = conc_mean,
-      concentration_sd = conc_sd,
-      concentration_cv = conc_cv
-    ) %>%
-    dplyr::select(
-      -set,
-      -real,
-      -value,
-      -conc,
-      -recovery,
-      -value_n,
-      -value_mean,
-      -value_sd,
-      -value_cv,
-      -conc_n,
-      -conc_mean,
-      -conc_sd,
-      -conc_cv,
-      -exclude) %>%
-    dplyr::distinct(sample_id, .keep_all = TRUE)
+  result_sets <- bioset::sets_read(
+    sets = plates,
+    cal_names = cal_names,
+    cal_values = cal_values,
+    exclude_cals = exclude_cals_set,
+    additional_vars = c("name"),
+    additional_sep = "_",
+    sep = sep,
+    dec = dec,
+    path = path,
+    file_name = file_name,
+    model_func = model_func,
+    plot_func = plot_func,
+    interpolate_func = interpolate_func,
+    write_data = write_data,
+    use_written_data = use_written_data
+  )
 
-  if (write_data) {
-    readr::write_csv(data_samples, path = file.path(path, "data_samples.csv"))
+  for (i in 1 : plates) {
+    if (! is.null(result_sets[[paste0("set", i)]])){
+      results[[paste0("plate", i)]] <- list(result_sets[[paste0("set", i)]])
+    }
   }
 
-  data_all <- data %>%
-    dplyr::mutate(
-      plate = set,
-      n = value_n,
-      raw = value,
-      raw_mean = value_mean,
-      raw_sd = value_sd,
-      raw_cv = value_cv,
-      concentration = conc_mean,
-      concentration_sd = conc_sd,
-      concentration_cv = conc_cv
-    ) %>%
-    dplyr::select(
-      -set,
-      -value,
-      -conc,
-      -value_n,
-      -value_mean,
-      -value_sd,
-      -value_cv,
-      -conc_n,
-      -conc_mean,
-      -conc_sd,
-      -conc_cv,
-      -exclude)
-
-  if (write_data) {
-    readr::write_csv(data_samples, path = file.path(path, "data_all.csv"))
-  }
-
-  results["samples"] <- list(data_samples)
-  results["all"] <- list(data_all)
+  results$all <- list(result_sets$all)
+  results$samples <- list(result_sets$samples)
 
   return(results)
 }
 
 # declare to make R CMD check happy ;)
-conc <- NULL
-conc_cv <- NULL
-conc_mean <- NULL
-conc_n <- NULL
-conc_sd <- NULL
-recovery <- NULL
-sample_id <- NULL
-set <- NULL
-exclude <- NULL
-value <- NULL
-value_cv <- NULL
-value_mean <- NULL
-value_n <- NULL
-value_sd <- NULL
+#conc <- NULL
+#conc_cv <- NULL
+#conc_mean <- NULL
+#conc_n <- NULL
+#conc_sd <- NULL
+#recovery <- NULL
+#sample_id <- NULL
+#set <- NULL
+#exclude <- NULL
+#value <- NULL
+#value_cv <- NULL
+#value_mean <- NULL
+#value_n <- NULL
+#value_sd <- NULL
