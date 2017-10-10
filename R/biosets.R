@@ -43,8 +43,8 @@ plates_read <- function(
 
   for (i in 1 : plates) {
     if (! is.null(exclude_cals[[paste0("plate", i)]])){
-      exclude_cals_set[[paste0("set", i)]] <-
-        list(exclude_cals_set[[paste0("plate", i)]])
+      tmp <- c(exclude_cals[[paste0("plate", i)]])
+      exclude_cals_set[[paste0("set", i)]] <- tmp
     }
   }
 

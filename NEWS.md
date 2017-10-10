@@ -7,15 +7,15 @@
       * `dec` to denote character for decimal point
       * `write_data` to indicate whether to write the calculated data
       * `use_written_data` if run next time, use writtten data? (= Caching)
-  * set theme as default in .onAttach, no need to add global_theme to plot
   * rename exported objects from `global_\*` to `eenv_\*`
   * rename `create_theme` to `create_eenv_theme` 
+  * set theme as default in `.onAttach`, no need to add `eenv_theme` to plot
 
 # eenv 0.1.1
 
-  * set global options in .onAttach()
-      * scipen: 18
-      * digits: 2
+  * set global `options` in `.onAttach()`
+      * `scipen = 18`
+      * `digits = 2`
 
 # eenv 0.1.0
 
