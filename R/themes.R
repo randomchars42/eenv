@@ -37,24 +37,24 @@ create_eenv_theme <- function(
     axis.line.x = ggplot2::element_line(),
     axis.line.y = ggplot2::element_line(),
     axis.text = ggplot2::element_text(),
-    axis.text.x =
-      ggplot2::element_text(margin = ggplot2::margin(t = half_line), vjust = 1),
+    axis.text.x = ggplot2::element_text(
+      margin = ggplot2::margin(t = half_line / 2), vjust = 1),
     axis.text.x.top = ggplot2::element_text(
-        margin = ggplot2::margin(b = 0.8 * half_line / 2), vjust = 0),
-    axis.text.y =
-      ggplot2::element_text(margin = ggplot2::margin(r = half_line), hjust = 1),
+      margin = ggplot2::margin(b = half_line / 2), vjust = 0),
+    axis.text.y = ggplot2::element_text(
+      margin = ggplot2::margin(r = half_line / 2) , hjust = 1),
     axis.text.y.right = ggplot2::element_text(
-      margin = ggplot2::margin(l = 0.8 * half_line / 2), hjust = 0),
+      margin = ggplot2::margin(l = half_line / 2), hjust = 0),
     axis.ticks = ggplot2::element_line(),
     axis.ticks.length = ggplot2::unit(half_line, "pt"),
     axis.title.x =
       ggplot2::element_text(margin = ggplot2::margin(t = half_line), vjust = 1),
     axis.title.x.top =
-      ggplot2::element_text(margin = ggplot2::margin(t = half_line), vjust = 0),
+      ggplot2::element_text(margin = ggplot2::margin(b = half_line), vjust = 0),
     axis.title.y = ggplot2::element_text(
       angle = 90, margin = ggplot2::margin(r = half_line), vjust = 1),
     axis.title.y.right = ggplot2::element_text(
-      angle = -90, margin = ggplot2::margin(r = half_line), vjust = 0),
+      angle = -90, margin = ggplot2::margin(l = half_line), vjust = 0),
 
     legend.background = ggplot2::element_rect(colour = NA),
     legend.spacing = ggplot2::unit(0.4, "cm"),
@@ -91,8 +91,10 @@ create_eenv_theme <- function(
 
     strip.background =
       ggplot2::element_rect(fill = base_colour_sec, colour = NA),
-    strip.text =
-      ggplot2::element_text(colour = base_colour_fg, size = ggplot2::rel(1)),
+    strip.text = ggplot2::element_text(
+      colour = base_colour_fg,
+      size = ggplot2::rel(1),
+      margin = margin(half_line, half_line, half_line, half_line)),
     strip.text.x = ggplot2::element_text(
       ggplot2::margin(t = half_line, b = half_line)),
     strip.text.y = ggplot2::element_text(
@@ -104,15 +106,16 @@ create_eenv_theme <- function(
     strip.switch.pad.wrap = ggplot2::unit(0.1, "cm"),
 
     plot.background = ggplot2::element_rect(colour = base_colour_bg),
-    plot.title =
-      ggplot2::element_text(margin = ggplot2::margin(b = half_line * 1.2)),
+    plot.title = ggplot2::element_text(
+      hjust = 0, vjust = 1,
+      margin = ggplot2::margin(b = half_line)),
     plot.subtitle = ggplot2::element_text(
-      size = ggplot2::rel(0.9), hjust = 0, vjust = 1,
-      margin = ggplot2::margin(b = half_line * 0.9)
+      hjust = 0, vjust = 1,
+      margin = ggplot2::margin(b = half_line)
     ),
     plot.caption = ggplot2::element_text(
-      size = ggplot2::rel(0.9), hjust = 1, vjust = 1,
-      margin = ggplot2::margin(t = half_line * 0.9)
+      hjust = 1, vjust = 1,
+      margin = ggplot2::margin(t = half_line )
     ),
     plot.margin = ggplot2::margin(half_line, half_line, half_line, half_line),
 
