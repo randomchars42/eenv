@@ -4,7 +4,7 @@
 \alias{create_eenv_theme}
 \title{Create a conservative theme for ggplot2.}
 \usage{
-create_eenv_theme(base_size = 10, base_family = "Helvetica",
+create_eenv_theme(base_size = 10, base_family = "",
   base_colour_fg = colour_base, base_colour_bg = colour_bg,
   base_colour_sec = colour_tert, legend_pos = "bottom")
 }
