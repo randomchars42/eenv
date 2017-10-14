@@ -94,7 +94,7 @@ create_eenv_theme <- function(
     strip.text = ggplot2::element_text(
       colour = base_colour_fg,
       size = ggplot2::rel(1),
-      margin = margin(half_line, half_line, half_line, half_line)),
+      margin = ggplot2::margin(half_line, half_line, half_line, half_line)),
     strip.text.x = ggplot2::element_text(
       ggplot2::margin(t = half_line, b = half_line)),
     strip.text.y = ggplot2::element_text(
