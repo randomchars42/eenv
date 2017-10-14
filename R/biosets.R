@@ -36,7 +36,7 @@ plates_read <- function(
   plot_func = bioset::plot_lnln,
   interpolate_func = bioset::interpolate_lnln,
   write_data = TRUE,
-  use_written_data = TRUE
+  use_written_data = FALSE
 ) {
   results <- list()
   exclude_cals_set <- list()

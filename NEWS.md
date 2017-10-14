@@ -2,7 +2,8 @@
 
   * new dependency: `bioset >= 0.2.0`, which provides sets_read
   * renamed `sets_read` into `plates_read`
-      *  it's now oly a wrapper around `bioset::sets_read`, providing no new functionality.
+      * it's now only a wrapper around `bioset::sets_read`, providing no new functionality.
+      * by default it reads "plate_#NUM#.csv" and takes `plates` as parameter for the number of plates to read
   * added new args to plates_read
       * `dec` to denote character for decimal point
       * `write_data` to indicate whether to write the calculated data
