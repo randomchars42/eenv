@@ -1,8 +1,12 @@
+# eenv 1.0.1
+
+  * fix "invalid font" issue by specifying "Arial" as default font
+
 # eenv 1.0.0
 
   * new dependency: `bioset >= 0.2.0`, which provides sets_read
   * renamed `sets_read` into `plates_read`
-      * it's now only a wrapper around `bioset::sets_read`, providing no new functionality.
+      * it's now only a wrapper around `bioset::sets_read`, providing no new functionality
       * by default it reads "plate_#NUM#.csv" and takes `plates` as parameter for the number of plates to read
   * added new args to plates_read
       * `dec` to denote character for decimal point

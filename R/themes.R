@@ -14,7 +14,7 @@
 #'
 create_eenv_theme <- function(
   base_size = 10,
-  base_family = "",
+  base_family = "Arial",
   base_colour_fg = colour_base,
   base_colour_bg = colour_bg,
   base_colour_sec = colour_tert,
