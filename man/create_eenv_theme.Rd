@@ -4,12 +4,17 @@
 \alias{create_eenv_theme}
 \title{Create a conservative theme for ggplot2.}
 \usage{
-create_eenv_theme(base_size = 10, base_family = "",
+create_eenv_theme(base_size = 10, base_line_size = base_size/20,
+  base_rect_size = base_size/20, base_family = "Arial",
   base_colour_fg = colour_base, base_colour_bg = colour_bg,
   base_colour_sec = colour_tert, legend_pos = "bottom")
 }
 \arguments{
 \item{base_size}{The font size in points used for the text.}
+
+\item{base_line_size}{Base size for line elements.}
+
+\item{base_rect_size}{Base size for rect elements.}
 
 \item{base_family}{The font-family.}
 
@@ -33,3 +38,4 @@ Other theme-related functions and objects: \code{\link{colour_base}},
   \code{\link{colour_secondary}},
   \code{\link{colour_tert}}, \code{\link{eenv_theme}}
 }
+\concept{theme-related functions and objects}

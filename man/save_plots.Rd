@@ -4,8 +4,9 @@
 \alias{save_plots}
 \title{Save one or more plots onto a panel.}
 \usage{
-save_plots(plots, name, dimensions = eenv_plot_dim, theme = eenv_theme[[1]],
-  width = NULL, height = NULL, columns = NULL)
+save_plots(plots, name, dimensions = eenv_plot_dim,
+  theme = eenv_theme[[1]], width = NULL, height = NULL,
+  columns = NULL)
 }
 \arguments{
 \item{plots}{Either single ggplot or list of plots.}
@@ -37,3 +38,4 @@ Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_secondary}},
   \code{\link{colour_tert}}, \code{\link{eenv_plot_dim}}
 }
+\concept{variables and functions for plotting}

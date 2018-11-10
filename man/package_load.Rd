@@ -18,3 +18,4 @@ If the package is not installed. Try to install it before loading.
 \seealso{
 Other package functions: \code{\link{package_available}}
 }
+\concept{package functions}

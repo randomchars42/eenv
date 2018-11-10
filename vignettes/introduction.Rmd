@@ -41,9 +41,9 @@ Suppose you have an `ods` / `xls(x)` file with raw values obtained from a measur
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "values.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:6]
 
 knitr::kable(
@@ -62,9 +62,9 @@ Before feeding your samples into your measuring device you most likely drafted s
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "names.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:6]
 
 knitr::kable(
@@ -79,9 +79,9 @@ To easily set the names for your samples just copy the names into your new `plat
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "values_names.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:12]
 
 knitr::kable(
@@ -109,9 +109,9 @@ It would be more elegant to encode that into the data:
 
 ```{r, echo = FALSE, message=FALSE, warning=FALSE}
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "plate_1.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:12]
 
 knitr::kable(
@@ -231,15 +231,14 @@ This saves the example data into `plate_1.csv` (but first it checks if there alr
 # try it
 # (don't worry if it looks weird ;) )
 if (! file.exists("plate_1.csv")) {
-  write_delim(
-    x = read_csv(
-      file = system.file("extdata", "values_names_properties.csv", package = "eenv"),
-      col_names = FALSE),
-    path = "plate_1.csv",
-    delim = ";",
-    col_names = FALSE
+  write.csv2(
+    x = read.csv2(
+      file = system.file("extdata", "values_names.csv", package = "eenv"),
+      header = FALSE),
+    file = "plate_1.csv",
+    col.names = FALSE
   )
-}i
+}
 ```
 
 One thing to note for `.csv`-files: some languages use "." to separate decimals, in those languages `.csv` usually uses "," to separate values. Some European languages use "," for decimals, in these languages ";" is used for separation of values. You need to tell `plates_read()` how you would like to have it with `sep = ","` or `sep = ";"`, respectively:
@@ -434,12 +433,6 @@ First of all, to save a couple of keystrokes and make remembering easier:
 ```{r}
 # try it
 my_data <- result_list$samples
-```
-
-Then we need some tools:
-```{r}
-library("tidyverse")
-library("bioset")
 ```
 
 You could take a look which duplicates have a high (> 20 %) coefficient of variation:

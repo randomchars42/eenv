@@ -12,7 +12,7 @@ plates_read(plates, cal_names, cal_values, exclude_cals = list(),
   use_written_data = FALSE)
 }
 \arguments{
-\item{plates}{The number of plates (e.g. \code{3`` attempts to read}plate_1.csv\code{,}plate_2.csv\code{,}plate_3.csv\code{), see}file_name`.}
+\item{plates}{The number of plates (e.g. \code{3`` attempts to read }plate_1.csv\code{, }plate_2.csv\code{, }plate_3.csv\code{), see }file_name`.}
 
 \item{cal_names}{A vector of strings containing the names of the samples used
 as calibrators.}
@@ -39,7 +39,7 @@ If data is missing \code{NA} is inserted.}
 \item{dec}{The character used for decimal points (see \code{\link[utils:read.csv]{utils::read.csv()}}).
 "AUTO" will result in "." if \code{sep} is "," and "," for ";".}
 
-\item{path}{The path to the file (no trailing "/" or "\" !).}
+\item{path}{The path to the file (no trailing "/" or "\\" !).}
 
 \item{file_name}{Naming scheme for the files. The default is
 \code{plate_#NUM#.csv}, where \code{#NUM#} gets replaced by the number of the plates,

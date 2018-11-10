@@ -29,3 +29,4 @@ Other variables and functions for displaying numbers: \code{\link{eenv_decimals}
   \code{\link{format_number}}, \code{\link{format_pad}},
   \code{\link{format_perc}}
 }
+\concept{variables and functions for displaying numbers}

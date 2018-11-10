@@ -80,19 +80,3 @@ plates_read <- function(
 
   return(results)
 }
-
-# declare to make R CMD check happy ;)
-#conc <- NULL
-#conc_cv <- NULL
-#conc_mean <- NULL
-#conc_n <- NULL
-#conc_sd <- NULL
-#recovery <- NULL
-#sample_id <- NULL
-#set <- NULL
-#exclude <- NULL
-#value <- NULL
-#value_cv <- NULL
-#value_mean <- NULL
-#value_n <- NULL
-#value_sd <- NULL

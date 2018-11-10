@@ -23,4 +23,6 @@ Other variables and functions for plotting: \code{\link{colour_bg}},
   \code{\link{colour_tert}}, \code{\link{eenv_plot_dim}},
   \code{\link{save_plots}}
 }
+\concept{theme-related functions and objects}
+\concept{variables and functions for plotting}
 \keyword{datasets}

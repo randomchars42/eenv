@@ -18,3 +18,4 @@ Test if a package is installed.
 \seealso{
 Other package functions: \code{\link{package_load}}
 }
+\concept{package functions}

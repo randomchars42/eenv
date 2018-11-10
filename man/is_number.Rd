@@ -13,5 +13,5 @@ is_number(x)
 \code{TRUE} / `FALSE``
 }
 \description{
-Check that \code{x} is neither \code{NULL}, nor \code{NA`` and is of type}numeric\code{or}integer`.
+Check that \code{x} is neither \code{NULL}, nor \code{NA`` and is of type }numeric\code{or}integer`.
 }

@@ -31,4 +31,5 @@ Other variables and functions for plotting: \code{\link{colour_base}},
   \code{\link{colour_secondary}},
   \code{\link{colour_tert}}, \code{\link{save_plots}}
 }
+\concept{variables and functions for plotting}
 \keyword{datasets}

@@ -5,8 +5,8 @@
 \title{Format a number for displaying.}
 \usage{
 format_number(x, type = "float", decimals = eenv_decimals,
-  signif_digits = eenv_signif_digits, signif_bottom = eenv_signif_bottom,
-  force_perc_decimals = FALSE)
+  signif_digits = eenv_signif_digits,
+  signif_bottom = eenv_signif_bottom, force_perc_decimals = FALSE)
 }
 \arguments{
 \item{x}{The number to format.}
@@ -38,3 +38,4 @@ Other variables and functions for displaying numbers: \code{\link{eenv_decimals}
   \code{\link{format_pad}}, \code{\link{format_perc}},
   \code{\link{format_p}}
 }
+\concept{variables and functions for displaying numbers}

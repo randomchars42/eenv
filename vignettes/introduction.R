@@ -13,9 +13,9 @@ library("eenv")
 
 ## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "values.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:6]
 
 knitr::kable(
@@ -25,9 +25,9 @@ knitr::kable(
 
 ## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "names.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:6]
 
 knitr::kable(
@@ -37,9 +37,9 @@ knitr::kable(
 
 ## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "values_names.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:12]
 
 knitr::kable(
@@ -55,9 +55,9 @@ knitr::kable(
 
 ## ---- echo = FALSE, message=FALSE, warning=FALSE-------------------------
 data <-
-  readr::read_csv2(
+  utils::read.csv2(
     system.file("extdata", "plate_1.csv", package = "eenv"),
-    col_names = FALSE)
+    header = FALSE)
 rownames(data) <- LETTERS[1:12]
 
 knitr::kable(
@@ -141,15 +141,14 @@ fibonacci
 #  # try it
 #  # (don't worry if it looks weird ;) )
 #  if (! file.exists("plate_1.csv")) {
-#    write_delim(
-#      x = read_csv(
-#        file = system.file("extdata", "values_names_properties.csv", package = "eenv"),
-#        col_names = FALSE),
-#      path = "plate_1.csv",
-#      delim = ";",
-#      col_names = FALSE
+#    write.csv2(
+#      x = read.csv2(
+#        file = system.file("extdata", "values_names.csv", package = "eenv"),
+#        header = FALSE),
+#      file = "plate_1.csv",
+#      col.names = FALSE
 #    )
-#  }i
+#  }
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # do not run this code yet
@@ -276,10 +275,6 @@ result_list$plate1$plot
 ## ------------------------------------------------------------------------
 # try it
 my_data <- result_list$samples
-
-## ------------------------------------------------------------------------
-library("tidyverse")
-library("bioset")
 
 ## ------------------------------------------------------------------------
 # try it

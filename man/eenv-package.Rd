@@ -6,7 +6,7 @@
 \alias{eenv-package}
 \title{A package to load packages, functions and variables I frequently use.}
 \description{
-A package to load packages, functions and variables I frequently use.
+Loads packages, adds global variables, themes and functions.
 }
 \seealso{
 Useful links:

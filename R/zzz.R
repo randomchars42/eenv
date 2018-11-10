@@ -1,4 +1,4 @@
-core_packages <- c("tidyverse", "gmodels", "cowplot", "knitr", "rmarkdown", "bioset")
+core_packages <- c("cowplot", "knitr", "rmarkdown", "bioset", "magrittr", "ggplot2", "tibble", "dplyr")
 
 .onAttach <- function(libname, pkgname) {
   needed <- core_packages[!is_attached(core_packages)]

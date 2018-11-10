@@ -18,4 +18,5 @@ Other variables and functions for displaying numbers: \code{\link{eenv_signif_bo
   \code{\link{format_number}}, \code{\link{format_pad}},
   \code{\link{format_perc}}, \code{\link{format_p}}
 }
+\concept{variables and functions for displaying numbers}
 \keyword{datasets}
