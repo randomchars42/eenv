@@ -9,13 +9,13 @@ plates_read(plates, cal_names, cal_values, exclude_cals = list(),
   dec = "AUTO", path = ".", file_name = "plate_#NUM#.csv",
   model_func = bioset::fit_lnln, plot_func = bioset::plot_lnln,
   interpolate_func = bioset::interpolate_lnln, write_data = TRUE,
-  use_written_data = TRUE)
+  use_written_data = FALSE)
 }
 \arguments{
 \item{plates}{The number of plates (e.g. \code{3`` attempts to read}plate_1.csv\code{,}plate_2.csv\code{,}plate_3.csv\code{), see}file_name`.}
 
 \item{cal_names}{A vector of strings containing the names of the samples used
-as calibrators,}
+as calibrators.}
 
 \item{cal_values}{A numeric vector with the known concentrations of those
 samples (must be in the same order).}
@@ -28,10 +28,10 @@ additional columns.}
 
 \item{additional_sep}{String / RegExp that separates additional vars, e.g.:
 \code{"ID_blue_cold"} with \code{additional_sep = "_"} will be separated
-into three columns containg \code{"ID"}, \code{"blue"} and \code{"cold"}.
+into three columns containing \code{"ID"}, \code{"blue"} and \code{"cold"}.
 If the separated data would exceed the columns in \code{additional_vars}
 the last column will contain a string with separator (e.g.: \code{"blue_cold"}).
-If data is missing `NA`` is inserted.}
+If data is missing \code{NA} is inserted.}
 
 \item{sep}{Separator used in the csv-file, either "," or ";" (see
 \code{\link[utils:read.csv]{utils::read.csv()}}).}
@@ -39,7 +39,7 @@ If data is missing `NA`` is inserted.}
 \item{dec}{The character used for decimal points (see \code{\link[utils:read.csv]{utils::read.csv()}}).
 "AUTO" will result in "." if \code{sep} is "," and "," for ";".}
 
-\item{path}{The path to the file (no trailing "/" or "\"!).}
+\item{path}{The path to the file (no trailing "/" or "\" !).}
 
 \item{file_name}{Naming scheme for the files. The default is
 \code{plate_#NUM#.csv}, where \code{#NUM#} gets replaced by the number of the plates,

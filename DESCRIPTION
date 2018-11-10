@@ -1,7 +1,7 @@
 Package: eenv
 Type: Package
 Title: Personal Project Setup
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: person("Eike Christian", "Kühn",
     email = "eike.kuehn@pixelwoelkchen.de",
     role = c("aut", "cre"))
