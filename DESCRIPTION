@@ -1,7 +1,7 @@
 Package: eenv
 Type: Package
 Title: Personal Project Setup
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: person("Eike Christian", "Kühn",
     email = "eike.kuehn@pixelwoelkchen.de",
     role = c("aut", "cre"))
@@ -23,9 +23,11 @@ Imports:
     dplyr (>= 0.7.4),
     ggplot2 (>= 3.0.0),
     magrittr (>= 1.5),
-    tibble (>= 1.3.4)
-Suggests:
+    tibble (>= 1.3.4),
+    readr (>= 1.1.1),
     gmodels (>= 2.16.2),
+    rlang (>= 0.1.2)
+Suggests:
     testthat (>= 1.0.2),
     devtools (>= 1.13.3)
 Encoding: UTF-8
@@ -40,6 +42,8 @@ Collate:
     'helper.R'
     'packages.R'
     'plots.R'
+    'test.R'
     'vars.R'
     'themes.R'
+    'tools.R'
     'zzz.R'

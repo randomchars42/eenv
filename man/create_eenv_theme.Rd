@@ -5,7 +5,7 @@
 \title{Create a conservative theme for ggplot2.}
 \usage{
 create_eenv_theme(base_size = 10, base_line_size = base_size/20,
-  base_rect_size = base_size/20, base_family = "Arial",
+  base_rect_size = base_size/20, base_family = "",
   base_colour_fg = colour_base, base_colour_bg = colour_bg,
   base_colour_sec = colour_tert, legend_pos = "bottom")
 }

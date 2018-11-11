@@ -80,3 +80,99 @@ plates_read <- function(
 
   return(results)
 }
+
+#'
+#' Search for and remove multiples which sets.
+#'
+#' @description
+#' Dealing with raw data one might have to exclude a sample where duplicates /
+#' triplicates / ... are too discrepant to use. This function identifies those
+#' samples and might delete them.
+#'
+#' @export
+#' @param data Tibble holding the data.
+#' @param ids The column that holds the ids of the samples.
+#' @param ... Columns to use for filtering.
+#' @param threshold The threshold used for filtering:
+#'   e.g. `concentration_cv` (coefficient of variation) > `0.2`. If a column
+#'   `recovery` is found the threshold for warning will be:
+#'   `recovery < 1 - threshold | recovery > 1 + threshold`
+#' @param throw_warnings Throw a warning for each detected / removed sample?
+#' @param remove Remove detected samples?
+#' @param set The column that holds the id of the sets / plates.
+#' @return The tibble.
+#'
+plate_check_discrepant_multiples <- function(
+  data,
+  ids,
+  ...,
+  threshold = 0.2,
+  throw_warnings = TRUE,
+  remove = TRUE,
+  set = set) {
+  # make some handy operators available
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
+  stopifnot(
+    tibble::is.tibble(data),
+    is.numeric(threshold),
+    is.logical(throw_warnings),
+    is.logical(remove)
+  )
+
+  ids <- rlang::enquo(ids)
+  set <- rlang::enquo(set)
+  ids_name <- rlang::quo_name(ids)
+  calc_for <- rlang::quos(...)
+
+  for (i in seq_along(calc_for)) {
+    target <- calc_for[[i]]
+    target_base <- rlang::quo_name(target)
+
+    if (target_base == ids_name) {
+      next()
+    }
+
+    if (target_base == "recovery") {
+      data_discrepant <- data %>%
+        dplyr::distinct(!! ids, .keep_all = TRUE) %>%
+        dplyr::filter(!! target > 1 + threshold | !! target < 1 - threshold)
+
+      if (remove) {
+        data <- data %>%
+          dplyr::filter(!! target <= 1 + threshold & target >= 1 - threshold)
+      }
+    } else {
+      data_discrepant <- data %>%
+        dplyr::distinct(!! ids, .keep_all = TRUE) %>%
+        dplyr::filter(!! target > threshold)
+
+      if (remove) {
+        data <- data %>%
+          dplyr::filter(!! target <= threshold)
+      }
+    }
+
+    if (throw_warnings) {
+      generate_warnings(
+        ids = dplyr::pull(data_discrepant, !! ids),
+        values = dplyr::pull(data_discrepant, !! target),
+        sets = dplyr::pull(data_discrepant, !! set),
+        property = target_base)
+    }
+  }
+
+  return(data)
+}
+
+generate_warnings <- function(ids, values, sets, property) {
+  if (length(ids) > 0) {
+    # loop over the dataframe and check the deviations
+    for (i in 1:length(ids)) {
+      message(paste(
+        "Set ", sets[i], ", ID ", ids[i], ": ", property, " = ", format_float(values[i]), sep = ""))
+    }
+  }
+}

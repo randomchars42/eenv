@@ -69,8 +69,6 @@ save_plots <- function(
 
   }
 
-  #plot(plot)
-
   sapply(
     dimensions$format,
     function(format, dimensions, plot, width, height) {
