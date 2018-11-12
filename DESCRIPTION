@@ -46,4 +46,5 @@ Collate:
     'vars.R'
     'themes.R'
     'tools.R'
+    'qq.R'
     'zzz.R'
