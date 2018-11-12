@@ -46,7 +46,7 @@ eenv_decimals <- 1
 #'              simultaneously).
 #'  * units -> Units for plot-size.
 #'  * width -> Different steps of widht the plot may have.
-#'  * height -> Height of one single plot.
+#'  * height -> Height of one single plot or `NULL` for automatic (based on square plots).
 #'  * columns_max -> When plotting multiple plots onto one grid, the number of
 #'                   columns to use
 #'  * axes -> Which axes to align (see [cowplot::plot_grid()]]).
@@ -61,7 +61,7 @@ eenv_plot_dim <- list(
   "format" = c("pdf", "svg"),
   "units" = "in",
   "width" = c(3.25, 6.8),
-  "height" = 3.25,
+  "height" = NULL,
   "columns_max" = 2,
   "axes" = "rtbl",
   "align" = "hv")

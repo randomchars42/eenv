@@ -1,12 +1,14 @@
 # eenv 1.1.0
 
-  * re-add new dependencies: `gmodels` (for CrossTable) and `readr` (for reading files the modern way)
+  * re-add dependencies: `gmodels` (for CrossTable) and `readr` (for reading files the modern way)
   * add functions:
       * `calc_cv`
       * `plate_check_discrepant_multiples`
       * `generate_warnings` (internal)
       * `calc_roc_empiric`
-      * `test_*`-functions
+      * `test_\*`-functions
+      * `plot_qq`
+  * `plates_read`: warn if the user wants to use a reserved name in `addditional_vars`
 
 # eenv 1.0.1
 

@@ -4,12 +4,14 @@
 \alias{test_roc_empiric}
 \title{Calculate an empiric ROC.}
 \usage{
-test_roc_empiric(predictors, responses, print_auc = TRUE)
+test_roc_empiric(data, predictor, response, print_auc = TRUE)
 }
 \arguments{
-\item{predictors}{A vector holding the predictors.}
+\item{data}{The tibble containing the data.}
 
-\item{responses}{A vector holding the responses.}
+\item{predictor}{The column holding the predictors.}
+
+\item{response}{The column holding the responses.}
 
 \item{print_auc}{Print the AUC when creating the plot?}
 }

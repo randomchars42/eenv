@@ -259,16 +259,16 @@ test_get_metrics_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_
     prevalence <- test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
   }
   result <-c(
-    length(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
-      length(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    length(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
+      nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
+    nrow(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
     test_get_sensitivity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
     test_get_specificity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
     test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
@@ -309,24 +309,24 @@ test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, 
 test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, alpha) {
   z <- stats::qnorm(1 - (alpha / 2))
   total <-
-    length(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
-    length(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
+    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_yes <-
-    length(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_no <-
-    length(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   factor_yes <-
-    length(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   factor_no <-
-    length(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_yes_factor_yes <-
-    length(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_yes_factor_no <-
-    length(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_no_factor_no <-
-    length(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
   affected_no_factor_yes <-
-    length(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
+    nrow(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
 
   risk_affected_yes_factor_yes <-
     affected_yes_factor_yes / factor_yes
@@ -445,8 +445,10 @@ test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act
 #' Calculate an empiric ROC.
 #'
 #' @export
-#' @param predictors A vector holding the predictors.
-#' @param responses A vector holding the responses.
+#'
+#' @param data The tibble containing the data.
+#' @param predictor The column holding the predictors.
+#' @param response The column holding the responses.
 #' @param print_auc Print the AUC when creating the plot?
 #' @return list
 #'
