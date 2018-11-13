@@ -39,6 +39,8 @@ save_plots <- function(
       height <- 1
     }
 
+    columns <- 1
+
   } else {
     # multiple plots
 
