@@ -16,7 +16,7 @@ List:
 simultaneously).
 \item units -> Units for plot-size.
 \item width -> Different steps of widht the plot may have.
-\item height -> Height of one single plot.
+\item height -> Height of one single plot or \code{NULL} for automatic (based on square plots).
 \item columns_max -> When plotting multiple plots onto one grid, the number of
 columns to use
 \item axes -> Which axes to align (see \code{\link[cowplot:plot_grid]{cowplot::plot_grid()}}]).

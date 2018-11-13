@@ -554,3 +554,70 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc) {
     plot = plot
   ))
 }
+
+#'
+#' Format the output of `test_get_relation`.
+#'
+#' @export
+#' @param raw_relations The output of `test_get_relation`.
+#' @param relations Vector with at least one in `c("OR", "RR", "ARR")`.
+#' @return named vector
+#'
+test_format_relations <- function(
+  raw_relations,
+  relations = c("OR", "RR", "ARR")) {
+
+  result <- c(format_number(raw_relations["Total"], type = "int"))
+  names(result) <- c("Total")
+
+  if ("OR" %in% relations) {
+    names <- names(result)
+    result <- c(
+      result,
+      format_number(raw_relations["odds ratio"], type = "int"),
+      paste0(
+        format_number(raw_relations["odds ratio, LCI"], type = "int"),
+        ' - ',
+        format_number(raw_relations["odds ratio, UCI"], type = "int")),
+      format_number(raw_relations["odds ratio, p"], type = "p"))
+
+    names(result) <- c(
+      names,
+      "Odds Ratio",
+      "CI",
+      "p")
+  }
+
+  if ("RR" %in% relations) {
+    names <- names(result)
+    result <- c(
+      result,
+      format_number(raw_relations["risk ratio"], type = "int"),
+      paste0(
+        format_number(raw_relations["risk ratio, LCI"], type = "int"),
+        ' - ',
+        format_number(raw_relations["risk ratio, UCI"], type = "int")),
+      format_number(raw_relations["risk ratio, p"], type = "p"))
+
+    names(result) <- c(
+      names,
+      "Odds Ratio",
+      "CI",
+      "p")
+  }
+
+  if ("ARR" %in% relations) {
+    names <- names(result)
+    result <- c(
+      result,
+      format_number(
+        raw_relations["absolute difference in risk"],
+        type = "int"))
+
+    names(result) <- c(
+      names,
+      "Absolute Difference In Risk")
+  }
+
+  return(result)
+}
