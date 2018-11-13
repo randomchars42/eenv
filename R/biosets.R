@@ -48,12 +48,6 @@ plates_read <- function(
     }
   }
 
-  for (i in 1 : length(additional_vars)) {
-    if (additional_vars[[i]] %in% c("conc", "value")) {
-      warning("\"", paste0(additional_vars[[i]], "\" may not be used as column name"))
-    }
-  }
-
   result_sets <- bioset::sets_read(
     sets = plates,
     cal_names = cal_names,
