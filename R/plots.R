@@ -41,6 +41,10 @@ save_plots <- function(
 
     columns <- 1
 
+    if (is.null(dimensions$height)) {
+      dimensions$height <- dimensions$width[1]
+    }
+
   } else {
     # multiple plots
 
@@ -59,6 +63,10 @@ save_plots <- function(
       height <- ceiling(length(plots) / columns)
     }
 
+    if (is.null(dimensions$height)) {
+      dimensions$height <- dimensions$width[width] / columns
+    }
+
     plot <- cowplot::plot_grid(
       plotlist = plots,
       align = dimensions$align,
@@ -69,10 +77,6 @@ save_plots <- function(
       label_fontfamily = theme$text$family,
       label_colour = theme$text$colour)
 
-  }
-
-  if (is.null(dimensions$height)) {
-    dimensions$height <- dimensions$width[width] / columns
   }
 
   sapply(
