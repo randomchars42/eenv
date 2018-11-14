@@ -5,7 +5,7 @@
 \title{Read sets (plates) and calculate concentrations and variability.}
 \usage{
 plates_read(plates, cal_names, cal_values, exclude_cals = list(),
-  additional_vars = c("name"), additional_sep = "_", sep = ",",
+  additional_vars = c("var_name"), additional_sep = "_", sep = ",",
   dec = "AUTO", path = ".", file_name = "plate_#NUM#.csv",
   model_func = bioset::fit_lnln, plot_func = bioset::plot_lnln,
   interpolate_func = bioset::interpolate_lnln, write_data = TRUE,

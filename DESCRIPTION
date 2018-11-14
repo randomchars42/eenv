@@ -37,6 +37,7 @@ Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Collate: 
     'biosets.R'
+    'characteristics.R'
     'eenv.R'
     'format_numbers.R'
     'helper.R'
@@ -47,5 +48,4 @@ Collate:
     'vars.R'
     'themes.R'
     'tools.R'
-    'characteristics.R'
     'zzz.R'

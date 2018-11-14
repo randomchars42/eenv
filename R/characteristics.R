@@ -42,7 +42,7 @@ characteristic_get <- function(
   subgroups <- rlang::enquos(...)
   result <- list()
 
-  data_tmp <- data %>% pull(!! characteristic)
+  data_tmp <- data %>% dplyr::pull(!! characteristic)
 
   # decide what to collect
   if (force_count | ! is.numeric(data_tmp)) {
@@ -61,13 +61,13 @@ characteristic_get <- function(
     for (i in 1 : length(subgroups)) {
       # get each distinct value of each subgroup
       facettes <- data %>%
-        distinct(!! subgroups[[i]], .keep_all = TRUE) %>%
-        pull(!! subgroups[[i]])
+        dplyr::distinct(!! subgroups[[i]], .keep_all = TRUE) %>%
+        dplyr::pull(!! subgroups[[i]])
 
       for (n in 1 : length(facettes)) {
         data_tmp <- data %>%
-          filter(!! subgroups[[i]] == facettes[[n]]) %>%
-          pull(!! characteristic)
+          dplyr::filter(!! subgroups[[i]] == facettes[[n]]) %>%
+          dplyr::pull(!! characteristic)
         vec_name <- paste0(rlang::quo_name(subgroups[[i]]), "___", facettes[[n]])
         result[[vec_name]] <- characteristic_calc(data_tmp, collect, events, n_total)
       }
@@ -220,6 +220,7 @@ characteristic_apply_template <- function(data, template, decimals, decimals_per
 #' @return A tibble
 #'
 characteristics_table <- function(..., headers = "NAME") {
+  `%>%` <- magrittr::`%>%`
   rows <- list(...)
   table <- tibble::tibble()
 
