@@ -26,7 +26,7 @@ plates_read <- function(
   cal_names,
   cal_values,
   exclude_cals = list(),
-  additional_vars = c("name"),
+  additional_vars = c("var_name"),
   additional_sep = "_",
   sep = ",",
   dec = "AUTO",
