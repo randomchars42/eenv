@@ -7,6 +7,7 @@
       * `generate_warnings` (internal)
       * `calc_roc_empiric`
       * `test_\*`-functions
+      * `characteristic_\*`-functions
       * `plot_qq`
   * `plates_read`: warn if the user wants to use a reserved name in `addditional_vars`
 
