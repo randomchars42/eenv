@@ -1,4 +1,4 @@
-"set","position","sample_id","name","value","real","recovery","n","raw","raw_mean","raw_sd","raw_cv","concentration","concentration_sd","concentration_cv"
+"set","position","sample_id","var_name","value","real","recovery","n","raw","raw_mean","raw_sd","raw_cv","concentration","concentration_sd","concentration_cv"
 1,"A1","CAL1","CAL1",2.71828182845904,2.71828182845905,0.999999999999999,2,2.71828182845904,2.71828182845904,0,0,2.71828182845904,0,0
 1,"B1","CAL2","CAL2",7.38905609893065,7.38905609893065,1,2,7.38905609893065,7.38905609893065,0,0,7.38905609893065,0,0
 1,"C1","CAL3","CAL3",20.0855369231877,20.0855369231877,1,2,20.0855369231877,20.0855369231877,0,0,20.0855369231877,0,0

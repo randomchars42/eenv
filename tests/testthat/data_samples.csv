@@ -1,4 +1,4 @@
-"position","sample_id","name","plate","n","raw","raw_sd","raw_cv","concentration","concentration_sd","concentration_cv"
+"position","sample_id","var_name","plate","n","raw","raw_sd","raw_cv","concentration","concentration_sd","concentration_cv"
 "A3","A1","A1",1,2,1.10517091807565,0,0,1.10517091807565,0,0
 "B3","B1","B1",1,2,1.22140275816017,0,0,1.22140275816017,0,0
 "C3","C1","C1",1,2,1.349858807576,0,0,1.349858807576,0,0
