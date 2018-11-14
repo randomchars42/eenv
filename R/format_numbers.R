@@ -99,6 +99,10 @@ format_perc <- function(
 #' @return A string.
 #'
 format_float <- function(x, decimals = eenv_decimals) {
+  if (decimals == 0) {
+    return(format_int(x))
+  }
+
   scipen <- getOption("scipen")
   options(scipen = 999)
   x <- as.character(round(x, decimals))
