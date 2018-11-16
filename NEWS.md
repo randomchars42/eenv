@@ -1,3 +1,7 @@
+# eenv 1.2.0
+
+  * add `calc_sequential_difference`
+  
 # eenv 1.1.1
 
   * make `characteristic_get` more robust
