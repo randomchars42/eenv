@@ -1,3 +1,7 @@
+# eenv 1.1.1
+
+  * make `characteristic_get` more robust
+
 # eenv 1.1.0
 
   * re-add dependencies: `gmodels` (for CrossTable) and `readr` (for reading files the modern way)
@@ -14,7 +18,7 @@
 # eenv 1.0.1
 
   * fix "invalid font" issue by specifying "Arial" as default font
-  * get ready and depend upon ggplot2 >= 3.0.0
+  * get ready for and depend upon ggplot2 >= 3.0.0
 
 # eenv 1.0.0
 
