@@ -64,12 +64,15 @@ characteristic_get <- function(
         dplyr::distinct(!! subgroups[[i]], .keep_all = TRUE) %>%
         dplyr::pull(!! subgroups[[i]])
 
-      for (n in 1 : length(facettes)) {
-        data_tmp <- data %>%
-          dplyr::filter(!! subgroups[[i]] == facettes[[n]]) %>%
-          dplyr::pull(!! characteristic)
-        vec_name <- paste0(rlang::quo_name(subgroups[[i]]), "___", facettes[[n]])
-        result[[vec_name]] <- characteristic_calc(data_tmp, collect, events, n_total)
+      if(length(facettes) > 0) {
+        for (n in 1 : length(facettes)) {
+          observe <- facettes[[n]]
+          data_tmp <- data %>%
+            dplyr::filter(!! subgroups[[i]] == observe) %>%
+            dplyr::pull(!! characteristic)
+          vec_name <- paste0(rlang::quo_name(subgroups[[i]]), "___", observe)
+          result[[vec_name]] <- characteristic_calc(data_tmp, collect, events, n_total)
+        }
       }
     }
   }
