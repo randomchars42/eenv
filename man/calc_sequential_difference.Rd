@@ -22,5 +22,27 @@ calc_sequential_difference(data, values, arrange, ...,
 A tibble.
 }
 \description{
-Calculate the difference between sequential rows while grouping.
+Returns the data set with following columns added:
+}
+\details{
+\itemize{
+\item COLUMN_diff: The difference to the row before.
+\item COLUMN_diff_rel: The difference to the row before as relative difference of the row before.
+Either positive or negative.
+\item COLUMN_diff_signif: Is the relative difference >= signif_above.
+\item COLUMN_diff_cat: "rise", "fall" or "insignificant"
+\item COLUMN_diff_risen: TRUE if "rise" at least once per group.
+\item COLUMN_diff_fallen: TRUE if "fall" at least once per group.
+\item COLUMN_diff_rise_max: The maximum increase per group.
+\item COLUMN_diff_rise_rel_max: The maximum relative increase per group.
+\item COLUMN_diff_fall_max: The maximum decrease per group.
+\item COLUMN_diff_fall_rel_max: The maximum relative decrease per group
+\item COLUMN_diff_max: The maximum increase or decrease per group.
+\item COLUMN_diff_rel_max: The maximum relative increase or decrease per group.
+\item COLUMN_diff_in_sequence: Is this row the next in sequence or was >= 1 skipped?
+\item COLUMN_diff_rise_first: The first rise.
+\item COLUMN_diff_rise_first_sequence: The first rise ignoring rows with COLUMN_diff_in_sequence = FALSE.
+\item COLUMN_diff_fall_first: The first decrease.
+\item COLUMN_diff_fall_first_sequence: The first decrease ignoring rows with COLUMN_diff_in_sequence = FALSE.
+}
 }
