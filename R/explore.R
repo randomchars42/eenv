@@ -61,11 +61,11 @@ test_friedman <- function(data, column, group, id, reference_group,
   `:=` <- rlang::`:=`
 
   id <- rlang::enquo(id)
-  variable <- rlang::enquo(variable)
+  column <- rlang::enquo(column)
   group <- rlang::enquo(group)
   result <- list()
 
-  data <- get_variable_by_groups(data, !! variable, !! group, !! id)
+  data <- get_variable_by_groups(data, !! column, !! group, !! id)
   # the remaining columns are the groups and !! id
   levels <- dimnames(data %>% dplyr::select(- !! id))[[2]]
 
@@ -144,8 +144,12 @@ scan_crosstables <- function(data, variables_x, variables_y) {
   for (y in variables_y) {
     message(y)
     for (x in variables_x) {
-      capture.output(res <- gmodels::CrossTable(data[[x]], data[[y]], fisher = TRUE, expected = TRUE), file="/dev/null", type="output")
-      message(sprintf("%s, %s - Chi-Squared: %s; Fisher: %s", x, y, format_p(res$chisq$p.value), format_p(res$fisher.ts$p.value)))
+      utils::capture.output(
+        gmodels::CrossTable(
+          data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
+        file="/dev/null", type="output")
+      message(sprintf("%s, %s - Chi-Squared: %s; Fisher: %s", x, y,
+        format_p(res$chisq$p.value), format_p(res$fisher.ts$p.value)))
     }
     invisible(readline(prompt="Press [enter] to continue"))
   }
@@ -178,7 +182,7 @@ calc_crosstables <- function(data, ...) {
       res <- gmodels::CrossTable(
         data[[x]], data[[y]], fisher = TRUE, expected = TRUE)
     } else {
-      capture.output(
+      utils::capture.output(
         res <- gmodels::CrossTable(
           data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
         file="/dev/null", type="output")
