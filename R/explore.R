@@ -126,3 +126,117 @@ test_friedman <- function(data, column, group, id, reference_group,
 
   return(result)
 }
+
+#'
+#' Calculate all CrossTables for the given variables.
+#'
+#' @description
+#' Give an overview of possible correlations by calculating all CrossTables for
+#' the given variables.
+#'
+#' @export
+#' @param data A tibble containing the data.
+#' @param variables_x A list of variable names as strings.
+#' @param variables_y A list of variable names as strings.
+#' @return list
+#'
+scan_crosstables <- function(data, variables_x, variables_y) {
+  for (y in variables_y) {
+    message(y)
+    for (x in variables_x) {
+      capture.output(res <- gmodels::CrossTable(data[[x]], data[[y]], fisher = TRUE, expected = TRUE), file="/dev/null", type="output")
+      message(sprintf("%s, %s - Chi-Squared: %s; Fisher: %s", x, y, format_p(res$chisq$p.value), format_p(res$fisher.ts$p.value)))
+    }
+    invisible(readline(prompt="Press [enter] to continue"))
+  }
+}
+
+#'
+#' Calculate the CrossTable for the given variables.
+#'
+#' @description
+#' Does not do much more than CrossTable does but saves some keystrokes when
+#' doing a lot of CrossTables.
+#'
+#' It takes sets of the form c(ID, X, Y, SHOW), where SHOW specifies whether the
+#' crosstable should be shown.
+#' The output of `gmodels::CrossTable(data[[X]], data[[Y]], fisher = TRUE,
+#' expected = TRUE)` will be saved in the returned list `list[[ID]]`.
+#' @export
+#' @param data A tibble containing the data.
+#' @param ... Sets of variables to analyse (see above).
+#' @return list
+#'
+calc_crosstables <- function(data, ...) {
+  result = list()
+  for (param_list in list(...)) {
+    id <- param_list[[1]]
+    x <- param_list[[2]]
+    y <- param_list[[3]]
+    show <- param_list[[4]]
+    if (show) {
+      res <- gmodels::CrossTable(
+        data[[x]], data[[y]], fisher = TRUE, expected = TRUE)
+    } else {
+      capture.output(
+        res <- gmodels::CrossTable(
+          data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
+        file="/dev/null", type="output")
+    }
+    message(sprintf("%s: %s, %s - Chi-Squared: %s; Fisher: %s",
+      as.character(id), x, y, format_p(res$chisq$p.value),
+      format_p(res$fisher.ts$p.value)))
+    if (show) {
+      invisible(readline(prompt="Press [enter] to continue"))
+    }
+    result[[id]] <- res
+  }
+  return(result)
+}
+
+#'
+#' Calculate all Reciever-Operator-Curves (ROCs).
+#'
+#' @description
+#' Calculate all Reciever-Operator-Curves (ROCs) and the corresponding area
+#' under the curve (AUC).
+#'
+#' @export
+#' @param data A tibble containing the data.
+#' @param predictors A list of variable names.
+#' @param responses A list of variable names.
+#' @param response_pos The response that will be interpreted as an event.
+#' @return NULL
+#'
+scan_rocs <- function(data, predictors, responses, response_pos = TRUE) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
+  for (response in responses) {
+    message(rlang::quo_name(response))
+
+    data_tmp <- data %>%
+      dplyr::mutate(
+        !! response := ifelse(!! response == response_pos, TRUE, FALSE)
+      )
+
+    for (predictor in predictors) {
+      data_tmp2 <- data_tmp %>%
+        dplyr::select(!! predictor, !! response) %>%
+        dplyr::filter(stats::complete.cases(.))
+      res <- test_roc_empiric(data_tmp2, !! predictor, !! response, TRUE)
+      print(res$plot)
+
+      steps <- res$steps %>%
+        dplyr::group_by(truepositives) %>%
+        dplyr::summarize(
+          threshold = max(predictor),
+          sensitivity = first(sensitivity),
+          specificity = first(specificity),
+          fpr = max(fpr),
+          tpr = max(tpr))
+      print(steps)
+    }
+  }
+}
