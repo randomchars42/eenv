@@ -176,3 +176,38 @@ calc_sequential_difference <- function(
 
   return(data_result)
 }
+
+#'
+#' Turn long data with subgroups into wide data.
+#'
+#' @description
+#' Turns data in a column "column" which is divided into groups by a column
+#' "group" into a tibble with a column for each group (each unique value in
+#' "group").
+#'
+#' @export
+#' @param data A tibble containing the data.
+#' @param column Which column to use.
+#' @param group The column that parts the variable into subgroups.
+#' @param id A column holding ids to identify the same entity in each subgroup.
+#' @param ... Further ids.
+#' @return list
+#'
+get_variable_by_groups <- function(data, column, group, id, ...) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
+  id <- rlang::enquo(id)
+  column <- rlang::enquo(column)
+  group <- rlang::enquo(group)
+  keep <- rlang::quos(...)
+  result <- list()
+
+  # remove all columns we don't need
+  # and convert from long to wide
+  return(data %>%
+    dplyr::select(!! id, !! column, !! group, !!! keep) %>%
+    dplyr::arrange(!! group) %>%
+    tidyr::spread(!! group, !! column))
+}
