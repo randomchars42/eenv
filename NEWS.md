@@ -1,3 +1,7 @@
+# eenv 1.4.0
+
+  * add `test_wilcoxon_for_groups`
+
 # eenv 1.3.0
 
   * add `get_variable_by_groups`, `plot_qq_for_groups`, `test_friedman`

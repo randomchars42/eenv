@@ -36,6 +36,116 @@ plot_qq_for_groups <- function(data, column, group, id, method = "middle") {
 }
 
 #'
+#' Calculate Wilcoxon's test (paired or not) for multiple groups.
+#'
+#' @description
+#' Calculate Wilcoxon's test (paired or not) between two sets for multiple
+#' groups. The groups are specified by column `group`, the sets by column
+#' `set`, e.g.:
+#'
+#' Suppose you had two sets of plants comprising three plants each. One set will
+#' be placed by the window, the other in the corner. You measure height once a
+#' week for ten weeks. Your data looks like:
+#'
+#'      ID  set  week  height
+#'   1   1    1     1       6
+#'   2   2    1     1       5
+#'   3   3    1     1       4
+#'   4   4    2     1       5
+#'   5   5    2     1       4
+#'   6   6    2     1       6
+#'   7   1    1     2       7
+#'   8   2    1     2       7
+#'   9   3    1     2       6
+#'  10   4    2     2       6
+#'  11   5    2     2       4
+#'  12   6    2     2       6
+#'  13   1    1     3       8
+#'  14   2    1     3       9
+#'  15   3    1     3       8
+#'  ...
+#'
+#'  You would specify: `id = ID`, `set = set`,  `group = week`,
+#'  `column = height` to compare height between both sets (`set``) for each week
+#'  (`group`).
+#' @export
+#' @param data A tibble containing the data.
+#' @param column Which column to use.
+#' @param group The column that parts the variable into groups.
+#' @param id A column holding ids to identify the same entity in each group.
+#' @param set A column indicating the two sets to compare values in groups with.
+#' @param paired Calculate a paired (signed-rank) test or not (rank-sum).
+#' @return list
+#'
+test_wilcoxon_for_groups <- function(data, column, group, id, set, paired) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
+  column <- rlang::enquo(column)
+  group <- rlang::enquo(group)
+  id <- rlang::enquo(id)
+  set <- rlang::enquo(set)
+  result <- list()
+
+  sets <- data %>%
+    dplyr::distinct(!! set) %>%
+    dplyr::pull(!! set)
+
+  if (length(sets) != 2) {
+    stop("This function needs exactly two sets.")
+  }
+
+  data_set_1 <- get_variable_by_groups(
+    dplyr::filter(data, !! set == sets[[1]]), !! column, !! group, !! id)
+  data_set_2 <- get_variable_by_groups(
+    dplyr::filter(data, !! set == sets[[2]]), !! column, !! group, !! id)
+  # the remaining columns are the groups and !! id
+  levels_1 <- dimnames(dplyr::select(data_set_1, - !! id))[[2]]
+  levels_2 <- dimnames(dplyr::select(data_set_2, - !! id))[[2]]
+  if (! setequal(levels_1, levels_2)) {
+    stop("The sets contain different groups")
+  } else {
+    levels <- levels_1
+  }
+
+  result[[paste0("data_set_", quo_name(set), "_", sets[[1]])]] <- data_set_1
+  result[[paste0("data_set_", quo_name(set), "_", sets[[2]])]] <- data_set_2
+  result[["levels"]] <- levels
+
+  test <- ifelse(paired, "signed_rank", "rank-sum")
+
+  data_wilcoxon <- tibble::as.tibble(merge(
+    data_set_1,
+    data_set_2,
+    by = quo_name(id),
+    suffixes = c("_x", "_y"),
+    all = TRUE
+  ))
+
+  if (paired) {
+    data_wilcoxon <- data_wilcoxon %>%
+      filter(stats::complete.cases(.))
+  }
+  result[["data_wilcoxon"]] <- data_wilcoxon
+
+  for (group in levels) {
+    group <- as.character(group)
+    #return(dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_x"))))
+
+    wilcoxon <- wilcox.test(
+      dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_x"))),
+      dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_y"))),
+      paired = paired)
+
+    result[["groups"]][[group]] <- wilcoxon
+    message(paste0("Wilcoxon's ", test," test between both sets for group \"",
+                   group, "\": p = ", format_p(wilcoxon$p.value)))
+  }
+  return(result)
+}
+
+#'
 #' Friedman's test for a series of data.
 #'
 #' @description
@@ -117,9 +227,8 @@ test_friedman <- function(data, column, group, id, reference_group,
           dplyr::pull(data_wilcoxon, !! group_sym),
           paired = TRUE)
         result[["groups"]][[group]] <- wilcoxon
-        p <- ifelse(is.na(wilcoxon$p.value), "NA", format_p(wilcoxon$p.value))
-        message("Wilcoxon's signed-rank test on \"", reference_group, "\" ~ \"",
-          group, "\": p = ", p)
+        message(paste0("Wilcoxon's signed-rank test on \"", reference_group,
+          "\" ~ \"", group, "\": p = ", wilcoxon$p.value))
       }
     }
   }
