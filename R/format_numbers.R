@@ -24,6 +24,9 @@ format_number <- function(
   signif_digits = eenv_signif_digits,
   signif_bottom = eenv_signif_bottom,
   force_perc_decimals = FALSE) {
+  if (is.na(x)) {
+    return("NA")
+  }
 
   if (type == "int") {
     x <- format_int(x)
@@ -61,6 +64,9 @@ format_number <- function(
 #' @return A string.
 #'
 format_int <- function(x) {
+  if (is.na(x)) {
+    return("NA")
+  }
   return(as.character(round(x, 0)))
 }
 
@@ -76,6 +82,9 @@ format_perc <- function(
   x,
   decimals = eenv_decimals,
   force_perc_decimals = FALSE) {
+  if (is.na(x)) {
+    return("NA")
+  }
 
   x <- x * 100
 
@@ -101,6 +110,9 @@ format_perc <- function(
 format_float <- function(x, decimals = eenv_decimals) {
   if (decimals == 0) {
     return(format_int(x))
+  }
+  if (is.na(x)) {
+    return("NA")
   }
 
   scipen <- getOption("scipen")
@@ -147,6 +159,9 @@ format_p <- function(
   x,
   signif_digits = eenv_signif_digits,
   signif_bottom = eenv_signif_bottom) {
+  if (is.na(x)) {
+    return("NA")
+  }
 
   scipen <- getOption("scipen")
   options(scipen = 999)
@@ -211,6 +226,9 @@ format_p <- function(
 #' @return A string.
 #'
 format_pad <- function(x, width, side = "left", character = " ") {
+  if (is.na(x)) {
+    return("NA")
+  }
   x <- sapply(
     x,
     function(x, width, side, character) {
