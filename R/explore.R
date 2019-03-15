@@ -365,7 +365,7 @@ scan_crosstables <- function(data, variables_x, variables_y) {
     message(y)
     for (x in variables_x) {
       utils::capture.output(
-        gmodels::CrossTable(
+        res <- gmodels::CrossTable(
           data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
         file="/dev/null", type="output")
       message(sprintf("%s, %s - Chi-Squared: %s; Fisher: %s", x, y,
