@@ -1,6 +1,7 @@
 # eenv 1.4.0
 
-  * add `test_wilcoxon_for_groups`
+  * add `test_wilcoxon_for_groups`, `ggplot_annotate_signif` and `extract_p_values_from_result_list`
+  * fix `scan_crosstables`
 
 # eenv 1.3.0
 
