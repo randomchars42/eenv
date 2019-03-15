@@ -109,8 +109,10 @@ test_wilcoxon_for_groups <- function(data, column, group, id, set, paired) {
     levels <- levels_1
   }
 
-  result[[paste0("data_set_", quo_name(set), "_", sets[[1]])]] <- data_set_1
-  result[[paste0("data_set_", quo_name(set), "_", sets[[2]])]] <- data_set_2
+  result[[paste0("data_set_", rlang::quo_name(set), "_", sets[[1]])]] <-
+    data_set_1
+  result[[paste0("data_set_", rlang::quo_name(set), "_", sets[[2]])]] <-
+    data_set_2
   result[["levels"]] <- levels
 
   test <- ifelse(paired, "signed_rank", "rank-sum")
@@ -118,14 +120,14 @@ test_wilcoxon_for_groups <- function(data, column, group, id, set, paired) {
   data_wilcoxon <- tibble::as.tibble(merge(
     data_set_1,
     data_set_2,
-    by = quo_name(id),
+    by = rlang::quo_name(id),
     suffixes = c("_x", "_y"),
     all = TRUE
   ))
 
   if (paired) {
     data_wilcoxon <- data_wilcoxon %>%
-      filter(stats::complete.cases(.))
+      dplyr::filter(stats::complete.cases(.))
   }
   result[["data_wilcoxon"]] <- data_wilcoxon
 
@@ -133,7 +135,7 @@ test_wilcoxon_for_groups <- function(data, column, group, id, set, paired) {
     group <- as.character(group)
     #return(dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_x"))))
 
-    wilcoxon <- wilcox.test(
+    wilcoxon <- stats::wilcox.test(
       dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_x"))),
       dplyr::pull(data_wilcoxon, !! rlang::sym(paste0(group, "_y"))),
       paired = paired)
@@ -230,6 +232,115 @@ test_friedman <- function(data, column, group, id, reference_group,
         message(paste0("Wilcoxon's signed-rank test on \"", reference_group,
           "\" ~ \"", group, "\": p = ", wilcoxon$p.value))
       }
+    }
+  }
+
+  return(result)
+}
+#'
+#' Extract p-values from a result list.
+#'
+#' @description
+#' Convenience function for extracting p-values from result lists as returned by
+#' `test_wilcoxon_for_groups` or `test_friedman`. The result is vector with the
+#' group names as names and can be used by `ggplot_annotate_signif`.
+#'
+#' @export
+#' @param result_list The result list.
+#' @param names_num Convert the group names to numeric.
+#' @return vector
+#'
+extract_p_values_from_result_list <- function(result_list, names_num = FALSE) {
+  p_values <- c()
+
+  for (group in names(result_list[["groups"]])) {
+    tmp <- names(p_values)
+    p_values <- c(p_values, result_list[["groups"]][[group]]$p.value)
+    names(p_values) <- c(tmp, group)
+  }
+
+  rm(tmp)
+  return(p_values)
+}
+
+#'
+#' Extract p-values from a result list.
+#'
+#' @description
+#' Convenience function for extracting p-values from result lists as returned by
+#' `test_wilcoxon_for_groups` or `test_friedman`. The result is vector with the
+#' group names as names and can be used by `ggplot_annotate_signif`.
+#'
+#' @export
+#' @param data A tibble containing the data.
+#' @param x The column used for the x-axis.
+#' @param y The column used for the y-axis.
+#' @param p_values A vector containing p-values, the name marks the
+#' corresponding x.
+#' @param label Either "stars" or "p-values".
+#' @param margin The distance above the highest y at x in units of y.
+#' @param static_y Use the maximum y + margin for all x.
+#' @param steps If `label` is "stars" add an "*" for each step teh p_value is
+#' below.
+#' @param font_face The font face used for the labels ("plain"|"bold"|"italic"|
+#' "bold.italic")
+#' @param font_size The font size in points.
+#' @return list
+#'
+ggplot_annotate_signif <- function(data, x, y, p_values, label = "stars",
+                                   margin = 1, static_y = TRUE, steps = c(0.05, 0.01, 0.001),
+                                   font_face = "plain", font_size = eenv_theme[[1]]$text$size) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+  x <- rlang::enquo(x)
+  y <- rlang::enquo(y)
+  steps <- sort(steps, decreasing = TRUE)
+
+  result <- list()
+
+  # get maximal y at x
+  data <- data %>%
+    dplyr::group_by(!! x) %>%
+    dplyr::summarize(
+      !! y := max(!! y) + margin)
+
+  y_values <- dplyr::pull(data, !! y)
+  names(y_values) <- dplyr::pull(data, !! x)
+  i = 1
+
+  for (x_current in names(p_values)) {
+    p_value = p_values[[x_current]]
+    label_current = ""
+    if (x_current %in% names(y_values) & p_value <= max(steps) ) {
+      # dynamic y means max y at this x + margin
+      if (! static_y) {
+        y_current = y_values[[x_current]]
+      } else {
+        y_current = max(y_values)
+      }
+
+      if (label == "stars") {
+        for (step in steps) {
+          if (p_value >= step) {
+            break
+          }
+          label_current = paste0(label_current, "*")
+        }
+      } else {
+        label_current = format_p(p_value)
+      }
+
+      result[[i]] = ggplot2::annotate(
+        geom = "text",
+        x = as.numeric(x_current),
+        y = y_current,
+        label = label_current,
+        vjust = "center",
+        hjust = "middle",
+        fontface = font_face,
+        size = font_size / ggplot2::.pt)
+      i = i + 1
     }
   }
 
