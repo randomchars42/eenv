@@ -25,6 +25,7 @@ Format a p-value.
 Other variables and functions for displaying numbers: \code{\link{eenv_decimals}},
   \code{\link{eenv_signif_bottom}},
   \code{\link{eenv_signif_digits}},
+  \code{\link{eenv_signif_steps}},
   \code{\link{format_float}}, \code{\link{format_int}},
   \code{\link{format_number}}, \code{\link{format_pad}},
   \code{\link{format_perc}}

@@ -5,7 +5,7 @@
 \title{Extract p-values from a result list.}
 \usage{
 ggplot_annotate_signif(data, x, y, p_values, label = "stars",
-  margin = 1, static_y = TRUE, steps = c(0.05, 0.01, 0.001),
+  margin = 1, static_y = TRUE, steps = eenv_signif_steps,
   font_face = "plain", font_size = eenv_theme[[1]]$text$size)
 }
 \arguments{

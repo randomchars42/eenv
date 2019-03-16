@@ -1,3 +1,8 @@
+# eenv 1.5.0
+
+  * add `eenv_signif_steps` and redefine `eenv_signif_bottom`
+  * change default param `steps` in `ggplot_annotate_signif` to respect `eenv_signif_bottom`
+
 # eenv 1.4.0
 
   * add `test_wilcoxon_for_groups`, `ggplot_annotate_signif` and `extract_p_values_from_result_list`
