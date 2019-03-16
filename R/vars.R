@@ -21,12 +21,20 @@ eenv_alpha <- 1 - eenv_confidence_level
 eenv_signif_digits <- 2
 
 #'
+#' Steps of p-values used for the number of stars in plots or tables.
+#'
+#' @export
+#' @family variables and functions for displaying numbers
+#'
+eenv_signif_steps <- c(0.05, 0.01, 0.001, 0.0001)
+
+#'
 #' The number below which "< NUMBER" is displayed for p-values.
 #'
 #' @export
 #' @family variables and functions for displaying numbers
 #'
-eenv_signif_bottom <- 0.0001
+eenv_signif_bottom <- eenv_signif_steps[[length(eenv_signif_steps)]]
 
 #'
 #' The number of digits to round to (not for p-values).
