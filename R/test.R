@@ -530,9 +530,9 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc,
       #      |_|__|_|______
       #           fpr
       #
-      # the area is split into a retangle + (triangle or rectangle) defined by
+      # the area is split into a rectangle + triangle defined by
       #   rectangle:  (tpr<n-1> - 0) * (fpr<n> - fpr<n-1>) = tpr_prev * fpr_dist
-      #   polygon:    (tpr<n> - tpr<n-1>) * (fpr<n> - fpr<n-1>) / 2 =
+      #   triangle:   (tpr<n> - tpr<n-1>) * (fpr<n> - fpr<n-1>) / 2 =
       #               (tpr - tpr_prev) * fpr_dist / 2
       # for step<n>
       #
@@ -551,7 +551,8 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc,
     dplyr::mutate(
       fpr_min = min(fpr)) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(tpr == tpr_max & fpr == fpr_min)
+    dplyr::filter(tpr == tpr_max & fpr == fpr_min) %>%
+    dplyr::select(-tpr_max, -fpr_min)
 
   plot <- ggplot2::ggplot(data = data_steps, ggplot2::aes(x = fpr, ymin = 0, ymax = tpr)) +
     ggplot2::geom_ribbon(alpha = 0.4) +
@@ -560,17 +561,15 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc,
 
   if (print_auc) {
     plot <- plot +
-      ggplot2::annotate("text", x = 0.5, y = 0.15, label = paste0("AUC=", round(auc, 2)))
+      ggplot2::annotate("text", x = 0.5, y = 0.15, label = paste0("AUC=", format_number(auc)))
   }
 
   if (print_points) {
     plot <- plot +
       ggplot2::geom_point(ggplot2::aes(y = tpr))
-  }
-
-  if (print_steps) {
+  } else if (print_steps) {
     plot <- plot +
-      ggplot2::geom_point(ggplot2::aes(x = fpr_min, y = tpr_max, color = "#FF0000"), data = data_steps_summarised)
+      ggplot2::geom_point(ggplot2::aes(x = fpr_min, y = tpr_max), data = data_steps_summarised)
   }
 
   return(list(
