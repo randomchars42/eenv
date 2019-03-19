@@ -391,7 +391,7 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
       point_x <- data_point[[1, "fpr"]]
       point_y <- data_point[[1, "tpr"]]
       result$plot <- result$plot +
-        dplyr::annotate("point", x = point_x, y = point_y)
+        ggplot2::annotate("point", x = point_x, y = point_y)
     }
   }
 
@@ -523,7 +523,7 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
 #' @param data A tibble containing the data.
 #' @param predictors A list of predictors (strings).
 #' @param responses A list of responses (strings).
-#' @param responses_pos The value of `responses` considered positive.
+#' @param response_pos The value of `responses` considered positive.
 #' @param alpha The alpha used for testing.
 #' @return list
 #'
