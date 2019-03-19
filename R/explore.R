@@ -491,7 +491,6 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
       if (is.numeric(threshold)) {
         data_tmp <- data_tmp %>%
           dplyr::mutate(!! predictor := !! predictor >= threshold)
-        print(data_tmp)
 
         result[[id]][["metrics"]] <- test_get_metrics(
           data = data_tmp,
@@ -508,7 +507,9 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
           act_cond_targ = TRUE,
           alpha = alpha)
 
-        print(result[[id]][["relation"]])
+        if (show_item) {
+          print(result[[id]][["relation"]])
+        }
 
         # result[[id]][["relation_formatted"]] <- test_format_relations(
         #   raw_relations = result[[id]][["relation"]],
