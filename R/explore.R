@@ -141,7 +141,7 @@ test_wilcoxon_for_groups <- function(data, column, group, id, set, paired) {
       paired = paired)
 
     result[["groups"]][[group]] <- wilcoxon
-    message(paste0("Wilcoxon's ", test," test between both sets for group \"",
+    print(paste0("Wilcoxon's ", test," test between both sets for group \"",
                    group, "\": p = ", format_p(wilcoxon$p.value)))
   }
   return(result)
@@ -204,7 +204,7 @@ test_friedman <- function(data, column, group, id, reference_group,
 
   friedman <- stats::friedman.test(data_friedman)
   result[["friedman"]] <- friedman
-  message(paste0("Friedman's Test: p = ", format_p(friedman$p.value)))
+  print(paste0("Friedman's Test: p = ", format_p(friedman$p.value)))
 
   # if Friedman's test indicated the median is not the same we have to
   # test which group differed from the baseline
@@ -229,7 +229,7 @@ test_friedman <- function(data, column, group, id, reference_group,
           dplyr::pull(data_wilcoxon, !! group_sym),
           paired = TRUE)
         result[["groups"]][[group]] <- wilcoxon
-        message(paste0("Wilcoxon's signed-rank test on \"", reference_group,
+        print(paste0("Wilcoxon's signed-rank test on \"", reference_group,
           "\" ~ \"", group, "\": p = ", wilcoxon$p.value))
       }
     }
@@ -359,45 +359,39 @@ calc_crosstable_int <- function(data, x, y, show = FALSE, id = 1) {
         data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
       file="/dev/null", type="output")
   }
-  message(sprintf("%s) %s by %s : Chi-Squared: %s; Fisher: %s",
+  print(sprintf("%s) %s by %s : Chi-Squared: %s; Fisher: %s",
                   as.character(id), x, y, format_p(result$chisq$p.value),
                   format_p(result$fisher.ts$p.value)))
   return(result)
 }
 
-calc_roc_int <- function(data, predictor, response, threshold = NULL, show = FALSE, id = 1) {
+calc_roc_int <- function(data, predictor, response, threshold = NULL,
+  show = FALSE, id = 1, print_auc = FALSE, print_points = FALSE,
+  print_steps = FALSE) {
   `%>%` <- magrittr::`%>%`
   `!!` <- rlang::`!!`
   `:=` <- rlang::`:=`
 
-  result <- test_roc_empiric(data, !! predictor, !! response, TRUE)
-
-  result$steps_summarised <- result$steps
-  # result$steps_summarised <- result$steps %>%
-  #   dplyr::group_by(truepositives) %>%
-  #   dplyr::summarise(
-  #     threshold = max(predictor),
-  #     sensitivity = first(sensitivity),
-  #     specificity = max(specificity),
-  #     fpr = min(fpr),
-  #     tpr = first(tpr),
-  #     npv = first(npv),
-  #     ppv = max(ppv),
-  #     falsepositives = min(falsepositives),
-  #     truenegatives = max(truenegatives),
-  #     falsenegatives = first(falsenegatives))
+  result <- test_roc_empiric(
+    data = data,
+    predictor = !! predictor,
+    response = !! response,
+    print_auc = print_auc,
+    print_points = print_points,
+    print_steps = print_steps)
 
   if (is.numeric(threshold)) {
-    threshold_given <- threshold
+    # find the point in the dataset which is closest to the given threshold
+    # as it is unlikely that the exact threshold will be given as a parameter
     data_point <- result$steps_summarised %>%
       dplyr::mutate(
-        diff = abs(threshold_given - threshold)) %>%
+        diff = abs(threshold - predictor)) %>%
       dplyr::slice(which.min(diff))
     if (nrow(data_point) > 0) {
       point_x <- data_point[[1, "fpr"]]
       point_y <- data_point[[1, "tpr"]]
       result$plot <- result$plot +
-        annotate("point", x = point_x, y = point_y)
+        dplyr::annotate("point", x = point_x, y = point_y)
     }
   }
 
@@ -405,7 +399,7 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL, show = FAL
     print(result$plot)
     print(result$steps_summarised)
   }
-  message(sprintf("%s) %s by %s: AUC: %s",
+  print(sprintf("%s) %s by %s: AUC: %s",
                   as.character(id), rlang::quo_name(response),
                   rlang::quo_name(predictor), format_number(result$AUC)))
   return(result)
@@ -527,13 +521,13 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
 #'
 #' @export
 #' @param data A tibble containing the data.
-#' @param predictors An `alist` of predictors.
-#' @param responses An `alist` of responses.
+#' @param predictors A list of predictors (strings).
+#' @param responses A list of responses (strings).
 #' @param responses_pos The value of `responses` considered positive.
 #' @param alpha The alpha used for testing.
 #' @return list
 #'
-scan_simple_predictions <- function(data, predictors, responses, responses_pos,
+scan_simple_predictions <- function(data, predictors, responses, response_pos,
                                     alpha = eenv_alpha) {
   result = list()
 
@@ -542,7 +536,8 @@ scan_simple_predictions <- function(data, predictors, responses, responses_pos,
       result[[paste0(predictor,"~",response)]] <- test_simple_predictions(
         data = data,
         c(1, predictor, response, response_pos, NULL),
-        alpha = alpha
+        alpha = alpha,
+        show = TRUE
       )
     }
   }
@@ -579,7 +574,7 @@ scan_crosstables <- function(data, variables_x, variables_y) {
     data = data,
     predictors = variables_x,
     responses = variables_y,
-    responses_pos = NULL))
+    response_pos = NULL))
 }
 
 #'
@@ -614,7 +609,8 @@ calc_crosstables <- function(data, ...) {
   return(test_simple_predictions(
     data = data,
     ...,
-    alpha = eenv_alpha))
+    alpha = eenv_alpha,
+    show = TRUE))
 }
 
 #'
@@ -646,7 +642,7 @@ scan_rocs <- function(data, predictors, responses, response_pos = TRUE) {
   .Deprecated("scan_simple_prediction")
   return(scan_simple_predictions(
     data = data,
-    predictors = variables_x,
-    responses = variables_y,
-    responses_pos = response_pos))
+    predictors = predictors,
+    responses = responses,
+    response_pos = response_pos))
 }
