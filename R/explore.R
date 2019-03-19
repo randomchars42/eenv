@@ -380,7 +380,9 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
     print_points = print_points,
     print_steps = print_steps)
 
-  if (is.numeric(threshold) & print_threshold) {
+  result$threshold <- NA
+
+  if (is.numeric(threshold)) {
     # find the point in the dataset which is closest to the given threshold
     # as it is unlikely that the exact threshold will be given as a parameter
     data_point <- result$steps_summarised %>%
@@ -388,10 +390,13 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
         diff = abs(threshold - predictor)) %>%
       dplyr::slice(which.min(diff))
     if (nrow(data_point) > 0) {
-      point_x <- data_point[[1, "fpr"]]
-      point_y <- data_point[[1, "tpr"]]
-      result$plot <- result$plot +
-        ggplot2::annotate("point", x = point_x, y = point_y)
+      result$threshold <- data_point[[1, "predictor"]]
+      if (print_threshold) {
+        point_x <- data_point[[1, "fpr"]]
+        point_y <- data_point[[1, "tpr"]]
+        result$plot <- result$plot +
+          ggplot2::annotate("point", x = point_x, y = point_y)
+      }
     }
   }
 
@@ -486,9 +491,12 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
         print_auc = print_auc,
         print_points = print_points,
         print_steps = print_steps,
-        print_threshold )
+        print_threshold)
 
       if (is.numeric(threshold)) {
+        if (!is.na(result[[id]][["roc"]][["threshold"]])) {
+          threshold <- result[[id]][["roc"]][["threshold"]]
+        }
         data_tmp <- data_tmp %>%
           dplyr::mutate(!! predictor := !! predictor >= threshold)
 
@@ -516,6 +524,8 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
         #   relations = relations)
       }
     }
+
+    result[[id]][["threshold"]] <- threshold
 
     if (show_item) {
       invisible(readline(prompt="Press [enter] to continue"))
