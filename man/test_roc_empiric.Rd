@@ -4,7 +4,8 @@
 \alias{test_roc_empiric}
 \title{Calculate an empiric ROC.}
 \usage{
-test_roc_empiric(data, predictor, response, print_auc = TRUE)
+test_roc_empiric(data, predictor, response, print_auc = TRUE,
+  print_points = FALSE, print_steps = FALSE)
 }
 \arguments{
 \item{data}{The tibble containing the data.}
@@ -14,6 +15,10 @@ test_roc_empiric(data, predictor, response, print_auc = TRUE)
 \item{response}{The column holding the responses.}
 
 \item{print_auc}{Print the AUC when creating the plot?}
+
+\item{print_points}{Plot the single points?}
+
+\item{print_steps}{Plot points that define steps only?}
 }
 \value{
 list

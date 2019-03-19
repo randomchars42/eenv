@@ -1,3 +1,10 @@
+# eenv 1.6.0
+
+  * add `test_simple_predictions` and `scan_simple_predictions`
+  * mark `scan_crosstables`, `scan_rocs` and `calc_crosstables` deprecated
+  * simplify and enhance `test_roc_empiric`
+  * fix bug not respecting ties in `test_roc_empiric`
+
 # eenv 1.5.0
 
   * add `eenv_signif_steps` and redefine `eenv_signif_bottom`

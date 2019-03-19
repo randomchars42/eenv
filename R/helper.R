@@ -10,3 +10,9 @@ release_questions <- function() {
     "Are you feeling good?"
   )
 }
+
+#
+#  1. Check
+#       * if `Check` shows fixed errors remove ../eenv.Rcheck
+#  2. Build source
+#
