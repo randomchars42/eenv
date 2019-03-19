@@ -347,6 +347,208 @@ ggplot_annotate_signif <- function(data, x, y, p_values, label = "stars",
   return(result)
 }
 
+calc_crosstable_int <- function(data, x, y, show = FALSE, id = 1) {
+  x = rlang::quo_name(x)
+  y = rlang::quo_name(y)
+  if (show) {
+    result <- gmodels::CrossTable(
+      data[[x]], data[[y]], fisher = TRUE, expected = TRUE)
+  } else {
+    utils::capture.output(
+      result <- gmodels::CrossTable(
+        data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
+      file="/dev/null", type="output")
+  }
+  message(sprintf("%s) %s by %s : Chi-Squared: %s; Fisher: %s",
+                  as.character(id), x, y, format_p(result$chisq$p.value),
+                  format_p(result$fisher.ts$p.value)))
+  return(result)
+}
+
+calc_roc_int <- function(data, predictor, response, threshold = NULL, show = FALSE, id = 1) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
+  result <- test_roc_empiric(data, !! predictor, !! response, TRUE)
+
+  result$steps_summarised <- result$steps
+  # result$steps_summarised <- result$steps %>%
+  #   dplyr::group_by(truepositives) %>%
+  #   dplyr::summarise(
+  #     threshold = max(predictor),
+  #     sensitivity = first(sensitivity),
+  #     specificity = max(specificity),
+  #     fpr = min(fpr),
+  #     tpr = first(tpr),
+  #     npv = first(npv),
+  #     ppv = max(ppv),
+  #     falsepositives = min(falsepositives),
+  #     truenegatives = max(truenegatives),
+  #     falsenegatives = first(falsenegatives))
+
+  if (is.numeric(threshold)) {
+    threshold_given <- threshold
+    data_point <- result$steps_summarised %>%
+      dplyr::mutate(
+        diff = abs(threshold_given - threshold)) %>%
+      dplyr::slice(which.min(diff))
+    if (nrow(data_point) > 0) {
+      point_x <- data_point[[1, "fpr"]]
+      point_y <- data_point[[1, "tpr"]]
+      result$plot <- result$plot +
+        annotate("point", x = point_x, y = point_y)
+    }
+  }
+
+  if (show) {
+    print(result$plot)
+    print(result$steps_summarised)
+  }
+  message(sprintf("%s) %s by %s: AUC: %s",
+                  as.character(id), rlang::quo_name(response),
+                  rlang::quo_name(predictor), format_number(result$AUC)))
+  return(result)
+}
+
+#'
+#' Calculate a crosstable or ROC and test metrics for the given variables.
+#'
+#' @description
+#' Calculate a crosstable or ROC and test metrics (if a cutoff is given) for the
+#' given variables.
+#'
+#' It takes sets of the form c(ID, PREDICTOR, RESPONSE, RESPONSE_POS, CUTOFF).
+#' @export
+#' @param data A tibble containing the data.
+#' @param ... Sets of variables to analyse (see above).
+#' @param alpha The alpha used for testing.
+#' @param show Show results (tibbles / plots).
+#' @param force_show A list of ids of results that should be shown regardless of
+#' `show`.
+#' @return list
+#'
+test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
+                                    force_show = c()) {
+  `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+  result = list()
+
+  for (param_list in list(...)) {
+    if (length(param_list) < 3) {
+      warning("Encountered malformed set.")
+    }
+    response_pos = NULL
+    threshold = NULL
+
+    id <- param_list[[1]]
+    predictor <- rlang::sym(param_list[[2]])
+    response <- rlang::sym(param_list[[3]])
+
+    if (length(param_list) > 3) {
+      response_pos <- param_list[[4]]
+    }
+
+    if (length(param_list) > 4){
+      threshold <- as.numeric(param_list[[5]])
+    }
+
+    show_item = FALSE
+    if (show | id %in% force_show) {
+      show_item = TRUE
+    }
+
+    if (is.null(response_pos)) {
+      # crosstables are only sensible if the predictor is categorical
+      # this excludes all other tests as used here
+      result[[id]][["crosstable"]] <- calc_crosstable_int(
+        data = data,
+        x = predictor,
+        y = response,
+        show = show_item,
+        id = id)
+    } else {
+      data_tmp <- data %>%
+        dplyr::mutate(
+          !! response := !! response == response_pos) %>%
+        dplyr::select(!! predictor, !! response) %>%
+        dplyr::filter(stats::complete.cases(.))
+
+      result[[id]][["roc"]] <- calc_roc_int(
+        data = data_tmp,
+        predictor = predictor,
+        response = response,
+        threshold = threshold,
+        show = show_item,
+        id = id)
+
+      if (is.numeric(threshold)) {
+        data_tmp <- data_tmp %>%
+          dplyr::mutate(!! predictor := !! predictor >= threshold)
+        print(data_tmp)
+
+        result[[id]][["metrics"]] <- test_get_metrics(
+          data = data_tmp,
+          pred_cond = !! predictor,
+          pred_cond_targ = TRUE,
+          act_cond = !! response,
+          act_cond_targ = TRUE)
+
+        result[[id]][["relation"]] <- test_get_relation(
+          data = data_tmp,
+          pred_cond = !! predictor,
+          pred_cond_targ = TRUE,
+          act_cond = !! response,
+          act_cond_targ = TRUE,
+          alpha = alpha)
+
+        print(result[[id]][["relation"]])
+
+        # result[[id]][["relation_formatted"]] <- test_format_relations(
+        #   raw_relations = result[[id]][["relation"]],
+        #   relations = relations)
+      }
+    }
+
+    if (show_item) {
+      invisible(readline(prompt="Press [enter] to continue"))
+    }
+  }
+  return(result)
+}
+
+#'
+#' Calculate a crosstable, ROC and metrics for each combination of variables.
+#'
+#' @description
+#' Calculate a crosstable, a ROC and test metrics (if a cutoff is given) for
+#' each combination of the given variables.
+#'
+#' @export
+#' @param data A tibble containing the data.
+#' @param predictors An `alist` of predictors.
+#' @param responses An `alist` of responses.
+#' @param responses_pos The value of `responses` considered positive.
+#' @param alpha The alpha used for testing.
+#' @return list
+#'
+scan_simple_predictions <- function(data, predictors, responses, responses_pos,
+                                    alpha = eenv_alpha) {
+  result = list()
+
+  for (response in responses) {
+    for (predictor in predictors) {
+      result[[paste0(predictor,"~",response)]] <- test_simple_predictions(
+        data = data,
+        c(1, predictor, response, response_pos, NULL),
+        alpha = alpha
+      )
+    }
+  }
+  return(result)
+}
+
 #'
 #' Calculate all CrossTables for the given variables.
 #'
@@ -354,25 +556,30 @@ ggplot_annotate_signif <- function(data, x, y, p_values, label = "stars",
 #' Give an overview of possible correlations by calculating all CrossTables for
 #' the given variables.
 #'
-#' @export
 #' @param data A tibble containing the data.
 #' @param variables_x A list of variable names as strings.
 #' @param variables_y A list of variable names as strings.
 #' @return list
 #'
+#' @name scan_crosstables-deprecated
+#' @seealso `eenv_deprecated`
+#' @keywords internal
+#'
+NULL
+
+#' @rdname eenv-deprecated
+#' @section `scan_crosstables`:
+#' For `scan_crosstables` use `scan_simple_predictions`.
+#'
+#' @export
+#'
 scan_crosstables <- function(data, variables_x, variables_y) {
-  for (y in variables_y) {
-    message(y)
-    for (x in variables_x) {
-      utils::capture.output(
-        res <- gmodels::CrossTable(
-          data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
-        file="/dev/null", type="output")
-      message(sprintf("%s, %s - Chi-Squared: %s; Fisher: %s", x, y,
-        format_p(res$chisq$p.value), format_p(res$fisher.ts$p.value)))
-    }
-    invisible(readline(prompt="Press [enter] to continue"))
-  }
+  .Deprecated("scan_simple_prediction")
+  return(scan_simple_predictions(
+    data = data,
+    predictors = variables_x,
+    responses = variables_y,
+    responses_pos = NULL))
 }
 
 #'
@@ -386,36 +593,28 @@ scan_crosstables <- function(data, variables_x, variables_y) {
 #' crosstable should be shown.
 #' The output of `gmodels::CrossTable(data[[X]], data[[Y]], fisher = TRUE,
 #' expected = TRUE)` will be saved in the returned list `list[[ID]]`.
-#' @export
 #' @param data A tibble containing the data.
 #' @param ... Sets of variables to analyse (see above).
 #' @return list
 #'
+#' @name calc_crosstables-deprecated
+#' @seealso `eenv_deprecated`
+#' @keywords internal
+#'
+NULL
+
+#' @rdname eenv-deprecated
+#' @section `calc_crosstables`:
+#' For `calc_crosstables` use `test_simple_predictions`.
+#'
+#' @export
+#'
 calc_crosstables <- function(data, ...) {
-  result = list()
-  for (param_list in list(...)) {
-    id <- param_list[[1]]
-    x <- param_list[[2]]
-    y <- param_list[[3]]
-    show <- param_list[[4]]
-    if (show) {
-      res <- gmodels::CrossTable(
-        data[[x]], data[[y]], fisher = TRUE, expected = TRUE)
-    } else {
-      utils::capture.output(
-        res <- gmodels::CrossTable(
-          data[[x]], data[[y]], fisher = TRUE, expected = TRUE),
-        file="/dev/null", type="output")
-    }
-    message(sprintf("%s: %s, %s - Chi-Squared: %s; Fisher: %s",
-      as.character(id), x, y, format_p(res$chisq$p.value),
-      format_p(res$fisher.ts$p.value)))
-    if (show) {
-      invisible(readline(prompt="Press [enter] to continue"))
-    }
-    result[[id]] <- res
-  }
-  return(result)
+  .Deprecated("test_simple_prediction")
+  return(test_simple_predictions(
+    data = data,
+    ...,
+    alpha = eenv_alpha))
 }
 
 #'
@@ -425,42 +624,29 @@ calc_crosstables <- function(data, ...) {
 #' Calculate all Reciever-Operator-Curves (ROCs) and the corresponding area
 #' under the curve (AUC).
 #'
-#' @export
 #' @param data A tibble containing the data.
 #' @param predictors A list of variable names.
 #' @param responses A list of variable names.
 #' @param response_pos The response that will be interpreted as an event.
 #' @return NULL
 #'
+#' @name scan_rocs-deprecated
+#' @seealso `eenv_deprecated`
+#' @keywords internal
+#'
+NULL
+
+#' @rdname eenv-deprecated
+#' @section `scan_rocs`:
+#' For `scan_rocs` use `test_simple_predictions`.
+#'
+#' @export
+#'
 scan_rocs <- function(data, predictors, responses, response_pos = TRUE) {
-  `%>%` <- magrittr::`%>%`
-  `!!` <- rlang::`!!`
-  `:=` <- rlang::`:=`
-
-  for (response in responses) {
-    message(rlang::quo_name(response))
-
-    data_tmp <- data %>%
-      dplyr::mutate(
-        !! response := ifelse(!! response == response_pos, TRUE, FALSE)
-      )
-
-    for (predictor in predictors) {
-      data_tmp2 <- data_tmp %>%
-        dplyr::select(!! predictor, !! response) %>%
-        dplyr::filter(stats::complete.cases(.))
-      res <- test_roc_empiric(data_tmp2, !! predictor, !! response, TRUE)
-      print(res$plot)
-
-      steps <- res$steps %>%
-        dplyr::group_by(truepositives) %>%
-        dplyr::summarize(
-          threshold = max(predictor),
-          sensitivity = first(sensitivity),
-          specificity = first(specificity),
-          fpr = max(fpr),
-          tpr = max(tpr))
-      print(steps)
-    }
-  }
+  .Deprecated("scan_simple_prediction")
+  return(scan_simple_predictions(
+    data = data,
+    predictors = variables_x,
+    responses = variables_y,
+    responses_pos = response_pos))
 }
