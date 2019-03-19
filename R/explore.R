@@ -367,7 +367,7 @@ calc_crosstable_int <- function(data, x, y, show = FALSE, id = 1) {
 
 calc_roc_int <- function(data, predictor, response, threshold = NULL,
   show = FALSE, id = 1, print_auc = FALSE, print_points = FALSE,
-  print_steps = FALSE) {
+  print_steps = FALSE, print_threshold) {
   `%>%` <- magrittr::`%>%`
   `!!` <- rlang::`!!`
   `:=` <- rlang::`:=`
@@ -380,7 +380,7 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
     print_points = print_points,
     print_steps = print_steps)
 
-  if (is.numeric(threshold)) {
+  if (is.numeric(threshold) & print_threshold) {
     # find the point in the dataset which is closest to the given threshold
     # as it is unlikely that the exact threshold will be given as a parameter
     data_point <- result$steps_summarised %>%
@@ -420,10 +420,16 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
 #' @param show Show results (tibbles / plots).
 #' @param force_show A list of ids of results that should be shown regardless of
 #' `show`.
+#' @param print_auc Print the AUC onto the ROC plot?
+#' @param print_points Print all data points onto the ROC plot?
+#' @param print_steps Print only the steps onto the ROC plot?
+#' @param print_threshold Mark the given threshold in the ROC plot?
 #' @return list
 #'
 test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
-                                    force_show = c()) {
+                                    force_show = c(), print_auc = FALSE,
+                                    print_points = FALSE, print_steps = FALSE,
+                                    print_threshold = FALSE) {
   `%>%` <- magrittr::`%>%`
   `!!` <- rlang::`!!`
   `:=` <- rlang::`:=`
@@ -475,7 +481,11 @@ test_simple_predictions <- function(data, ..., alpha = eenv_alpha, show = FALSE,
         response = response,
         threshold = threshold,
         show = show_item,
-        id = id)
+        id = id,
+        print_auc = print_auc,
+        print_points = print_points,
+        print_steps = print_steps,
+        print_threshold )
 
       if (is.numeric(threshold)) {
         data_tmp <- data_tmp %>%
@@ -537,7 +547,11 @@ scan_simple_predictions <- function(data, predictors, responses, response_pos,
         data = data,
         c(1, predictor, response, response_pos, NULL),
         alpha = alpha,
-        show = TRUE
+        show = TRUE,
+        print_auc = TRUE,
+        print_points = FALSE,
+        print_steps = FALSE,
+        print_threshold = FALSE
       )
     }
   }
