@@ -561,7 +561,8 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc,
 
   if (print_auc) {
     plot <- plot +
-      ggplot2::annotate("text", x = 0.5, y = 0.15, label = paste0("AUC=", format_number(auc)))
+      ggplot2::annotate("text", x = 0.5, y = 0.15,
+                        label = paste0("AUC=", format_number(auc, decimals = 2)))
   }
 
   if (print_points) {

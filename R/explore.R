@@ -400,8 +400,9 @@ calc_roc_int <- function(data, predictor, response, threshold = NULL,
     print(result$steps_summarised)
   }
   print(sprintf("%s) %s by %s: AUC: %s",
-                  as.character(id), rlang::quo_name(response),
-                  rlang::quo_name(predictor), format_number(result$AUC)))
+                as.character(id), rlang::quo_name(response),
+                rlang::quo_name(predictor),
+                format_number(result$AUC, decimals = 2)))
   return(result)
 }
 
