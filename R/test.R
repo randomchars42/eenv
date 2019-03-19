@@ -450,37 +450,53 @@ test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act
 #' @param predictor The column holding the predictors.
 #' @param response The column holding the responses.
 #' @param print_auc Print the AUC when creating the plot?
+#' @param print_points Plot the single points?
+#' @param print_steps Plot points that define steps only?
 #' @return list
 #'
-test_roc_empiric <- function(data, predictor, response, print_auc = TRUE) {
+test_roc_empiric <- function(data, predictor, response, print_auc = TRUE,
+                             print_points = FALSE, print_steps = FALSE) {
   predictor <- rlang::enquo(predictor)
   response <- rlang::enquo(response)
-  return(test_roc_empiric_int(data, predictor, response, print_auc))
+  return(test_roc_empiric_int(
+    data = data,
+    predictor = predictor,
+    response = response,
+    print_auc = print_auc,
+    print_points = print_points,
+    print_steps = print_steps))
 }
 
-test_roc_empiric_int <- function(data, predictor, response, print_auc) {
+test_roc_empiric_int <- function(data, predictor, response, print_auc,
+                                 print_points = FALSE, print_steps = FALSE) {
   `%>%` <- magrittr::`%>%`
+  `!!` <- rlang::`!!`
+  `:=` <- rlang::`:=`
+
   predictors <- dplyr::pull(data, !! predictor)
   responses <- dplyr::pull(data, !! response)
+  length_fill <- length(predictors)
+
   data_roc <- tibble::tibble(
     predictor = predictors,
     response = responses,
-    truepositives = rep(NA, each = length(predictors)),
-    falsepositives = rep(NA, each = length(predictors)),
-    truenegatives = rep(NA, each = length(predictors)),
-    falsenegatives = rep(NA, each = length(predictors)),
-    sensitivity = rep(NA, each = length(predictors)),
-    specificity = rep(NA, each = length(predictors)),
-    ppv = rep(NA, each = length(predictors)),
-    npv = rep(NA, each = length(predictors)),
-    tpr = rep(NA, each = length(predictors)),
-    fpr = rep(NA, each = length(predictors))) %>%
-    dplyr::distinct(predictor, .keep_all = TRUE)
+    truepositives = rep(NA, each = length_fill),
+    falsepositives = rep(NA, each = length_fill),
+    truenegatives = rep(NA, each = length_fill),
+    falsenegatives = rep(NA, each = length_fill),
+    sensitivity = rep(NA, each = length_fill),
+    specificity = rep(NA, each = length_fill),
+    ppv = rep(NA, each = length_fill),
+    npv = rep(NA, each = length_fill),
+    tpr = rep(NA, each = length_fill),
+    fpr = rep(NA, each = length_fill))
 
   for (i in 1:nrow(data_roc)) {
     threshold <- as.numeric(data_roc[i, "predictor"])
+
     data_roc <- data_roc %>%
-      dplyr::mutate(predictor_pos = ifelse(predictor >= threshold, TRUE, FALSE))
+      dplyr::mutate(predictor_pos = predictor >= threshold)
+
     metrics <- test_get_metrics(
       data_roc,
       pred_cond = predictor_pos,
@@ -488,6 +504,7 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc) {
       pred_cond_targ = TRUE,
       act_cond_targ = TRUE,
       prevalence = NULL)
+
     data_roc[i, "truepositives"] <- as.numeric(metrics[["True Positives"]])
     data_roc[i, "falsepositives"] <- as.numeric(metrics[["False Positives"]])
     data_roc[i, "truenegatives"] <- as.numeric(metrics[["True Negatives"]])
@@ -500,56 +517,66 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc) {
     data_roc[i, "npv"] <- as.numeric(metrics[["NPV"]])
   }
 
-  data_roc <- data_roc %>%
-    dplyr::arrange(fpr, tpr)
-
   data_steps <- data_roc %>%
-    dplyr::group_by(fpr) %>%
-    dplyr::mutate(tpr_max = max(tpr)) %>%
-    dplyr::distinct(fpr, tpr_max, .keep_all = TRUE) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(fpr_dist = dplyr::lead(fpr, order_by = fpr) - fpr) %>%
-    dplyr::mutate(area = tpr_max * fpr_dist)
+    dplyr::arrange(fpr, tpr) %>%
+    dplyr::mutate(
+      fpr_dist = fpr - dplyr::lag(fpr, order_by = fpr),
+      tpr_prev = dplyr::lag(tpr, order_by = fpr),
+      # support ties which would result in a non-horizontal line
+      #
+      #      |       ______
+      #  tpr |     /|
+      #      |  __/ |
+      #      |_|__|_|______
+      #           fpr
+      #
+      # the area is split into a retangle + (triangle or rectangle) defined by
+      #   rectangle:  (tpr<n-1> - 0) * (fpr<n> - fpr<n-1>) = tpr_prev * fpr_dist
+      #   polygon:    (tpr<n> - tpr<n-1>) * (fpr<n> - fpr<n-1>) / 2 =
+      #               (tpr - tpr_prev) * fpr_dist / 2
+      # for step<n>
+      #
+      area = (tpr_prev * fpr_dist) + ((tpr - tpr_prev) * fpr_dist / 2)) %>%
+    dplyr::select(- fpr_dist, - tpr_prev)
 
   auc <- sum(data_steps$area, na.rm = TRUE)
 
-  data_tmp <- rbind(data_roc, tibble::tibble(
-    predictor = rep(NA, each = 2),
-    response = rep(NA, each = 2),
-    truepositives = rep(NA, each = 2),
-    falsepositives = rep(NA, each = 2),
-    truenegatives = rep(NA, each = 2),
-    falsenegatives = rep(NA, each = 2),
-    sensitivity = rep(NA, each = 2),
-    specificity = rep(NA, each = 2),
-    ppv = rep(NA, each = 2),
-    npv = rep(NA, each = 2),
-    tpr = c(0, 1),
-    fpr = c(0, 1),
-    predictor_pos = rep(NA, each = 2)
-  ))
+  data_steps_summarised <- data_steps %>%
+    dplyr::group_by(fpr) %>%
+    dplyr::mutate(
+      tpr_max = max(tpr),
+      predictor_max = min(predictor)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(tpr_max) %>%
+    dplyr::mutate(
+      fpr_min = min(fpr)) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(tpr == tpr_max & fpr == fpr_min)
 
-  data_tmp <- data_tmp %>%
-    dplyr::arrange(fpr, tpr)
+  plot <- ggplot2::ggplot(data = data_steps, ggplot2::aes(x = fpr, ymin = 0, ymax = tpr)) +
+    ggplot2::geom_ribbon(alpha = 0.4) +
+    ggplot2::geom_line(ggplot2::aes(y = tpr)) +
+    ggplot2::geom_abline(slope = 1, intercept = 0)
 
   if (print_auc) {
-    plot <- ggplot2::ggplot(data = data_tmp, ggplot2::aes(x = fpr, ymin = 0, ymax = tpr)) +
-      ggplot2::geom_ribbon(alpha = 0.4) +
-      ggplot2::geom_line(ggplot2::aes(y = tpr)) +
-      #("rect", xmin = 0, xmax = 0.083, ymin = 0, ymax = 0.24, alpha = .2) +
-      ggplot2::annotate("text", x = 0.5, y = 0.15, label = paste0("AUC=", round(auc, 2))) +
-      ggplot2::geom_abline(slope = 1, intercept = 0)
-  } else {
-    plot <-
-      ggplot2::ggplot(data = data_tmp, ggplot2::aes(x = fpr, ymin = 0, ymax = tpr)) +
-      ggplot2::geom_ribbon(alpha = 0.4) +
-      ggplot2::geom_line(ggplot2::aes(y = tpr)) +
-      ggplot2::geom_abline(slope = 1, intercept = 0)
+    plot <- plot +
+      ggplot2::annotate("text", x = 0.5, y = 0.15, label = paste0("AUC=", round(auc, 2)))
+  }
+
+  if (print_points) {
+    plot <- plot +
+      ggplot2::geom_point(ggplot2::aes(y = tpr))
+  }
+
+  if (print_steps) {
+    plot <- plot +
+      ggplot2::geom_point(ggplot2::aes(x = fpr_min, y = tpr_max, color = "#FF0000"), data = data_steps_summarised)
   }
 
   return(list(
     data = data_roc %>% dplyr::select(-predictor_pos),
     steps = data_steps,
+    steps_summarised = data_steps_summarised,
     AUC = auc,
     plot = plot
   ))
