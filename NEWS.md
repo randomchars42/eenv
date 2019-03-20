@@ -1,3 +1,9 @@
+# eenv 1.6.1
+
+  * print AUC for ROCs with 2 decimals
+  * `test_simple_predictions`: remove call to print() used for testing, only show results of `test_get_relation` if item should be shown
+  * make `test_simple_predictions` return the threshold from `steps` if available
+
 # eenv 1.6.0
 
   * add `test_simple_predictions` and `scan_simple_predictions`
