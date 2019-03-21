@@ -2,7 +2,7 @@
 #' Work with test results vs. actual conditions.
 #'
 #' @description
-#' Functions to retrieve true positives, prevalence, npv...
+#' Functions to retrieve true positives, true negatives, ...
 #'
 #' Structure: Suppose you designed a test to predict if a person lied. Your
 #' tibble might look like this:
@@ -20,286 +20,290 @@
 #' (`act_cond`) would be `person_lied` with targeted condition
 #' (`act_cond_targ`) `yes`.
 #'
-#' @name test_get
+#' @name test_get_rows
 #' @param data A tibble holding the data
 #' @param pred_cond The column holding the predicted conditions / test results.
 #' @param act_cond The column holding the true conditions.
-#' @param pred_cond_targ The value that signifies the targeted predicted condition.
+#' @param pred_cond_targ The value that signifies the targeted predicted
+#' condition.
 #' @param act_cond_targ The value that signifies the targeted true condition.
 #' @param prevalence The prevalence in the reference population.
 #' @param alpha The alpha level.
+#' @return A tibble containing the true positives / negatives / ...
+#'
+NULL
+
+test_get_rows_int <- function(data, pred_cond, act_cond, ...) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  expression <- rlang::enexprs(...)
+  return(data %>% dplyr::filter(
+    ! is.na(!! pred_cond) & ! is.na(!! act_cond), !!! expression)
+  )
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_true_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond == !! pred_cond_targ, !! act_cond == !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_false_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond == !! pred_cond_targ, !! act_cond != !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_actual_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! act_cond == !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_predicted_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond == !! pred_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_true_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond != !! pred_cond_targ, !! act_cond != !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_false_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond != !! pred_cond_targ, !! act_cond == !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_actual_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! act_cond != !! act_cond_targ))
+}
+
+#' @export
+#' @rdname test_get_rows
+test_get_predicted_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+  return(test_get_rows_int(
+    data = data,
+    pred_cond = !! pred_cond,
+    act_cond = !! act_cond,
+    !! pred_cond != !! pred_cond_targ))
+}
+
+#'
+#' Work with test results vs. actual conditions.
+#'
+#' @description
+#' Functions to retrieve true positives, prevalence, ...
+#'
+#' Structure: Suppose you designed a test to predict if a person lied. Your
+#' tibble might look like this:
+#'
+#' |   | test_result | person_lied | comment           |
+#' |---|-------------|-------------|-------------------|
+#' | 1 | pos         | yes         | <- true positive  |
+#' | 2 | pos         | no          | <- false positive |
+#' | 3 | neg         | no          | <- true negative  |
+#' | 4 | pos         | yes         | ...               |
+#' | 5 | neg         | no          | ...               |
+#'
+#' Your predicted condition (`pred_cond`) would be `test_result` and the
+#' targeted condition (`pred_cond_targ`) would be `pos`. The actual condition
+#' (`act_cond`) would be `person_lied` with targeted condition
+#' (`act_cond_targ`) `yes`.
+#'
+#' @name test_get_values
+#' @param data A tibble holding the data
+#' @param pred_cond The column holding the predicted conditions / test results.
+#' @param act_cond The column holding the true conditions.
+#' @param pred_cond_targ The value that signifies the targeted predicted
+#' condition.
+#' @param act_cond_targ The value that signifies the targeted true condition.
+#' @param prevalence The prevalence in the reference population.
+#' @param alpha The alpha level.
+#' @param confusion_matrix The confusion matrix as returned by
+#' `test_get_confusion_list`, `data` will be ignored.
 #' @return variable
 #'
 NULL
 
-#' @export
-#' @rdname test_get
-test_get_true_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_true_positives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond == pred_cond_targ & !! act_cond == act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_false_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_false_positives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond == pred_cond_targ & !! act_cond != act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_actual_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_actual_positives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! act_cond == act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_predicted_positives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_predicted_positives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond == pred_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_true_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_true_negatives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond != pred_cond_targ & !! act_cond != act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_false_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_false_negatives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond != pred_cond_targ & !! act_cond == act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_actual_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_actual_negatives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! act_cond != act_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_predicted_negatives <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_predicted_negatives_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-
-  data <- data %>% dplyr::filter(
-    ! is.na(!! pred_cond) & ! is.na(!! act_cond),
-    !! pred_cond != pred_cond_targ)
-  return(data)
-}
-
-#' @export
-#' @rdname test_get
-test_get_sensitivity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_sensitivity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_sensitivity_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  true_pos <- nrow(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  act_pos <- nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  return(true_pos / act_pos)
-}
-
-#' @export
-#' @rdname test_get
-test_get_specificity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_specificity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_specificity_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  true_neg <- nrow(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  act_neg <- nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  return(true_neg / act_neg)
-}
-
-#' @export
-#' @rdname test_get
-test_get_prevalence <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-}
-
-test_get_prevalence_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ) {
-  act_pos <- nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  act_neg <- nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  return(act_pos / (act_neg + act_pos))
-}
-
-#' @export
-#' @rdname test_get
-test_get_positive_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_positive_predictive_value_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence))
-}
-
-test_get_positive_predictive_value_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence) {
-  if (is.null(prevalence)) {
-    prevalence <- test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
+test_get_confusion_matrix <- function(data, pred_cond, act_cond,
+                                      pred_cond_targ = TRUE,
+                                      act_cond_targ = TRUE,
+                                      prevalence = NULL,
+                                      confusion_matrix = NULL) {
+  if (!is.null(confusion_matrix)) {
+    return(confusion_matrix)
   }
-  spec <- test_get_specificity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
-  sens <- test_get_sensitivity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
 
-  return((sens * prevalence) / ((sens * prevalence) + ((1-spec) * (1-prevalence))))
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
+
+  data <- data %>%
+    dplyr::select(!! pred_cond, !! act_cond) %>%
+    dplyr::filter(stats::complete.cases(.)) %>%
+    dplyr::mutate(
+      tp = !! pred_cond == pred_cond_targ & !! act_cond == act_cond_targ,
+      fp = !! pred_cond == pred_cond_targ & !! act_cond != act_cond_targ,
+      tn = !! pred_cond != pred_cond_targ & !! act_cond != act_cond_targ,
+      fn = !! pred_cond != pred_cond_targ & !! act_cond == act_cond_targ)
+
+  total <- nrow(data)
+  # the confusion matrix, TRUE will be counted and summed up
+  cm <- matrix(c(
+    sum(dplyr::pull(data, tp)),
+    sum(dplyr::pull(data, fp)),
+    sum(dplyr::pull(data, fn)),
+    sum(dplyr::pull(data, tn))),
+    ncol = 2,
+    byrow = TRUE)
+
+  colnames(cm) <- c("CP", "CN")
+  rownames(cm) <- c("PP", "PN")
+
+  return(cm)
 }
 
 #' @export
-#' @rdname test_get
-test_get_negative_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_negative_predictive_value_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence))
-}
-
-test_get_negative_predictive_value_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence) {
-  if (is.null(prevalence)) {
-    prevalence <- test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
-  }
-  spec <- test_get_specificity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
-  sens <- test_get_sensitivity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
-
-  return((spec * (1-prevalence)) / ((spec * (1-prevalence)) + ((1-sens) * prevalence)))
+#' @rdname test_get_values
+test_get_sensitivity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+  tp <- cm[["PP", "CP"]]
+  fn <- cm[["PN", "CP"]]
+  return(tp / (tp + fn))
 }
 
 #' @export
-#' @rdname test_get
-test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_metrics_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence))
+#' @rdname test_get_values
+test_get_specificity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+  tn <- cm[["PN", "CN"]]
+  fp <- cm[["PP", "CN"]]
+  return(tn / (tn + fp))
 }
 
-test_get_metrics_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence) {
-  if (is.null(prevalence)) {
-    prevalence <- test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)
+#' @export
+#' @rdname test_get_values
+test_get_prevalence <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  if (!is.null(prevalence)) {
+    return(prevalence)
   }
-  result <-c(
-    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
-      nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    nrow(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)),
-    test_get_sensitivity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
-    test_get_specificity_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
-    test_get_prevalence_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ),
-    prevalence,
-    test_get_positive_predictive_value_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence),
-    test_get_negative_predictive_value_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, prevalence)
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+  tp <- cm[["PP", "CP"]]
+  fn <- cm[["PN", "CP"]]
+  return((tp + fn) / sum(cm))
+}
+
+#' @export
+#' @rdname test_get_values
+test_get_positive_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
+  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm)
+  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm)
+  return((sens * prev) / ((sens * prev) + ((1-spec) * (1-prev))))
+}
+
+#' @export
+#' @rdname test_get_values
+test_get_negative_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
+  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm)
+  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm)
+  return((spec * (1-prev)) / ((spec * (1-prev)) + ((1-sens) * prev)))
+}
+
+#' @export
+#' @rdname test_get_values
+test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
+
+  result <- list(
+    "Total" = sum(cm),
+    "Reference Positives" = cm[["PP", "CP"]] + cm[["PN", "CP"]],
+    "Test Positives" = cm[["PP", "CP"]] + cm [["PP", "CN"]],
+    "True Positives" = cm[["PP", "CP"]],
+    "False Positives" = cm[["PP", "CN"]],
+    "Reference Negatives" = cm[["PP", "CN"]] + cm [["PN", "CN"]],
+    "Test Negatives" = cm[["PN", "CP"]] + cm [["PN", "CN"]],
+    "True Negatives" = cm[["PN", "CN"]],
+    "False Negatives" = cm[["PN", "CP"]],
+    "Sensitivity" = test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm),
+    "Specificity" = test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm),
+    "Prevalence in the Given Cohort" = test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm),
+    "Prevalence used for PPV / NPV" = prev,
+    "PPV" = test_get_positive_predictive_value(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence),
+    "NPV" = test_get_negative_predictive_value(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
   )
 
-  names(result) <- c(
-    "Total",
-    "Reference Positives",
-    "Test Positives",
-    "True Positives",
-    "False Positives",
-    "Reference Negatives",
-    "Test Negatives",
-    "True Negatives",
-    "False Negatives",
-    "Sensitivity",
-    "Specificity",
-    "Prevalence in the Given Cohort",
-    "Prevalence used for PPV / NPV",
-    "PPV",
-    "NPV"
-  )
-
-  return(result)
+  return(unlist(result))
 }
 
 #' @export
-#' @rdname test_get
+#' @rdname test_get_values
 test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, alpha = eenv_alpha) {
   pred_cond <- rlang::enquo(pred_cond)
   act_cond <- rlang::enquo(act_cond)
@@ -379,7 +383,8 @@ test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act
   #http://www.biochemia-medica.com/content/odds-ratio-calculation-usage-and-interpretation
   odds_ratio_p <-
     (factorial(affected_yes) * factorial(affected_no) * factorial(factor_yes) *  factorial(factor_no)) /
-    (factorial(total) * factorial(affected_yes_factor_yes) * factorial(affected_yes_factor_no) * factorial(affected_no_factor_yes) * factorial(affected_no_factor_no))
+    (factorial(total) * factorial(affected_yes_factor_yes) * factorial(affected_yes_factor_no) * factorial(affected_no_factor_yes) *
+       factorial(affected_no_factor_no))
 
   result <-c(
     total,
