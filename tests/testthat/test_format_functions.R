@@ -12,4 +12,5 @@ test_that("numbers are formatted correctly", {
   expect_equal(format_number(4.36, type = "float"), "4.4")
   expect_equal(format_number(0.31234, type = "perc"), "31 %")
   expect_equal(format_number(0.31234, type = "perc", force_perc_decimals = TRUE), "31.2 %")
+  expect_equal(format_number(NA, type = "perc", force_perc_decimals = TRUE), "NA")
 })
