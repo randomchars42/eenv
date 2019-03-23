@@ -27,8 +27,6 @@
 #' @param pred_cond_targ The value that signifies the targeted predicted
 #' condition.
 #' @param act_cond_targ The value that signifies the targeted true condition.
-#' @param prevalence The prevalence in the reference population.
-#' @param alpha The alpha level.
 #' @return A tibble containing the true positives / negatives / ...
 #'
 NULL

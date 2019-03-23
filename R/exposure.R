@@ -17,12 +17,11 @@
 #'
 #' @name exposure
 #' @param data A tibble holding the data
-#' @param pred_cond The column holding the predicted conditions / test results.
-#' @param act_cond The column holding the true conditions.
-#' @param pred_cond_targ The value that signifies the targeted predicted
+#' @param exposure The column holding the predicted conditions / exposure.
+#' @param condition The column holding the observed conditions.
+#' @param exposure_targ The value that signifies the exposed condition.
+#' @param condition_targ The value that signifies the targeted observed
 #' condition.
-#' @param act_cond_targ The value that signifies the targeted true condition.
-#' @param prevalence The prevalence in the reference population.
 #' @param alpha The alpha level.
 #' @param confusion_matrix The confusion matrix as returned by
 #' `test_get_confusion_list`, `data` will be ignored.
