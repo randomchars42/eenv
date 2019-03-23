@@ -1,3 +1,5 @@
+^Session.vim$
+^tags$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^NEWS\.md$
