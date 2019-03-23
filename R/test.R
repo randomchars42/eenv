@@ -180,6 +180,8 @@ test_get_predicted_negatives <- function(data, pred_cond, act_cond, pred_cond_ta
 #' @param alpha The alpha level.
 #' @param confusion_matrix The confusion matrix as returned by
 #' `test_get_confusion_list`, `data` will be ignored.
+#' @param haldane_anscombe_correction Apply Haldane Anscombe correction if
+#' necessary.
 #' @return variable
 #'
 NULL
@@ -304,143 +306,18 @@ test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, a
 
 #' @export
 #' @rdname test_get_values
-test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, alpha = eenv_alpha) {
-  pred_cond <- rlang::enquo(pred_cond)
-  act_cond <- rlang::enquo(act_cond)
-  return(test_get_relation_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, alpha))
-}
-
-test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ, alpha) {
-  z <- stats::qnorm(1 - (alpha / 2))
-  total <-
-    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ)) +
-    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_yes <-
-    nrow(test_get_actual_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_no <-
-    nrow(test_get_actual_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  factor_yes <-
-    nrow(test_get_predicted_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  factor_no <-
-    nrow(test_get_predicted_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_yes_factor_yes <-
-    nrow(test_get_true_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_yes_factor_no <-
-    nrow(test_get_false_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_no_factor_no <-
-    nrow(test_get_true_negatives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-  affected_no_factor_yes <-
-    nrow(test_get_false_positives_int(data, pred_cond, act_cond, pred_cond_targ, act_cond_targ))
-
-  risk_affected_yes_factor_yes <-
-    affected_yes_factor_yes / factor_yes
-  risk_affected_yes_factor_no <-
-    affected_yes_factor_no / factor_no
-
-  risk_ratio <-
-    risk_affected_yes_factor_yes / risk_affected_yes_factor_no
-  risk_ratio_log_se <- sqrt(
-    (1 / affected_yes_factor_yes) +
-      (1 / affected_yes_factor_no) -
-      (1 / (factor_yes)) -
-      (1 / (factor_no)))
-  risk_ratio_log <-
-    log(risk_ratio)
-  risk_ratio_lci <-
-    exp(risk_ratio_log - z * risk_ratio_log_se)
-  risk_ratio_uci <-
-    exp(risk_ratio_log + z * risk_ratio_log_se)
-  risk_ratio_chi_squared <-
-    ((abs(affected_yes_factor_yes - (affected_yes * factor_yes / total)) - 0.5)^2) / (affected_yes * factor_yes / total) +
-    ((abs(affected_yes_factor_no - (affected_yes * factor_no / total)) - 0.5)^2) / (affected_yes * factor_no / total) +
-    ((abs(affected_no_factor_yes - (affected_no * factor_yes / total)) - 0.5)^2) / (affected_no * factor_yes / total) +
-    ((abs(affected_no_factor_no - (affected_no * factor_no / total)) - 0.5)^2) / (affected_no * factor_no / total)
-  risk_ratio_p <-
-    (1 - stats::pnorm(sqrt(risk_ratio_chi_squared))) * 2
-
-  risk_difference <-
-    risk_affected_yes_factor_yes - risk_affected_yes_factor_no
-
-  odds_affected_yes_factor_yes <-
-    affected_yes_factor_yes / affected_no_factor_yes
-  odds_affected_yes_factor_no <-
-    affected_yes_factor_no / affected_no_factor_no
-  odds_ratio <-
-    odds_affected_yes_factor_yes / odds_affected_yes_factor_no
-  odds_ratio_log_se <- sqrt(
-    (1 / affected_yes_factor_yes) +
-      (1 / affected_yes_factor_no) +
-      (1 / affected_no_factor_yes) +
-      (1 / affected_no_factor_no))
-  odds_ratio_log <-
-    log(odds_ratio)
-  odds_ratio_lci <-
-    exp(odds_ratio_log - z * odds_ratio_log_se)
-  odds_ratio_uci <-
-    exp(odds_ratio_log + z * odds_ratio_log_se)
-  result_fisher <-
-    stats::fisher.test(matrix(c(affected_yes_factor_yes, affected_yes_factor_no, affected_no_factor_yes, affected_no_factor_no), nrow=2))
-  #http://www.biochemia-medica.com/content/odds-ratio-calculation-usage-and-interpretation
-  odds_ratio_p <-
-    (factorial(affected_yes) * factorial(affected_no) * factorial(factor_yes) *  factorial(factor_no)) /
-    (factorial(total) * factorial(affected_yes_factor_yes) * factorial(affected_yes_factor_no) * factorial(affected_no_factor_yes) *
-       factorial(affected_no_factor_no))
-
-  result <-c(
-    total,
-    affected_yes,
-    affected_no,
-    factor_yes,
-    factor_no,
-    affected_yes_factor_yes,
-    affected_yes_factor_no,
-    affected_no_factor_no,
-    affected_no_factor_yes,
-    risk_affected_yes_factor_yes,
-    risk_affected_yes_factor_no,
-    risk_ratio,
-    risk_ratio_log_se,
-    risk_ratio_lci,
-    risk_ratio_uci,
-    risk_ratio_p,
-    risk_difference,
-    odds_affected_yes_factor_yes,
-    odds_affected_yes_factor_no,
-    odds_ratio,
-    odds_ratio_log_se,
-    odds_ratio_lci,
-    odds_ratio_uci,
-    odds_ratio_p
-  )
-
-  names(result) <- c(
-    "Total",
-    paste0(rlang::quo_name(act_cond), ' (affected) +'),
-    paste0(rlang::quo_name(act_cond), ' (affected) -'),
-    paste0(rlang::quo_name(pred_cond), ' (factor) +'),
-    paste0(rlang::quo_name(pred_cond), ' (factor) -'),
-    "affected + & factor +",
-    "affected + & factor -",
-    "affected - & factor -",
-    "affected - & factor +",
-    "risk for affected + with factor +",
-    "risk for affected + with factor -",
-    "risk ratio",
-    "risk ratio, ln(SE)",
-    "risk ratio, LCI",
-    "risk ratio, UCI",
-    "risk ratio, p",
-    "absolute difference in risk",
-    "odds for affected + with factor +",
-    "odds for affected + with factor -",
-    "odds ratio",
-    "odds ratio, ln(SE)",
-    "odds ratio, LCI",
-    "odds ratio, UCI",
-    "odds ratio, p"
-  )
-
-  return(result)
+test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, alpha = eenv_alpha, haldane_anscombe_correction = TRUE) {
+  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+	return(exposure_get_relation(
+		data = data,
+		exposure = !! pred_cond,
+		condition = !! act_cond,
+		confusion_matrix = cm,
+		alpha = alpha,
+		haldane_anscombe_correction = haldane_anscombe_correction))
 }
 
 #'
@@ -461,23 +338,9 @@ test_get_relation_int <- function(data, pred_cond, act_cond, pred_cond_targ, act
 #'
 test_roc_empiric <- function(data, predictor, response, print_auc = TRUE,
                              print_points = FALSE, print_steps = FALSE) {
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
   predictor <- rlang::enquo(predictor)
   response <- rlang::enquo(response)
-  return(test_roc_empiric_int(
-    data = data,
-    predictor = predictor,
-    response = response,
-    print_auc = print_auc,
-    print_points = print_points,
-    print_steps = print_steps))
-}
-
-test_roc_empiric_int <- function(data, predictor, response, print_auc,
-                                 print_points = FALSE, print_steps = FALSE) {
-  `%>%` <- magrittr::`%>%`
-  `!!` <- rlang::`!!`
-  `:=` <- rlang::`:=`
-
   predictors <- dplyr::pull(data, !! predictor)
   responses <- dplyr::pull(data, !! response)
   length_fill <- length(predictors)
@@ -597,59 +460,8 @@ test_roc_empiric_int <- function(data, predictor, response, print_auc,
 #'
 test_format_relations <- function(
   raw_relations,
-  relations = c("OR", "RR", "ARR")) {
-
-  result <- c(format_number(raw_relations["Total"], type = "int"))
-  names(result) <- c("Total")
-
-  if ("OR" %in% relations) {
-    names <- names(result)
-    result <- c(
-      result,
-      format_number(raw_relations["odds ratio"], type = "int"),
-      paste0(
-        format_number(raw_relations["odds ratio, LCI"], type = "int"),
-        ' - ',
-        format_number(raw_relations["odds ratio, UCI"], type = "int")),
-      format_number(raw_relations["odds ratio, p"], type = "p"))
-
-    names(result) <- c(
-      names,
-      "Odds Ratio",
-      "CI",
-      "p")
-  }
-
-  if ("RR" %in% relations) {
-    names <- names(result)
-    result <- c(
-      result,
-      format_number(raw_relations["risk ratio"], type = "int"),
-      paste0(
-        format_number(raw_relations["risk ratio, LCI"], type = "int"),
-        ' - ',
-        format_number(raw_relations["risk ratio, UCI"], type = "int")),
-      format_number(raw_relations["risk ratio, p"], type = "p"))
-
-    names(result) <- c(
-      names,
-      "Odds Ratio",
-      "CI",
-      "p")
-  }
-
-  if ("ARR" %in% relations) {
-    names <- names(result)
-    result <- c(
-      result,
-      format_number(
-        raw_relations["absolute difference in risk"],
-        type = "int"))
-
-    names(result) <- c(
-      names,
-      "Absolute Difference In Risk")
-  }
-
-  return(result)
+  relations = c("OR")) {
+	return(exposure_format_relations(
+		raw_relations = raw_relations,
+		relations = relations))
 }
