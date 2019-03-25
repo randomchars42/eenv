@@ -1,3 +1,12 @@
+# eenv 2.0.0
+
+  * rewrite and simplify `test_get_*`
+  * add `exposure_get_relation` and `exposure_format_relations`
+  * breaks naming of vector returned by `test_get_relation`
+  * fix error in fisher's exact test calculation in `test_get_relation`
+  * fix error in risk ratio calculation in `test_get_relation`
+  * internal: add more tests
+
 # eenv 1.6.1
 
   * print AUC for ROCs with 2 decimals

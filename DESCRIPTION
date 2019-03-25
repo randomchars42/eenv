@@ -1,7 +1,7 @@
 Package: eenv
 Type: Package
 Title: Import often used functions, settings and packages
-Version: 1.6.1
+Version: 2.0.0
 Authors@R: person("Eike Christian", "Kühn",
     email = "eike.kuehn@pixelwoelkchen.de",
     role = c("aut", "cre"))
@@ -42,6 +42,7 @@ Collate:
     'eenv-deprecated.R'
     'eenv.R'
     'explore.R'
+    'exposure.R'
     'format_numbers.R'
     'helper.R'
     'packages.R'

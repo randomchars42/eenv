@@ -4,7 +4,7 @@
 \alias{test_format_relations}
 \title{Format the output of \code{test_get_relation}.}
 \usage{
-test_format_relations(raw_relations, relations = c("OR", "RR", "ARR"))
+test_format_relations(raw_relations, relations = c("OR"))
 }
 \arguments{
 \item{raw_relations}{The output of \code{test_get_relation}.}
