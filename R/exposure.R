@@ -23,8 +23,6 @@
 #' @param condition_targ The value that signifies the targeted observed
 #' condition.
 #' @param alpha The alpha level.
-#' @param confusion_matrix The confusion matrix as returned by
-#' `test_get_confusion_list`, `data` will be ignored.
 #' @param haldane_anscombe_correction Apply Haldane Anscombe correction if
 #' @param relations Vector with at least one in `c("OR", "RR", "ARR")`.
 #' necessary.
