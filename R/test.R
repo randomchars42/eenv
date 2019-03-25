@@ -225,9 +225,9 @@ test_get_confusion_matrix <- function(data, pred_cond, act_cond,
 #' @export
 #' @rdname test_get_values
 test_get_sensitivity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -240,9 +240,9 @@ test_get_sensitivity <- function(data, pred_cond, act_cond, pred_cond_targ = TRU
 #' @export
 #' @rdname test_get_values
 test_get_specificity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -256,9 +256,9 @@ test_get_specificity <- function(data, pred_cond, act_cond, pred_cond_targ = TRU
 #' @rdname test_get_values
 test_get_prevalence <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
   if (!is.null(prevalence)) return(prevalence)
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -271,9 +271,9 @@ test_get_prevalence <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE
 #' @export
 #' @rdname test_get_values
 test_get_positive_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -288,9 +288,9 @@ test_get_positive_predictive_value <- function(data, pred_cond, act_cond, pred_c
 #' @export
 #' @rdname test_get_values
 test_get_negative_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -305,9 +305,9 @@ test_get_negative_predictive_value <- function(data, pred_cond, act_cond, pred_c
 #' @export
 #' @rdname test_get_values
 test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
@@ -339,20 +339,20 @@ test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, a
 #' @export
 #' @rdname test_get_values
 test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, alpha = eenv_alpha, haldane_anscombe_correction = TRUE) {
-	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
-	pred_cond <- rlang::enquo(pred_cond)
-	act_cond <- rlang::enquo(act_cond)
+  `%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+  pred_cond <- rlang::enquo(pred_cond)
+  act_cond <- rlang::enquo(act_cond)
   mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
     act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
     act_cond_targ = act_cond_targ, prevalence = prevalence,
-    confusion_matrix = confusion_matrix)
-	return(exposure_get_relation(
-		data = data,
-		exposure = !! pred_cond,
-		condition = !! act_cond,
-		confusion_matrix = mat,
-		alpha = alpha,
-		haldane_anscombe_correction = haldane_anscombe_correction))
+    confusion_matrix = NULL)
+  return(exposure_get_relation(
+    data = data,
+    exposure = !! pred_cond,
+    condition = !! act_cond,
+    confusion_matrix = mat,
+    alpha = alpha,
+    haldane_anscombe_correction = haldane_anscombe_correction))
 }
 
 #'
@@ -403,7 +403,7 @@ test_roc_empiric <- function(data, predictor, response, print_auc = TRUE,
     metrics <- test_get_metrics(
       data_roc,
       pred_cond = predictor_pos,
-      act_cond = responses,
+      act_cond = response,
       pred_cond_targ = TRUE,
       act_cond_targ = TRUE,
       prevalence = NULL)
@@ -496,7 +496,7 @@ test_roc_empiric <- function(data, predictor, response, print_auc = TRUE,
 test_format_relations <- function(
   raw_relations,
   relations = c("OR")) {
-	return(exposure_format_relations(
-		raw_relations = raw_relations,
-		relations = relations))
+  return(exposure_format_relations(
+    raw_relations = raw_relations,
+    relations = relations))
 }
