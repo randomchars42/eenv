@@ -208,7 +208,7 @@ test_get_confusion_matrix <- function(data, pred_cond, act_cond,
 
   total <- nrow(data)
   # the confusion matrix, TRUE will be counted and summed up
-  cm <- matrix(c(
+  mat <- matrix(c(
     sum(dplyr::pull(data, tp)),
     sum(dplyr::pull(data, fp)),
     sum(dplyr::pull(data, fn)),
@@ -216,87 +216,121 @@ test_get_confusion_matrix <- function(data, pred_cond, act_cond,
     ncol = 2,
     byrow = TRUE)
 
-  colnames(cm) <- c("CP", "CN")
-  rownames(cm) <- c("PP", "PN")
+  colnames(mat) <- c("CP", "CN")
+  rownames(mat) <- c("PP", "PN")
 
-  return(cm)
+  return(mat)
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_sensitivity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
-  tp <- cm[["PP", "CP"]]
-  fn <- cm[["PN", "CP"]]
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
+  tp <- mat[["PP", "CP"]]
+  fn <- mat[["PN", "CP"]]
   return(tp / (tp + fn))
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_specificity <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
-  tn <- cm[["PN", "CN"]]
-  fp <- cm[["PP", "CN"]]
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
+  tn <- mat[["PN", "CN"]]
+  fp <- mat[["PP", "CN"]]
   return(tn / (tn + fp))
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_prevalence <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  if (!is.null(prevalence)) {
-    return(prevalence)
-  }
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
-  tp <- cm[["PP", "CP"]]
-  fn <- cm[["PN", "CP"]]
-  return((tp + fn) / sum(cm))
+  if (!is.null(prevalence)) return(prevalence)
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
+  tp <- mat[["PP", "CP"]]
+  fn <- mat[["PN", "CP"]]
+  return((tp + fn) / sum(mat))
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_positive_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
 
-  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
-  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm)
-  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm)
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = mat, prevalence = prevalence)
+  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = mat)
+  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = mat)
   return((sens * prev) / ((sens * prev) + ((1-spec) * (1-prev))))
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_negative_predictive_value <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
 
-  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
-  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm)
-  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm)
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = mat, prevalence = prevalence)
+  spec <- test_get_specificity(NULL, NULL, NULL, confusion_matrix = mat)
+  sens <- test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = mat)
   return((spec * (1-prev)) / ((spec * (1-prev)) + ((1-sens) * prev)))
 }
 
 #' @export
 #' @rdname test_get_values
 test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, prevalence = NULL, confusion_matrix = NULL) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
+	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
+	pred_cond <- rlang::enquo(pred_cond)
+	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
 
-  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
+  prev <- test_get_prevalence(NULL, NULL, NULL, confusion_matrix = mat, prevalence = prevalence)
 
   result <- list(
-    "Total" = sum(cm),
-    "Reference Positives" = cm[["PP", "CP"]] + cm[["PN", "CP"]],
-    "Test Positives" = cm[["PP", "CP"]] + cm [["PP", "CN"]],
-    "True Positives" = cm[["PP", "CP"]],
-    "False Positives" = cm[["PP", "CN"]],
-    "Reference Negatives" = cm[["PP", "CN"]] + cm [["PN", "CN"]],
-    "Test Negatives" = cm[["PN", "CP"]] + cm [["PN", "CN"]],
-    "True Negatives" = cm[["PN", "CN"]],
-    "False Negatives" = cm[["PN", "CP"]],
-    "Sensitivity" = test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = cm),
-    "Specificity" = test_get_specificity(NULL, NULL, NULL, confusion_matrix = cm),
-    "Prevalence in the Given Cohort" = test_get_prevalence(NULL, NULL, NULL, confusion_matrix = cm),
+    "Total" = sum(mat),
+    "Reference Positives" = mat[["PP", "CP"]] + mat[["PN", "CP"]],
+    "Test Positives" = mat[["PP", "CP"]] + mat [["PP", "CN"]],
+    "True Positives" = mat[["PP", "CP"]],
+    "False Positives" = mat[["PP", "CN"]],
+    "Reference Negatives" = mat[["PP", "CN"]] + mat [["PN", "CN"]],
+    "Test Negatives" = mat[["PN", "CP"]] + mat [["PN", "CN"]],
+    "True Negatives" = mat[["PN", "CN"]],
+    "False Negatives" = mat[["PN", "CP"]],
+    "Sensitivity" = test_get_sensitivity(NULL, NULL, NULL, confusion_matrix = mat),
+    "Specificity" = test_get_specificity(NULL, NULL, NULL, confusion_matrix = mat),
+    "Prevalence in the Given Cohort" = test_get_prevalence(NULL, NULL, NULL, confusion_matrix = mat),
     "Prevalence used for PPV / NPV" = prev,
-    "PPV" = test_get_positive_predictive_value(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence),
-    "NPV" = test_get_negative_predictive_value(NULL, NULL, NULL, confusion_matrix = cm, prevalence = prevalence)
+    "PPV" = test_get_positive_predictive_value(NULL, NULL, NULL, confusion_matrix = mat, prevalence = prevalence),
+    "NPV" = test_get_negative_predictive_value(NULL, NULL, NULL, confusion_matrix = mat, prevalence = prevalence)
   )
 
   return(unlist(result))
@@ -305,15 +339,18 @@ test_get_metrics <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, a
 #' @export
 #' @rdname test_get_values
 test_get_relation <- function(data, pred_cond, act_cond, pred_cond_targ = TRUE, act_cond_targ = TRUE, alpha = eenv_alpha, haldane_anscombe_correction = TRUE) {
-  cm <- do.call(test_get_confusion_matrix, as.list(match.call()[-1]))
 	`%>%` <- magrittr::`%>%`; `!!` <- rlang::`!!`; `:=` <- rlang::`:=`
 	pred_cond <- rlang::enquo(pred_cond)
 	act_cond <- rlang::enquo(act_cond)
+  mat <- test_get_confusion_matrix(data = data, pred_cond = !! pred_cond,
+    act_cond = !! act_cond, pred_cond_targ = pred_cond_targ,
+    act_cond_targ = act_cond_targ, prevalence = prevalence,
+    confusion_matrix = confusion_matrix)
 	return(exposure_get_relation(
 		data = data,
 		exposure = !! pred_cond,
 		condition = !! act_cond,
-		confusion_matrix = cm,
+		confusion_matrix = mat,
 		alpha = alpha,
 		haldane_anscombe_correction = haldane_anscombe_correction))
 }
