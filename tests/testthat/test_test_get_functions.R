@@ -66,7 +66,7 @@ test_that("test_get_[values] are returning the correct results", {
     test_get_sensitivity(data = test, pred_cond = pred, act_cond = act, pred_cond_targ = "yes", act_cond_targ = "yes"),
     1 / (1 + 3))
   # specificity
-  expect_setequal(
+  expect_equal(
     test_get_specificity(data = test, pred_cond = pred, act_cond = act, pred_cond_targ = "yes", act_cond_targ = "yes"),
     4 / (4 + 2))
   # prevalence
